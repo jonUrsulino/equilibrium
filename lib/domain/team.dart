@@ -9,12 +9,16 @@ class Team extends Equatable {
   Team({required this.shirt});
 
   void addPlayer(Player player) {
-    print('${shirt.name} ${player.name}');
     players.add(player);
   }
 
   void removePlayer(Player player) {
     players.remove(player);
+  }
+
+  int calculatePower() {
+    return players.fold(
+        0, (previousValue, element) => previousValue + element.stars.toInt());
   }
 
   @override

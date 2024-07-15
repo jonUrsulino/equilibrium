@@ -61,6 +61,10 @@ class Coach {
 
     // split players based on sort of starts
     for (Player _ in presence.players) {
+      teams.sort((a, b) {
+        return a.calculatePower().compareTo(b.calculatePower());
+      });
+
       for (Team team in teams) {
         if (sortedPlayersByStars.isEmpty) {
           return;
@@ -74,6 +78,8 @@ class Coach {
         sortedPlayersByStars.remove(nextGoodPlayer);
       }
     }
+    teams.sort();
+    // teams.sort((a, b) => a.players[1].name.compareTo(a.players[1].name));
   }
 
   List<Player> sortByStars(List<Player> players) {
@@ -90,6 +96,7 @@ class Coach {
         value += player.stars.toInt();
       }
       print('Poder: $value');
+      print('Power: ${team.calculatePower()}');
       print("---------");
     }
   }

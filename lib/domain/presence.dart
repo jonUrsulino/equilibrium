@@ -24,5 +24,6 @@ class PresencePlayers {
     Player("Samuel", 3.0),
     Player("Davi", 3.0),
     Player("Adriano", 3.0),
+    Player("Haroldo", 1.0),
   ];
 }
