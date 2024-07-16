@@ -3,6 +3,7 @@ import 'package:equilibrium/domain/player.dart';
 import 'package:equilibrium/domain/presence.dart';
 import 'package:equilibrium/presentation/screen/player_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:signals/signals_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,35 +12,18 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  List<Player> players = [
-    Player("Jonathan", 4.0),
-    Player("Tiago", 5.0),
-    Player("Bino", 1.0),
-    Player("Danilo", 3.0),
-    Player("Edmilson", 2.0),
-    Player("Matias", 2.0),
-    Player("Pr. Silvano", 1.0),
-    Player("Kennedy", 4.0),
-    Player("Carlos", 3.0),
-    Player("Goleiro", 5.0),
-    Player("Fabão", 3.0),
-    Player("Fabinho", 2.0),
-    Player("Motoca", 5.0),
-    Player("Mike", 3.0),
-    Player("Fi do Dimas", 3.0),
-    Player("Davi", 3.0),
-    Player("Adriano", 3.0),
-  ];
+class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
+  final presence = PresencePlayers();
 
   void balance() {
-    var coach = Coach(PresencePlayers());
+    var coach = Coach(presence);
     coach.balanceTeams();
     coach.printTeams();
   }
 
   @override
   void initState() {
+    presence.effecting;
     balance();
     super.initState();
   }
@@ -49,13 +33,68 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text("Equilibrium"),
+          title: Watch((context) => Text(presence.lastName.value)),
+          actions: [
+            IconButton(
+              onPressed: () => {},
+              icon: const Icon(Icons.settings),
+            )
+          ],
         ),
-        body: ListView.builder(
-          itemCount: players.length,
-          itemBuilder: (context, index) {
-            return PlayerTile(player: players[index]);
-          },
+        body: Column(
+          children: [
+            const Text('Presença'),
+            Expanded(
+              child: Watch(
+                (context) {
+                  var homeArrived = presence.arrived.value;
+                  var length = homeArrived.length;
+
+                  return ListView.builder(
+                    itemCount: length,
+                    itemBuilder: (context, index) {
+                      var homeArrivedPlayer = homeArrived[index];
+                      return PlayerTile(
+                        player: homeArrivedPlayer.player,
+                        arrived: homeArrivedPlayer.hasArrived,
+                        onChangeArriving: (value) => onChangeMissing(
+                          homeArrivedPlayer.player,
+                          value,
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+            const Text('Aguardando chegada'),
+            Expanded(
+              child: Container(
+                color: Colors.white30,
+                child: Watch(
+                  (context) {
+                    var homeArriving = presence.arriving.value;
+                    var length = homeArriving.length;
+
+                    return ListView.builder(
+                      itemCount: length,
+                      itemBuilder: (context, index) {
+                        var homeArrivingPlayer = homeArriving[index];
+                        return PlayerTile(
+                          player: homeArrivingPlayer.player,
+                          arrived: homeArrivingPlayer.hasArrived,
+                          onChangeArriving: (value) => onChangeArriving(
+                            homeArrivingPlayer.player,
+                            value,
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            )
+          ],
         ),
         bottomNavigationBar: BottomNavigationBar(
           items: const [
@@ -82,5 +121,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _addNewPlayer() {
     print("add new player");
+  }
+
+  onChangeArriving(Player player, value) {
+    presence.playerArrived(player, value);
+  }
+
+  onChangeMissing(Player player, value) {
+    presence.playerMissed(player, value);
   }
 }

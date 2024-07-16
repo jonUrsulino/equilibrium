@@ -22,18 +22,14 @@ class Coach {
   List<Team> teams = [];
 
   void balanceTeams() {
-    int amountPlayers = presence.players.length;
+    int amountPlayers = presence.arrived.value.length;
     int amountRemainingPlayers = amountPlayers % maxLinePlayersByTeam;
     int amountCompleteTeams =
         (amountPlayers - amountRemainingPlayers) ~/ maxLinePlayersByTeam;
     print("max line players: $maxLinePlayersByTeam");
     print("amount line players: $amountPlayers");
     print("remaining line players: $amountRemainingPlayers");
-    print("amount complete team: $amountCompleteTeams");
-    // define max teams based on amount of shirts.
-    // if (teamValidAmount > availableShirts.length) {
-    //   teamValidAmount = availableShirts.length;
-    // }
+    print("amount complete teams: $amountCompleteTeams");
 
     List<Shirt> shirts = availableShirts;
     // create teams
@@ -57,10 +53,11 @@ class Coach {
   }
 
   void balanceTeamsByStars() {
-    List<Player> sortedPlayersByStars = sortByStars(presence.players);
+    var listPlayers = presence.arrived.value.map((e) => e.player).toList();
+    List<Player> sortedPlayersByStars = sortByStars(listPlayers);
 
-    // split players based on sort of starts
-    for (Player _ in presence.players) {
+    // split listPlayers based on sort of starts
+    for (Player _ in listPlayers) {
       teams.sort((a, b) {
         return a.calculatePower().compareTo(b.calculatePower());
       });
@@ -78,8 +75,6 @@ class Coach {
         sortedPlayersByStars.remove(nextGoodPlayer);
       }
     }
-    teams.sort();
-    // teams.sort((a, b) => a.players[1].name.compareTo(a.players[1].name));
   }
 
   List<Player> sortByStars(List<Player> players) {
@@ -89,14 +84,11 @@ class Coach {
 
   void printTeams() {
     for (Team team in teams) {
-      int value = 0;
-      print('Time ${team.shirt.name}: ${team.players.length}');
+      print('Time ${team.shirt.name}: Poder: ${team.calculatePower()} '
+          '\nQuantidade: ${team.players.length}');
       for (Player player in team.players) {
         print('Jogador: ${player.stars} - ${player.name}');
-        value += player.stars.toInt();
       }
-      print('Poder: $value');
-      print('Power: ${team.calculatePower()}');
       print("---------");
     }
   }
@@ -108,12 +100,14 @@ class Coach {
     print('incomplete team: ${team.shirt.name}');
 
     var random = Random();
+    var players = presence.arrived.value.map((e) => e.player).toList();
+
     for (int i = 0; i < remainingPlayers; i++) {
       // Value is >= 0 and < presence.players.length
-      var numberRandomized = random.nextInt(presence.players.length);
+      var numberRandomized = random.nextInt(players.length);
 
-      var unluckyPlayer = presence.players[numberRandomized];
-      presence.players.remove(unluckyPlayer);
+      var unluckyPlayer = players[numberRandomized];
+      players.remove(unluckyPlayer);
       print('Unlucky: ${unluckyPlayer.name}');
 
       team.addPlayer(unluckyPlayer);
