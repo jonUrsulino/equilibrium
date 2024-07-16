@@ -33,7 +33,12 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Watch((context) => Text(presence.lastName.value)),
+          title: Watch((context) {
+            return Text(
+              presence.lastName.value,
+              style: Theme.of(context).textTheme.headlineLarge,
+            );
+          }),
           actions: [
             IconButton(
               onPressed: () => {},
@@ -43,7 +48,14 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
         ),
         body: Column(
           children: [
-            const Text('Presença'),
+            Watch(
+              (context) {
+                return Text(
+                  'Jogadores presentes: ${presence.arrived.length}',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                );
+              },
+            ),
             Expanded(
               child: Watch(
                 (context) {
@@ -67,7 +79,10 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
                 },
               ),
             ),
-            const Text('Aguardando chegada'),
+            Text(
+              'Aguardando chegada',
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
             Expanded(
               child: Container(
                 color: Colors.white30,

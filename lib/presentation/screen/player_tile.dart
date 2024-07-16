@@ -7,7 +7,7 @@ class PlayerTile extends StatelessWidget {
   final bool arrived;
   final Function onChangeArriving;
 
-  PlayerTile({
+  const PlayerTile({
     required this.player,
     required this.arrived,
     required this.onChangeArriving,
@@ -24,7 +24,10 @@ class PlayerTile extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text(playerName),
+          Text(
+            playerName,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           const Spacer(
             flex: 5,
           ),
