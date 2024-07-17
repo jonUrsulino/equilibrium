@@ -1,7 +1,10 @@
-import 'package:equilibrium/presentation/screen/home.dart';
+import 'package:equilibrium/navigator/di/di_nav.dart';
+import 'package:equilibrium/presentation/pages.dart';
 import 'package:flutter/material.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  DI.initializeNavigatorDependencies();
   runApp(const MyApp());
 }
 
@@ -11,8 +14,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Flutter Demo',
+      routerConfig: Pages.routes,
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -32,7 +36,6 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const HomeScreen(),
     );
   }
 }

@@ -1,11 +1,13 @@
 import 'package:equilibrium/domain/coach.dart';
-import 'package:equilibrium/domain/player.dart';
 import 'package:equilibrium/domain/presence.dart';
-import 'package:equilibrium/presentation/screen/player_tile.dart';
+import 'package:equilibrium/presentation/screen/balance_screen.dart';
+import 'package:equilibrium/presentation/screen/presence_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
+  static const route = "HomeScreen";
+
   const HomeScreen({super.key});
 
   @override
@@ -14,6 +16,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
   final presence = PresencePlayers();
+  final bottomAction = Signal(BottomNavigationScreens.home);
 
   void balance() {
     var coach = Coach(presence);
@@ -33,85 +36,34 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Watch((context) {
-            return Text(
-              presence.lastName.value,
-              style: Theme.of(context).textTheme.headlineLarge,
-            );
-          }),
+          title: Text(
+            _title(bottomAction.watch(context).index),
+            style: Theme.of(context).textTheme.headlineLarge,
+          ),
           actions: [
             IconButton(
-              onPressed: () => {},
+              onPressed: () => _onTapSettings(),
               icon: const Icon(Icons.settings),
             )
           ],
         ),
-        body: Column(
-          children: [
-            Watch(
-              (context) {
-                return Text(
-                  'Jogadores presentes: ${presence.arrived.length}',
-                  style: Theme.of(context).textTheme.headlineMedium,
-                );
-              },
-            ),
-            Expanded(
-              child: Watch(
-                (context) {
-                  var homeArrived = presence.arrived.value;
-                  var length = homeArrived.length;
-
-                  return ListView.builder(
-                    itemCount: length,
-                    itemBuilder: (context, index) {
-                      var homeArrivedPlayer = homeArrived[index];
-                      return PlayerTile(
-                        player: homeArrivedPlayer.player,
-                        arrived: homeArrivedPlayer.hasArrived,
-                        onChangeArriving: (value) => onChangeMissing(
-                          homeArrivedPlayer.player,
-                          value,
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
-            ),
-            Text(
-              'Aguardando chegada',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            Expanded(
-              child: Container(
-                color: Colors.white30,
-                child: Watch(
-                  (context) {
-                    var homeArriving = presence.arriving.value;
-                    var length = homeArriving.length;
-
-                    return ListView.builder(
-                      itemCount: length,
-                      itemBuilder: (context, index) {
-                        var homeArrivingPlayer = homeArriving[index];
-                        return PlayerTile(
-                          player: homeArrivingPlayer.player,
-                          arrived: homeArrivingPlayer.hasArrived,
-                          onChangeArriving: (value) => onChangeArriving(
-                            homeArrivingPlayer.player,
-                            value,
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
-            )
-          ],
-        ),
+        body: Watch((context) {
+          switch (bottomAction.value) {
+            case BottomNavigationScreens.home:
+              return PresenceScreen(presence: presence);
+            case BottomNavigationScreens.balance:
+              return BalanceScreen(presence: presence);
+            default:
+              return Text('Sei não');
+          }
+        }),
         bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          enableFeedback: true,
+          currentIndex: bottomAction.watch(context).index,
+          onTap: (value) {
+            return onTapBottomNavigation(value);
+          },
           items: const [
             BottomNavigationBarItem(
               label: "Jogadores",
@@ -138,11 +90,48 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
     print("add new player");
   }
 
-  onChangeArriving(Player player, value) {
-    presence.playerArrived(player, value);
+  void onTapBottomNavigation(int value) {
+    switch (value) {
+      case 0:
+        goToHome();
+      case 1:
+        goToTeams();
+      case 2:
+        goToGame();
+      default:
+        goToHome();
+    }
   }
 
-  onChangeMissing(Player player, value) {
-    presence.playerMissed(player, value);
+  void goToHome() {
+    bottomAction.set(BottomNavigationScreens.home);
+  }
+
+  void goToTeams() {
+    bottomAction.set(BottomNavigationScreens.balance);
+  }
+
+  void goToGame() {
+    bottomAction.set(BottomNavigationScreens.game);
+    // context.navigator.navigateToScreen(name: "/game");
+  }
+
+  void _onTapSettings() {
+    print('Tap on Setings');
+  }
+
+  String _title(int index) {
+    switch (index) {
+      case 0:
+        return 'Presentes: ${presence.arrived.watch(context).length}';
+      case 1:
+        return 'Balanciamento';
+      case 2:
+        return 'Partida';
+      default:
+        return 'Equilibrium';
+    }
   }
 }
+
+enum BottomNavigationScreens { home, balance, game }
