@@ -70,7 +70,7 @@ class Coach {
         if (sortedPlayersByStars.isEmpty) {
           return;
         }
-        if (team.players.length > maxLinePlayersByTeam) {
+        if (team.players.length >= maxLinePlayersByTeam) {
           break;
         }
         var nextGoodPlayer = sortedPlayersByStars.first;
