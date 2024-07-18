@@ -1,10 +1,12 @@
 import 'package:equilibrium/navigator/di/di_nav.dart';
 import 'package:equilibrium/presentation/pages.dart';
+import 'package:equilibrium/domain/di/di.dart';
 import 'package:flutter/material.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   DI.initializeNavigatorDependencies();
+  DiDomain.initializeDomainDependencies();
   runApp(const MyApp());
 }
 

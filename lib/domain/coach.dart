@@ -4,6 +4,8 @@ import 'package:equilibrium/domain/player.dart';
 import 'package:equilibrium/domain/presence.dart';
 import 'package:equilibrium/domain/team.dart';
 import 'package:equilibrium/domain/shirt.dart';
+import 'package:get_it/get_it.dart';
+import 'package:signals/signals.dart';
 
 final List<Shirt> availableShirts = [
   Shirt.white(),
@@ -13,13 +15,13 @@ final List<Shirt> availableShirts = [
 ];
 
 class Coach {
-  Coach(this.presence);
+  Coach();
 
-  final PresencePlayers presence;
+  final PresencePlayers presence = GetIt.I.get<PresencePlayers>();
 
   final int maxLinePlayersByTeam = 6;
 
-  List<Team> teams = [];
+  final ListSignal<Team> teams = ListSignal([]);
 
   void balanceTeams() {
     int amountPlayers = presence.arrived.value.length;

@@ -3,6 +3,7 @@ import 'package:equilibrium/domain/presence.dart';
 import 'package:equilibrium/presentation/screen/balance_screen.dart';
 import 'package:equilibrium/presentation/screen/presence_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:signals/signals_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -15,7 +16,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
-  final presence = PresencePlayers();
+  final presence = GetIt.I.get<PresencePlayers>();
+  final coach = Coach();
   final bottomAction = Signal(BottomNavigationType.home);
   final List<FABData> fabActions = [
     const FABData(
@@ -26,12 +28,16 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
     const FABData(
       BottomNavigationType.balance,
       "Balanciar times",
-      Icons.run_circle,
+      Icons.balance,
+    ),
+    const FABData(
+      BottomNavigationType.game,
+      "Iniciar partida",
+      Icons.start,
     )
   ];
 
   void balance() {
-    var coach = Coach(presence);
     coach.balanceTeams();
     coach.printTeams();
   }
@@ -63,9 +69,9 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
             case BottomNavigationType.home:
               return PresenceScreen(presence: presence);
             case BottomNavigationType.balance:
-              return BalanceScreen(presence: presence);
+              return BalanceScreen(coach: coach);
             default:
-              return Text('Sei não');
+              return Text('A fazer: Cronometro, Placar e próximos times');
           }
         }),
         bottomNavigationBar: BottomNavigationBar(
@@ -78,11 +84,11 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
           items: const [
             BottomNavigationBarItem(
               label: "Jogadores",
-              icon: Icon(Icons.group),
+              icon: Icon(Icons.directions_run),
             ),
             BottomNavigationBarItem(
               label: "Times",
-              icon: Icon(Icons.balance),
+              icon: Icon(Icons.groups),
             ),
             BottomNavigationBarItem(
               label: "Partida",
@@ -157,8 +163,8 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
         _addPlayers();
       case BottomNavigationType.balance:
         balance();
-      default:
-        _addPlayers();
+      case BottomNavigationType.game:
+        print('Iniciar partida');
     }
   }
 }

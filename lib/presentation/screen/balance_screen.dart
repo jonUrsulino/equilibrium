@@ -1,3 +1,4 @@
+import 'package:equilibrium/domain/coach.dart';
 import 'package:equilibrium/domain/presence.dart';
 import 'package:equilibrium/presentation/screen/player_tile.dart';
 import 'package:flutter/material.dart';
@@ -7,30 +8,35 @@ class BalanceScreen extends StatelessWidget {
   static const route = "BalanceScreen";
 
   const BalanceScreen({
-    required this.presence,
+    required this.coach,
     super.key,
   });
 
-  final PresencePlayers presence;
+  final Coach coach;
 
   @override
   Widget build(BuildContext context) {
-    final arrivedPlayers = presence.arrived.watch(context);
+    final teams = coach.teams.watch(context);
     return ListView.builder(
-      itemCount: arrivedPlayers.length,
+      itemCount: teams.length,
       itemBuilder: (context, index) {
-        var player = arrivedPlayers[index].player;
-        return PlayerTile(
-          player: player,
-          arrived: arrivedPlayers[index].hasArrived,
-          onChangeArriving: (isChecked) {
-            if (isChecked) {
-              presence.playerArrived(player, isChecked);
-            } else {
-              presence.playerMissed(player, isChecked);
-            }
-          },
-        );
+        return _playerItem(context, index);
+      },
+    );
+  }
+
+  PlayerTile _playerItem(BuildContext context, int index) {
+    final arrivedPlayers = coach.presence.arrived.watch(context);
+    var player = arrivedPlayers[index].player;
+    return PlayerTile(
+      player: player,
+      arrived: arrivedPlayers[index].hasArrived,
+      onChangeArriving: (isChecked) {
+        if (isChecked) {
+          coach.presence.playerArrived(player, isChecked);
+        } else {
+          coach.presence.playerMissed(player, isChecked);
+        }
       },
     );
   }
