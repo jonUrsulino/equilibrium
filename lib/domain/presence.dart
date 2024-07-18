@@ -31,9 +31,6 @@ class PresencePlayers {
     HomeArrivingPlayer.initial(const Player("Haroldo", 1.0)),
   ]);
 
-  // late final arrived = computed(() {
-  //   return _registeredPlayers.value.where((e) => e.hasArrived).toList();
-  // });
   late final ListSignal<HomeArrivingPlayer> arrived = ListSignal([]);
   late final ListSignal<HomeArrivingPlayer> arriving =
       ListSignal(_registeredPlayers);
@@ -44,12 +41,11 @@ class PresencePlayers {
     var homeArrivingPlayer = _registeredPlayers.value
         .firstWhere((element) => element.player == player);
 
-    var arrivedPlayer = homeArrivingPlayer.copyWith(player, value);
+    var arrivedPlayer =
+        homeArrivingPlayer.copyWith(player, player.stars, value);
 
     arrived.add(arrivedPlayer);
     arriving.remove(homeArrivingPlayer);
-
-    lastName.set(player.name);
   }
 
   void playerMissed(Player player, bool value) {
@@ -58,12 +54,10 @@ class PresencePlayers {
     var arrivedPlayer =
         arrived.value.firstWhere((element) => element.player == player);
 
-    var missedPlayer = arrivedPlayer.copyWith(player, value);
+    var missedPlayer = arrivedPlayer.copyWith(player, player.stars, value);
 
     arrived.remove(arrivedPlayer);
     arriving.add(missedPlayer);
-
-    lastName.set(player.name);
   }
 
   late final effecting = effect(() {

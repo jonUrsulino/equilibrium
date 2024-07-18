@@ -2,7 +2,7 @@ import 'package:equilibrium/domain/player.dart';
 import 'package:flutter/material.dart';
 import 'package:rate_in_stars/rate_in_stars.dart';
 
-class PlayerTile extends StatelessWidget {
+class PlayerTile extends StatefulWidget {
   final Player player;
   final bool arrived;
   final Function onChangeArriving;
@@ -15,9 +15,14 @@ class PlayerTile extends StatelessWidget {
   });
 
   @override
+  State<PlayerTile> createState() => _PlayerTileState();
+}
+
+class _PlayerTileState extends State<PlayerTile> {
+  @override
   Widget build(BuildContext context) {
-    final String playerName = player.name;
-    final double playerStars = player.stars;
+    final String playerName = widget.player.name;
+    final double playerStars = widget.player.stars;
 
     return Padding(
       padding: const EdgeInsets.all(4.0),
@@ -37,8 +42,8 @@ class PlayerTile extends StatelessWidget {
             editable: false,
           ),
           Checkbox(
-            value: arrived,
-            onChanged: (value) => onChangeArriving(value),
+            value: widget.arrived,
+            onChanged: (value) => widget.onChangeArriving(value),
           )
         ],
       ),

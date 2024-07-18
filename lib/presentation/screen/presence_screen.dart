@@ -45,25 +45,18 @@ class PresenceScreen extends StatelessWidget {
         ),
         Expanded(
           child: Container(
-            color: Colors.white30,
-            child: Watch(
-              (context) {
-                var homeArriving = presence.arriving.value;
-                var length = homeArriving.length;
-
-                return ListView.builder(
-                  itemCount: length,
-                  itemBuilder: (context, index) {
-                    var homeArrivingPlayer = homeArriving[index];
-                    return PlayerTile(
-                      player: homeArrivingPlayer.player,
-                      arrived: homeArrivingPlayer.hasArrived,
-                      onChangeArriving: (value) => onChangeArriving(
-                        homeArrivingPlayer.player,
-                        value,
-                      ),
-                    );
-                  },
+            color: Colors.white10,
+            child: ListView.builder(
+              physics: const ClampingScrollPhysics(),
+              itemCount: presence.arriving.watch(context).length,
+              itemBuilder: (context, index) {
+                return PlayerTile(
+                  player: presence.arriving.watch(context)[index].player,
+                  arrived: presence.arriving.watch(context)[index].hasArrived,
+                  onChangeArriving: (value) => onChangeArriving(
+                    presence.arriving.watch(context)[index].player,
+                    value,
+                  ),
                 );
               },
             ),

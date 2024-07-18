@@ -1,7 +1,5 @@
 import 'package:equilibrium/domain/coach.dart';
-import 'package:equilibrium/domain/player.dart';
 import 'package:equilibrium/presentation/screen/member_team.dart';
-import 'package:equilibrium/presentation/screen/player_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
 
@@ -18,6 +16,29 @@ class BalanceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final teams = coach.teams.watch(context);
+
+    if (teams.isEmpty) {
+      return ListView.builder(
+        shrinkWrap: true,
+        physics: const ClampingScrollPhysics(),
+        itemCount: coach.presence.arrived.length,
+        itemBuilder: (context, index) {
+          var player = coach.presence.arrived[index].player;
+          return MemberTeam(
+            position: (index + 1).toString(),
+            player: player,
+            arrived: true,
+          );
+        },
+      );
+    } else {
+      return _buildTeams(context);
+    }
+  }
+
+  ListView _buildTeams(BuildContext context) {
+    final teams = coach.teams.watch(context);
+
     return ListView.builder(
         itemCount: teams.length,
         itemBuilder: (context, index) {
