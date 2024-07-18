@@ -32,25 +32,27 @@ class BalanceScreen extends StatelessWidget {
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge
-                        ?.copyWith(color: Colors.deepPurple),
+                        ?.copyWith(color: Colors.deepOrangeAccent),
                   ),
                 ),
               ),
               Container(
-                color: team.shirt.color,
+                decoration: BoxDecoration(
+                    border: Border.all(
+                  color: team.shirt.color,
+                )),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: const ClampingScrollPhysics(),
+                  itemCount: team.players.length,
+                  itemBuilder: (context, index) {
+                    var player = team.players[index];
+                    return _playerItem(player);
+                  },
+                ),
               ),
             ],
           );
-          // return Column(children: [
-          //   Text(team.shirt.name),
-          //   ListView.builder(
-          //     itemCount: team.players.length,
-          //     itemBuilder: (context, index) {
-          //       var player = team.players[index];
-          //       return _playerItem(player);
-          //     },
-          //   ),
-          // ]);
         });
   }
 

@@ -20,7 +20,7 @@ class PlayerTile extends StatelessWidget {
     final double playerStars = player.stars;
 
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(4.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
