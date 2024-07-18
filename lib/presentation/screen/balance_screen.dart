@@ -1,5 +1,6 @@
 import 'package:equilibrium/domain/coach.dart';
 import 'package:equilibrium/domain/player.dart';
+import 'package:equilibrium/presentation/screen/member_team.dart';
 import 'package:equilibrium/presentation/screen/player_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
@@ -28,7 +29,7 @@ class BalanceScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    team.shirt.name,
+                    '${team.shirt.name}: Poder do time: ${team.calculatePower()}',
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge
@@ -37,6 +38,7 @@ class BalanceScreen extends StatelessWidget {
                 ),
               ),
               Container(
+                margin: const EdgeInsets.all(3),
                 decoration: BoxDecoration(
                     border: Border.all(
                   color: team.shirt.color,
@@ -47,22 +49,16 @@ class BalanceScreen extends StatelessWidget {
                   itemCount: team.players.length,
                   itemBuilder: (context, index) {
                     var player = team.players[index];
-                    return _playerItem(player);
+                    return MemberTeam(
+                      position: (index + 1).toString(),
+                      player: player,
+                      arrived: true,
+                    );
                   },
                 ),
               ),
             ],
           );
         });
-  }
-
-  PlayerTile _playerItem(Player player) {
-    return PlayerTile(
-      player: player,
-      arrived: true,
-      onChangeArriving: (isChecked) {
-        print('Faz nada');
-      },
-    );
   }
 }
