@@ -16,7 +16,19 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
   final presence = PresencePlayers();
-  final bottomAction = Signal(BottomNavigationScreens.home);
+  final bottomAction = Signal(BottomNavigationType.home);
+  final List<FABData> fabActions = [
+    const FABData(
+      BottomNavigationType.home,
+      "Adicionar jogador",
+      Icons.add,
+    ),
+    const FABData(
+      BottomNavigationType.balance,
+      "Balanciar times",
+      Icons.run_circle,
+    )
+  ];
 
   void balance() {
     var coach = Coach(presence);
@@ -27,7 +39,6 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
   @override
   void initState() {
     presence.effecting;
-    balance();
     super.initState();
   }
 
@@ -49,9 +60,9 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
         ),
         body: Watch((context) {
           switch (bottomAction.value) {
-            case BottomNavigationScreens.home:
+            case BottomNavigationType.home:
               return PresenceScreen(presence: presence);
-            case BottomNavigationScreens.balance:
+            case BottomNavigationType.balance:
               return BalanceScreen(presence: presence);
             default:
               return Text('Sei não');
@@ -79,15 +90,18 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
             ),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: _addNewPlayer,
-          tooltip: 'Adicionar jogador',
-          child: const Icon(Icons.add),
-        ));
+        floatingActionButton: _buildFAB());
   }
 
-  void _addNewPlayer() {
-    print("add new player");
+  FloatingActionButton _buildFAB() {
+    var fab = fabActions
+        .singleWhere((element) => element.type == bottomAction.watch(context));
+
+    return FloatingActionButton(
+      onPressed: () => onPressed(fab),
+      tooltip: fab.name,
+      child: Icon(fab.icon),
+    );
   }
 
   void onTapBottomNavigation(int value) {
@@ -104,15 +118,15 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
   }
 
   void goToHome() {
-    bottomAction.set(BottomNavigationScreens.home);
+    bottomAction.set(BottomNavigationType.home);
   }
 
   void goToTeams() {
-    bottomAction.set(BottomNavigationScreens.balance);
+    bottomAction.set(BottomNavigationType.balance);
   }
 
   void goToGame() {
-    bottomAction.set(BottomNavigationScreens.game);
+    bottomAction.set(BottomNavigationType.game);
     // context.navigator.navigateToScreen(name: "/game");
   }
 
@@ -132,6 +146,29 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
         return 'Equilibrium';
     }
   }
+
+  void _addPlayers() {
+    print("add new player");
+  }
+
+  void onPressed(FABData fab) {
+    switch (fab.type) {
+      case BottomNavigationType.home:
+        _addPlayers();
+      case BottomNavigationType.balance:
+        balance();
+      default:
+        _addPlayers();
+    }
+  }
 }
 
-enum BottomNavigationScreens { home, balance, game }
+enum BottomNavigationType { home, balance, game }
+
+class FABData {
+  const FABData(this.type, this.name, this.icon);
+
+  final BottomNavigationType type;
+  final String name;
+  final IconData icon;
+}
