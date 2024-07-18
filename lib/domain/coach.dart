@@ -24,6 +24,7 @@ class Coach {
   final ListSignal<Team> teams = ListSignal([]);
 
   void balanceTeams() {
+    teams.clear();
     int amountPlayers = presence.arrived.value.length;
     int amountRemainingPlayers = amountPlayers % maxLinePlayersByTeam;
     int amountCompleteTeams =
@@ -33,7 +34,8 @@ class Coach {
     print("remaining line players: $amountRemainingPlayers");
     print("amount complete teams: $amountCompleteTeams");
 
-    List<Shirt> shirts = availableShirts;
+    List<Shirt> shirts = [];
+    shirts.addAll(availableShirts);
     // create teams
     for (int i = 0; i < amountCompleteTeams; i++) {
       Shirt? shirt = shirts.firstOrNull;
