@@ -39,36 +39,8 @@ class PresenceScreen extends StatelessWidget {
             },
           ),
         ),
-        Text(
-          'Aguardando chegada',
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
-        Expanded(
-          child: Container(
-            padding: EdgeInsets.fromLTRB(0, 0, 0, 55),
-            color: Colors.white10,
-            child: ListView.builder(
-              physics: const ClampingScrollPhysics(),
-              itemCount: presence.arriving.watch(context).length,
-              itemBuilder: (context, index) {
-                return PlayerTile(
-                  player: presence.arriving.watch(context)[index].player,
-                  arrived: presence.arriving.watch(context)[index].hasArrived,
-                  onChangeArriving: (value) => onChangeArriving(
-                    presence.arriving.watch(context)[index].player,
-                    value,
-                  ),
-                );
-              },
-            ),
-          ),
-        )
       ],
     );
-  }
-
-  onChangeArriving(Player player, value) {
-    presence.playerArrived(player, value);
   }
 
   onChangeMissing(Player player, value) {

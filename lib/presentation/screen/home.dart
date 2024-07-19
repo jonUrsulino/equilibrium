@@ -1,8 +1,10 @@
 import 'package:equilibrium/domain/coach.dart';
+import 'package:equilibrium/domain/player.dart';
 import 'package:equilibrium/domain/presence.dart';
 import 'package:equilibrium/navigator/nav_extensions.dart';
 import 'package:equilibrium/presentation/screen/balance_screen.dart';
 import 'package:equilibrium/presentation/screen/new_player_dialog.dart';
+import 'package:equilibrium/presentation/screen/player_tile.dart';
 import 'package:equilibrium/presentation/screen/presence_screen.dart';
 import 'package:equilibrium/presentation/screen/settings.dart';
 import 'package:flutter/material.dart';
@@ -62,6 +64,10 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
             style: Theme.of(context).textTheme.headlineLarge,
           ),
           actions: [
+            IconButton(
+              onPressed: () => _onTapCheckPresence(),
+              icon: const Icon(Icons.check),
+            ),
             IconButton(
               onPressed: () => _onTapSettings(),
               icon: const Icon(Icons.settings),
@@ -127,6 +133,49 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
     }
   }
 
+  void _onTapCheckPresence() {
+    print('presence');
+    showModalBottomSheet(
+      enableDrag: true,
+      showDragHandle: true,
+      context: context,
+      builder: (context) {
+        return Column(
+          children: [
+            Text(
+              'Aguardando chegada',
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            Expanded(
+              child: Container(
+                color: Colors.white10,
+                child: ListView.builder(
+                  physics: const ClampingScrollPhysics(),
+                  itemCount: presence.arriving.watch(context).length,
+                  itemBuilder: (context, index) {
+                    return PlayerTile(
+                      player: presence.arriving.watch(context)[index].player,
+                      arrived:
+                          presence.arriving.watch(context)[index].hasArrived,
+                      onChangeArriving: (value) => onChangeArriving(
+                        presence.arriving.watch(context)[index].player,
+                        value,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  onChangeArriving(Player player, value) {
+    presence.playerArrived(player, value);
+  }
+
   void _onTapSettings() {
     print('settings');
     context.navigator.navigateToScreen(name: SettingsScreen.route);
@@ -147,8 +196,6 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
 
   void _addPlayers() {
     print("add new player");
-
-    final newPlayer = Signal('');
 
     showDialog(
       context: context,
