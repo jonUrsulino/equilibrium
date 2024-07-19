@@ -1,6 +1,6 @@
 import 'package:equilibrium/domain/player.dart';
 import 'package:flutter/material.dart';
-import 'package:rate_in_stars/rate_in_stars.dart';
+import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 
 class MemberTeam extends StatelessWidget {
   final String position;
@@ -32,9 +32,7 @@ class MemberTeam extends StatelessWidget {
             flex: 5,
           ),
           RatingStars(
-            rating: playerStars,
-            iconSize: 25,
-            editable: false,
+            value: playerStars,
           ),
         ],
       ),

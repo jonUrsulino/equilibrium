@@ -7,33 +7,44 @@ class PresencePlayers {
 
   //streaming
   final _registeredPlayers = ListSignal([
-    HomeArrivingPlayer.initial(const Player("Jonathan", 4.0)),
-    HomeArrivingPlayer.initial(const Player("Tiago", 5.0)),
-    HomeArrivingPlayer.initial(const Player("Bino", 1.0)),
-    HomeArrivingPlayer.initial(const Player("Danilo", 3.0)),
-    HomeArrivingPlayer.initial(const Player("Edmilson", 2.0)),
-    HomeArrivingPlayer.initial(const Player("Matias", 2.0)),
-    HomeArrivingPlayer.initial(const Player("Rubens", 4.0)),
-    HomeArrivingPlayer.initial(const Player("Silvano", 1.0)),
-    HomeArrivingPlayer.initial(const Player("Kennedy", 4.0)),
-    HomeArrivingPlayer.initial(const Player("Carlos", 3.0)),
-    HomeArrivingPlayer.initial(const Player("Eli", 5.0)),
-    HomeArrivingPlayer.initial(const Player("Phelip", 3.0)),
-    HomeArrivingPlayer.initial(const Player("Henrique", 3.0)),
-    HomeArrivingPlayer.initial(const Player("Ancelmo", 3.0)),
-    HomeArrivingPlayer.initial(const Player("Breno", 4.0)),
-    HomeArrivingPlayer.initial(const Player("Fabinho", 2.0)),
-    HomeArrivingPlayer.initial(const Player("Motoca", 5.0)),
-    HomeArrivingPlayer.initial(const Player("Mike", 3.0)),
-    HomeArrivingPlayer.initial(const Player("Samuel", 3.0)),
-    HomeArrivingPlayer.initial(const Player("Davi", 3.0)),
-    HomeArrivingPlayer.initial(const Player("Adriano", 3.0)),
-    HomeArrivingPlayer.initial(const Player("Haroldo", 1.0)),
+    HomeArrivingPlayer.initial(const Player("Eli", 5)),
+    HomeArrivingPlayer.initial(const Player("Tiago Valadão", 5)),
+    HomeArrivingPlayer.initial(const Player("Jonathan", 5)),
+    HomeArrivingPlayer.initial(const Player("Jocivaldo", 4.5)),
+    HomeArrivingPlayer.initial(const Player("Caio", 4.5)),
+    HomeArrivingPlayer.initial(const Player("Kennedy", 4.5)),
+    HomeArrivingPlayer.initial(const Player("Carlos", 4)),
+    HomeArrivingPlayer.initial(const Player("Samuel", 4)),
+    HomeArrivingPlayer.initial(const Player("Pr. Wilson", 4)),
+    HomeArrivingPlayer.initial(const Player("Breno", 4)),
+    HomeArrivingPlayer.initial(const Player("Rubens", 3)),
+    HomeArrivingPlayer.initial(const Player("Danilo", 3)),
+    HomeArrivingPlayer.initial(const Player("Diacono Marcos", 3)),
+    HomeArrivingPlayer.initial(const Player("Henrique", 3)),
+    HomeArrivingPlayer.initial(const Player("Phelip", 3)),
+    HomeArrivingPlayer.initial(const Player("Alifer", 3)),
+    HomeArrivingPlayer.initial(const Player("Diacono Edmilson", 3)),
+    HomeArrivingPlayer.initial(const Player("Adriano", 2)),
+    HomeArrivingPlayer.initial(const Player("Davi do Adriano", 2)),
+    HomeArrivingPlayer.initial(const Player("Pr. Moacyr", 2)),
+    HomeArrivingPlayer.initial(const Player("Gustavo", 2)),
+    HomeArrivingPlayer.initial(const Player("Ancelmo", 2)),
+    HomeArrivingPlayer.initial(const Player("Haroldo", 2)),
+    HomeArrivingPlayer.initial(const Player("Samuelzinho", 1)),
+    HomeArrivingPlayer.initial(const Player("Davi do Fabão", 1)),
+    HomeArrivingPlayer.initial(const Player("Mike", 1)),
+    HomeArrivingPlayer.initial(const Player("Silvano", 1)),
+    HomeArrivingPlayer.initial(const Player("Fabinho", 1)),
+    HomeArrivingPlayer.initial(const Player("Bino", 1)),
   ]);
 
   late final ListSignal<HomeArrivingPlayer> arrived = ListSignal([]);
   late final ListSignal<HomeArrivingPlayer> arriving =
       ListSignal(_registeredPlayers);
+
+  void addNewPlayer(HomeArrivingPlayer value) {
+    arriving.add(value);
+  }
 
   void playerArrived(Player player, bool value) {
     print('player arrived ${player.name}');

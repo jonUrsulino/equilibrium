@@ -1,7 +1,10 @@
 import 'package:equilibrium/domain/coach.dart';
 import 'package:equilibrium/domain/presence.dart';
+import 'package:equilibrium/navigator/nav_extensions.dart';
 import 'package:equilibrium/presentation/screen/balance_screen.dart';
+import 'package:equilibrium/presentation/screen/new_player_dialog.dart';
 import 'package:equilibrium/presentation/screen/presence_screen.dart';
+import 'package:equilibrium/presentation/screen/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:signals/signals_flutter.dart';
@@ -113,31 +116,19 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
   void onTapBottomNavigation(int value) {
     switch (value) {
       case 0:
-        goToHome();
+        bottomAction.set(BottomNavigationType.home);
       case 1:
-        goToTeams();
+        bottomAction.set(BottomNavigationType.balance);
       case 2:
-        goToGame();
+        bottomAction.set(BottomNavigationType.game);
       default:
-        goToHome();
+        bottomAction.set(BottomNavigationType.home);
     }
   }
 
-  void goToHome() {
-    bottomAction.set(BottomNavigationType.home);
-  }
-
-  void goToTeams() {
-    bottomAction.set(BottomNavigationType.balance);
-  }
-
-  void goToGame() {
-    bottomAction.set(BottomNavigationType.game);
-    // context.navigator.navigateToScreen(name: "/game");
-  }
-
   void _onTapSettings() {
-    print('Tap on Setings');
+    print('settings');
+    context.navigator.navigateToScreen(name: SettingsScreen.route);
   }
 
   String _title(int index) {
@@ -155,6 +146,15 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
 
   void _addPlayers() {
     print("add new player");
+
+    final newPlayer = Signal('');
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return NewPlayerDialog();
+      },
+    );
   }
 
   void onPressed(FABData fab) {

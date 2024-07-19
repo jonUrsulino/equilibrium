@@ -1,6 +1,6 @@
 import 'package:equilibrium/domain/player.dart';
 import 'package:flutter/material.dart';
-import 'package:rate_in_stars/rate_in_stars.dart';
+import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 
 class PlayerTile extends StatefulWidget {
   final Player player;
@@ -37,9 +37,7 @@ class _PlayerTileState extends State<PlayerTile> {
             flex: 5,
           ),
           RatingStars(
-            rating: playerStars,
-            iconSize: 25,
-            editable: false,
+            value: playerStars,
           ),
           Checkbox(
             value: widget.arrived,

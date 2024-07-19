@@ -24,9 +24,9 @@ class Shirt {
     return Shirt._(_undefined.key, _undefined.value);
   }
 
-  static const _white = Pair("white", Color(0xFFFFFFFF));
-  static const _black = Pair("black", Color(0xFF000000));
-  static const _green = Pair("green", Color(0xFF00FF00));
-  static const _blue = Pair("blue", Color(0xFF0000FF));
-  static const _undefined = Pair("undefined", Color(0xFF674836));
+  static const _white = Pair("Branco", Color(0xFFFFFFFF));
+  static const _black = Pair("Preto", Color(0xFF000000));
+  static const _green = Pair("Verde", Color(0xFF00FF00));
+  static const _blue = Pair("Azul", Color(0xFF0000FF));
+  static const _undefined = Pair("Indefinido", Color(0xFF674836));
 }

@@ -16,9 +16,11 @@ class Team extends Equatable {
     players.remove(player);
   }
 
-  int calculatePower() {
-    return players.fold(
-        0, (previousValue, element) => previousValue + element.stars.toInt());
+  double calculatePower() {
+    return players.fold(0, (previousValue, element) {
+      print('$previousValue ${element.stars}');
+      return previousValue + element.stars;
+    });
   }
 
   @override

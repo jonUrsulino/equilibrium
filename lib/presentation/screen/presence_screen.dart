@@ -45,6 +45,7 @@ class PresenceScreen extends StatelessWidget {
         ),
         Expanded(
           child: Container(
+            padding: EdgeInsets.fromLTRB(0, 0, 0, 55),
             color: Colors.white10,
             child: ListView.builder(
               physics: const ClampingScrollPhysics(),
