@@ -18,7 +18,6 @@ class Team extends Equatable {
 
   double calculatePower() {
     return players.fold(0, (previousValue, element) {
-      print('$previousValue ${element.stars}');
       return previousValue + element.stars;
     });
   }

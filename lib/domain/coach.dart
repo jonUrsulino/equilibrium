@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:equilibrium/domain/player.dart';
 import 'package:equilibrium/domain/presence.dart';
+import 'package:equilibrium/domain/settings.dart';
 import 'package:equilibrium/domain/team.dart';
 import 'package:equilibrium/domain/shirt.dart';
 import 'package:get_it/get_it.dart';
@@ -15,21 +16,21 @@ final List<Shirt> availableShirts = [
 ];
 
 class Coach {
-  Coach();
+  Coach({required this.settings});
 
   final PresencePlayers presence = GetIt.I.get<PresencePlayers>();
-
-  final int maxLinePlayersByTeam = 6;
+  final Settings settings;
 
   final ListSignal<Team> teams = ListSignal([]);
 
   void balanceTeams() {
     teams.clear();
+    final maxPlayersByTeam = settings.getMaxPlayersByTeam();
     int amountPlayers = presence.arrived.value.length;
-    int amountRemainingPlayers = amountPlayers % maxLinePlayersByTeam;
+    int amountRemainingPlayers = amountPlayers % maxPlayersByTeam;
     int amountCompleteTeams =
-        (amountPlayers - amountRemainingPlayers) ~/ maxLinePlayersByTeam;
-    print("max line players: $maxLinePlayersByTeam");
+        (amountPlayers - amountRemainingPlayers) ~/ maxPlayersByTeam;
+    print("max line players: $maxPlayersByTeam");
     print("amount line players: $amountPlayers");
     print("remaining line players: $amountRemainingPlayers");
     print("amount complete teams: $amountCompleteTeams");
@@ -70,7 +71,7 @@ class Coach {
         if (sortedPlayersByStars.isEmpty) {
           return;
         }
-        if (team.players.length >= maxLinePlayersByTeam) {
+        if (team.players.length >= settings.getMaxPlayersByTeam()) {
           break;
         }
         var nextGoodPlayer = sortedPlayersByStars.first;

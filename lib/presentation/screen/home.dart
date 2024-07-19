@@ -20,7 +20,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
   final presence = GetIt.I.get<PresencePlayers>();
-  final coach = Coach();
+  final coach = GetIt.I.get<Coach>();
+
   final bottomAction = Signal(BottomNavigationType.home);
   final List<FABData> fabActions = [
     const FABData(

@@ -18,7 +18,7 @@ class Pages {
         GoRoute(
           path: "/settings",
           name: SettingsScreen.route,
-          builder: (context, state) => const SettingsScreen(),
+          builder: (context, state) => SettingsScreen(),
         ),
       ]);
 }
