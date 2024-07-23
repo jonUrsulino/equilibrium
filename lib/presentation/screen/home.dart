@@ -1,10 +1,9 @@
 import 'package:equilibrium/domain/coach.dart';
-import 'package:equilibrium/domain/player.dart';
 import 'package:equilibrium/domain/presence.dart';
 import 'package:equilibrium/navigator/nav_extensions.dart';
+import 'package:equilibrium/presentation/screen/arriving_bottom_sheet.dart';
 import 'package:equilibrium/presentation/screen/balance_screen.dart';
 import 'package:equilibrium/presentation/screen/new_player_dialog.dart';
-import 'package:equilibrium/presentation/screen/player_tile.dart';
 import 'package:equilibrium/presentation/screen/presence_screen.dart';
 import 'package:equilibrium/presentation/screen/settings.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +23,8 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
   final presence = GetIt.I.get<PresencePlayers>();
   final coach = GetIt.I.get<Coach>();
 
-  final bottomAction = Signal(BottomNavigationType.home);
+  final bottomNavAction = Signal(BottomNavigationType.home);
+
   final List<FABData> fabActions = [
     const FABData(
       BottomNavigationType.home,
@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
         appBar: AppBar(
           centerTitle: true,
           title: Text(
-            _title(bottomAction.watch(context).index),
+            _title(bottomNavAction.watch(context).index),
             style: Theme.of(context).textTheme.headlineLarge,
           ),
           actions: [
@@ -75,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
           ],
         ),
         body: Watch((context) {
-          switch (bottomAction.value) {
+          switch (bottomNavAction.value) {
             case BottomNavigationType.home:
               return PresenceScreen(presence: presence);
             case BottomNavigationType.balance:
@@ -87,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           enableFeedback: true,
-          currentIndex: bottomAction.watch(context).index,
+          currentIndex: bottomNavAction.watch(context).index,
           onTap: (value) {
             return onTapBottomNavigation(value);
           },
@@ -110,8 +110,8 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
   }
 
   FloatingActionButton _buildFAB() {
-    var fab = fabActions
-        .singleWhere((element) => element.type == bottomAction.watch(context));
+    var fab = fabActions.singleWhere(
+        (element) => element.type == bottomNavAction.watch(context));
 
     return FloatingActionButton(
       onPressed: () => onPressed(fab),
@@ -123,13 +123,13 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
   void onTapBottomNavigation(int value) {
     switch (value) {
       case 0:
-        bottomAction.set(BottomNavigationType.home);
+        bottomNavAction.set(BottomNavigationType.home);
       case 1:
-        bottomAction.set(BottomNavigationType.balance);
+        bottomNavAction.set(BottomNavigationType.balance);
       case 2:
-        bottomAction.set(BottomNavigationType.game);
+        bottomNavAction.set(BottomNavigationType.game);
       default:
-        bottomAction.set(BottomNavigationType.home);
+        bottomNavAction.set(BottomNavigationType.home);
     }
   }
 
@@ -140,40 +140,9 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
       showDragHandle: true,
       context: context,
       builder: (context) {
-        return Column(
-          children: [
-            Text(
-              'Aguardando chegada',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            Expanded(
-              child: Container(
-                color: Colors.white10,
-                child: ListView.builder(
-                  physics: const ClampingScrollPhysics(),
-                  itemCount: presence.arriving.watch(context).length,
-                  itemBuilder: (context, index) {
-                    return PlayerTile(
-                      player: presence.arriving.watch(context)[index].player,
-                      arrived:
-                          presence.arriving.watch(context)[index].hasArrived,
-                      onChangeArriving: (value) => onChangeArriving(
-                        presence.arriving.watch(context)[index].player,
-                        value,
-                      ),
-                    );
-                  },
-                ),
-              ),
-            )
-          ],
-        );
+        return ArrivingBottomSheet();
       },
     );
-  }
-
-  onChangeArriving(Player player, value) {
-    presence.playerArrived(player, value);
   }
 
   void _onTapSettings() {

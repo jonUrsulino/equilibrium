@@ -21,9 +21,9 @@ class BalanceScreen extends StatelessWidget {
       return ListView.builder(
         shrinkWrap: true,
         physics: const ClampingScrollPhysics(),
-        itemCount: coach.presence.arrived.length,
+        itemCount: coach.presence.getArrivedWith(true).length,
         itemBuilder: (context, index) {
-          var player = coach.presence.arrived[index].player;
+          var player = coach.presence.getArrivedWith(true)[index].player;
           return MemberTeam(
             position: (index + 1).toString(),
             player: player,

@@ -26,7 +26,11 @@ class Coach {
   void balanceTeams() {
     teams.clear();
     final maxPlayersByTeam = settings.getMaxPlayersByTeam();
-    int amountPlayers = presence.arrived.value.length;
+
+    final balanceGoalkeeper = settings.isConsideredBalanceWithGoalkeeper();
+    final arrivingPlayers = presence.getArrivedWith(balanceGoalkeeper).value;
+    int amountPlayers = arrivingPlayers.length;
+
     int amountRemainingPlayers = amountPlayers % maxPlayersByTeam;
     int amountCompleteTeams =
         (amountPlayers - amountRemainingPlayers) ~/ maxPlayersByTeam;
@@ -34,6 +38,7 @@ class Coach {
     print("amount line players: $amountPlayers");
     print("remaining line players: $amountRemainingPlayers");
     print("amount complete teams: $amountCompleteTeams");
+    print("balance with goalkeeper: $balanceGoalkeeper");
 
     List<Shirt> shirts = [];
     shirts.addAll(availableShirts);
@@ -46,19 +51,20 @@ class Coach {
         shirt: shirt ?? Shirt.undefined(),
       ));
     }
+    final listPlayers = arrivingPlayers.map((e) => e.player).toList();
 
     // Remove unlucky players to mount the incomplete team.
     var incompleteTeam = createIncompleteTeamByRandomNumber(
+      listPlayers,
       shirts.firstOrNull,
       amountRemainingPlayers,
     );
-    balanceTeamsByStars();
+    balanceTeamsByStars(listPlayers);
 
     teams.add(incompleteTeam);
   }
 
-  void balanceTeamsByStars() {
-    var listPlayers = presence.arrived.value.map((e) => e.player).toList();
+  void balanceTeamsByStars(List<Player> listPlayers) {
     List<Player> sortedPlayersByStars = sortByStars(listPlayers);
 
     // split listPlayers based on sort of starts
@@ -98,14 +104,14 @@ class Coach {
     }
   }
 
-  Team createIncompleteTeamByRandomNumber(Shirt? shirt, int remainingPlayers) {
+  Team createIncompleteTeamByRandomNumber(
+      List<Player> players, Shirt? shirt, int remainingPlayers) {
     Team team = Team(
       shirt: shirt ?? Shirt.undefined(),
     );
     print('incomplete team: ${team.shirt.name}');
 
     var random = Random();
-    var players = presence.arrived.value.map((e) => e.player).toList();
 
     for (int i = 0; i < remainingPlayers; i++) {
       // Value is >= 0 and < presence.players.length

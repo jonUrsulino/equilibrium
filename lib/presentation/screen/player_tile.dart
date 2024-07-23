@@ -23,6 +23,7 @@ class _PlayerTileState extends State<PlayerTile> {
   Widget build(BuildContext context) {
     final String playerName = widget.player.name;
     final double playerStars = widget.player.stars;
+    final bool isGoalkeeper = widget.player.isGoalkeeper;
 
     return Padding(
       padding: const EdgeInsets.all(4.0),
@@ -32,6 +33,10 @@ class _PlayerTileState extends State<PlayerTile> {
           Text(
             playerName,
             style: Theme.of(context).textTheme.titleLarge,
+          ),
+          Visibility(
+            visible: isGoalkeeper,
+            child: const Icon(Icons.sports_handball),
           ),
           const Spacer(
             flex: 5,

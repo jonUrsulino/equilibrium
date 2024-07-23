@@ -1,4 +1,5 @@
 import 'package:signals/signals.dart';
+import 'package:signals/signals_flutter.dart';
 
 class Settings {
   Settings();
@@ -14,4 +15,10 @@ class Settings {
   }
 
   int getMaxPlayersByTeam() => maxPlayersByTeam.value;
+
+  final isBalancedWithGoalkeeper = Signal(false);
+
+  bool isConsideredBalanceWithGoalkeeper() {
+    return isBalancedWithGoalkeeper.value;
+  }
 }

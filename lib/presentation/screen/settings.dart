@@ -56,6 +56,20 @@ class SettingsScreen extends StatelessWidget {
                   ),
                 ],
               ),
+              Row(
+                children: [
+                  Text(
+                    'Considerar goleiros no balanceamento',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const Spacer(),
+                  Checkbox(
+                    value: settings.isBalancedWithGoalkeeper.watch(context),
+                    onChanged: (value) =>
+                        settings.isBalancedWithGoalkeeper.set(value!),
+                  ),
+                ],
+              )
             ],
           ),
         ],

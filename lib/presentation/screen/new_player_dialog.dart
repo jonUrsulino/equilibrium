@@ -1,13 +1,9 @@
-import 'dart:ui';
-
 import 'package:equilibrium/domain/home_arriving_player.dart';
 import 'package:equilibrium/domain/player.dart';
 import 'package:equilibrium/domain/presence.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:signals/signals.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
+import 'package:get_it/get_it.dart';
 import 'package:signals/signals_flutter.dart';
 
 class NewPlayerDialog extends StatelessWidget {
@@ -15,6 +11,7 @@ class NewPlayerDialog extends StatelessWidget {
 
   final PresencePlayers presence = GetIt.I.get();
   final Signal<double> stars = Signal(3);
+  final Signal<bool?> isGoalkeeper = Signal(false);
   final textEditingController = TextEditingController();
 
   @override
@@ -36,6 +33,18 @@ class NewPlayerDialog extends StatelessWidget {
           autofocus: true,
           controller: textEditingController,
         ),
+        Row(
+          children: [
+            Text(
+              'É goleiro',
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+            Checkbox(
+              value: isGoalkeeper.watch(context),
+              onChanged: (value) => isGoalkeeper.set(value),
+            ),
+          ],
+        ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: RatingStars(
@@ -53,16 +62,12 @@ class NewPlayerDialog extends StatelessWidget {
         TextButton(
           child: const Text('Adicionar'),
           onPressed: () {
-            var playerName = textEditingController.text;
-            var rating = stars.value;
+            final playerName = textEditingController.text;
+            final rating = stars.value;
+            final isGoalkeeper = this.isGoalkeeper.value ?? false;
             presence.addNewPlayer(
-              HomeArrivingPlayer(
-                Player(
-                  playerName,
-                  rating,
-                ),
-                rating,
-                false,
+              HomeArrivingPlayer.initial(
+                Player(playerName, rating, isGoalkeeper),
               ),
             );
             ScaffoldMessenger.of(context).showSnackBar(

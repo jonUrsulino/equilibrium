@@ -18,6 +18,7 @@ class MemberTeam extends StatelessWidget {
   Widget build(BuildContext context) {
     final String playerName = player.name;
     final double playerStars = player.stars;
+    final bool isGoalkeeper = player.isGoalkeeper;
 
     return Padding(
       padding: const EdgeInsets.all(4.0),
@@ -28,9 +29,11 @@ class MemberTeam extends StatelessWidget {
             '$position. $playerName',
             style: Theme.of(context).textTheme.titleLarge,
           ),
-          const Spacer(
-            flex: 5,
+          Visibility(
+            visible: isGoalkeeper,
+            child: const Icon(Icons.sports_handball),
           ),
+          const Spacer(),
           RatingStars(
             value: playerStars,
           ),
