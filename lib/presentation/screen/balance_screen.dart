@@ -36,50 +36,82 @@ class BalanceScreen extends StatelessWidget {
     }
   }
 
-  ListView _buildTeams(BuildContext context) {
+  Widget _buildTeams(BuildContext context) {
     final teams = coach.teams.watch(context);
 
-    return ListView.builder(
-        itemCount: teams.length,
-        itemBuilder: (context, index) {
-          var team = teams[index];
-          return Column(
-            children: [
-              ColoredBox(
-                color: team.shirt.color,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    '${team.shirt.name}: Poder do time: ${team.calculatePower()}',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleLarge
-                        ?.copyWith(color: Colors.deepOrangeAccent),
+    return Container(
+      color: Colors.white10,
+      child: ListView.builder(
+          itemCount: teams.length,
+          itemBuilder: (context, index) {
+            var team = teams[index];
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    color: Theme.of(context).secondaryHeaderColor,
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.shield,
+                            color: team.shirt.color,
+                          ),
+                        ),
+                        Text(
+                          team.shirt.name,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge
+                              ?.copyWith(color: Colors.white),
+                        ),
+                        const Spacer(),
+                        const Icon(
+                          Icons.stars,
+                          color: Colors.white,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            '${team.calculatePower()}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                  Container(
+                    margin: const EdgeInsets.all(3),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      physics: const ClampingScrollPhysics(),
+                      itemCount: team.players.length,
+                      itemBuilder: (context, index) {
+                        var player = team.players[index];
+                        return MemberTeam(
+                          position: (index + 1).toString(),
+                          player: player,
+                          arrived: true,
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const Divider(
+                    height: 1,
+                  )
+                ],
               ),
-              Container(
-                margin: const EdgeInsets.all(3),
-                decoration: BoxDecoration(
-                    border: Border.all(
-                  color: team.shirt.color,
-                )),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: const ClampingScrollPhysics(),
-                  itemCount: team.players.length,
-                  itemBuilder: (context, index) {
-                    var player = team.players[index];
-                    return MemberTeam(
-                      position: (index + 1).toString(),
-                      player: player,
-                      arrived: true,
-                    );
-                  },
-                ),
-              ),
-            ],
-          );
-        });
+            );
+          }),
+    );
   }
 }

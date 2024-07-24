@@ -153,7 +153,7 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
   String _title(int index) {
     switch (index) {
       case 0:
-        return 'Presentes: ${presence.arrived.watch(context).length}';
+        return 'Presentes: ${presence.getArrivedWith(true).watch(context).length}';
       case 1:
         return 'Balanciamento';
       case 2:

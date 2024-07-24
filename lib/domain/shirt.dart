@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
 import 'package:pair/pair.dart';
 
 class Shirt {
@@ -24,9 +25,9 @@ class Shirt {
     return Shirt._(_undefined.key, _undefined.value);
   }
 
-  static const _white = Pair("Branco", Color(0xFFFFFFFF));
-  static const _black = Pair("Preto", Color(0xFF000000));
-  static const _green = Pair("Verde", Color(0xFF00FF00));
-  static const _blue = Pair("Azul", Color(0xFF0000FF));
-  static const _undefined = Pair("Indefinido", Color(0xFF674836));
+  static const _white = Pair("Branco", Colors.white70);
+  static const _black = Pair("Preto", Colors.black38);
+  static const _green = Pair("Verde", Colors.lightGreen);
+  static const _blue = Pair("Azul", Colors.blue);
+  static const _undefined = Pair("Indefinido", Colors.brown);
 }

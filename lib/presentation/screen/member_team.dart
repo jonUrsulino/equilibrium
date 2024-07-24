@@ -26,8 +26,18 @@ class MemberTeam extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Text(
-            '$position. $playerName',
-            style: Theme.of(context).textTheme.titleLarge,
+            "$position. ",
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium
+                ?.copyWith(color: Colors.black87),
+          ),
+          Text(
+            playerName,
+            style: Theme.of(context)
+                .textTheme
+                .titleMedium
+                ?.copyWith(color: Colors.black87),
           ),
           Visibility(
             visible: isGoalkeeper,
@@ -36,6 +46,7 @@ class MemberTeam extends StatelessWidget {
           const Spacer(),
           RatingStars(
             value: playerStars,
+            starSize: 15,
           ),
         ],
       ),

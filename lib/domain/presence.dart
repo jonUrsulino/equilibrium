@@ -40,11 +40,11 @@ class PresencePlayers {
     HomeArrivingPlayer.initial(Player.goalkeeper("Amigo Danilo", 4)),
   ]..sort((a, b) => a.player.name.compareTo(b.player.name));
 
-  late final ListSignal<HomeArrivingPlayer> arrived = ListSignal([]);
+  late final ListSignal<HomeArrivingPlayer> _arrived = ListSignal([]);
 
   late final ListSignal<HomeArrivingPlayer> _arriving =
       ListSignal(_listHomeArriving);
-  late final sortedArriving = computed(() => _arriving.sorted(
+  late final arrivingSortedByName = computed(() => _arriving.sorted(
         (a, b) => a.player.name.compareTo(b.player.name),
       ));
 
@@ -54,9 +54,9 @@ class PresencePlayers {
 
   ListSignal<HomeArrivingPlayer> getArrivedWith(bool goalkeeper) {
     if (goalkeeper) {
-      return arrived;
+      return _arrived;
     } else {
-      return arrived
+      return _arrived
           .where((element) => !element.player.isGoalkeeper)
           .toList()
           .toSignal();
@@ -72,7 +72,7 @@ class PresencePlayers {
     var arrivedPlayer =
         homeArrivingPlayer.copyWith(player, player.stars, value);
 
-    arrived.add(arrivedPlayer);
+    _arrived.add(arrivedPlayer);
     _arriving.remove(homeArrivingPlayer);
   }
 
@@ -80,15 +80,15 @@ class PresencePlayers {
     print('player missed ${player.name}');
 
     var arrivedPlayer =
-        arrived.value.firstWhere((element) => element.player == player);
+        _arrived.value.firstWhere((element) => element.player == player);
 
     var missedPlayer = arrivedPlayer.copyWith(player, player.stars, value);
 
-    arrived.remove(arrivedPlayer);
+    _arrived.remove(arrivedPlayer);
     _arriving.add(missedPlayer);
   }
 
   late final effecting = effect(() {
-    print('${arrived.value.length}');
+    print('${_arrived.value.length}');
   });
 }
