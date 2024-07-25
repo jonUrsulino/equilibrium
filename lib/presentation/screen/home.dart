@@ -1,5 +1,6 @@
 import 'package:equilibrium/domain/coach.dart';
 import 'package:equilibrium/domain/presence.dart';
+import 'package:equilibrium/domain/settings.dart';
 import 'package:equilibrium/navigator/nav_extensions.dart';
 import 'package:equilibrium/presentation/screen/arriving_bottom_sheet.dart';
 import 'package:equilibrium/presentation/screen/balance_screen.dart';
@@ -22,6 +23,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
   final presence = GetIt.I.get<PresencePlayers>();
   final coach = GetIt.I.get<Coach>();
+  final settings = GetIt.I.get<Settings>();
 
   final bottomNavAction = Signal(BottomNavigationType.home);
 
@@ -64,6 +66,12 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
             style: Theme.of(context).textTheme.headlineLarge,
           ),
           actions: [
+            IconButton(
+              onPressed: () => _onTapVisibleButtons(),
+              icon: Icon(settings.starsVisible.watch(context)
+                  ? Icons.visibility
+                  : Icons.visibility_off),
+            ),
             IconButton(
               onPressed: () => _onTapCheckPresence(),
               icon: const Icon(Icons.check),
@@ -131,6 +139,12 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
       default:
         bottomNavAction.set(BottomNavigationType.home);
     }
+  }
+
+  void _onTapVisibleButtons() {
+    print('visible');
+
+    settings.toggleStarsVisible();
   }
 
   void _onTapCheckPresence() {

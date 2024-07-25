@@ -21,4 +21,10 @@ class Settings {
   bool isConsideredBalanceWithGoalkeeper() {
     return isBalancedWithGoalkeeper.value;
   }
+
+  final starsVisible = Signal(true);
+
+  void toggleStarsVisible() {
+    starsVisible.set(!starsVisible.value);
+  }
 }
