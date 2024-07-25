@@ -36,11 +36,12 @@ class PresencePlayers {
     HomeArrivingPlayer.initial(Player.normal("Silvano", 1)),
     HomeArrivingPlayer.initial(Player.normal("Fabinho", 1)),
     HomeArrivingPlayer.initial(Player.normal("Bino", 1)),
+    HomeArrivingPlayer.initial(Player.normal("Rafa", 2)),
     HomeArrivingPlayer.initial(Player.goalkeeper("Fabão", 2)),
     HomeArrivingPlayer.initial(Player.goalkeeper("Amigo Danilo", 4)),
   ]..sort((a, b) => a.player.name.compareTo(b.player.name));
 
-  late final ListSignal<HomeArrivingPlayer> _arrived = ListSignal([]);
+  final ListSignal<HomeArrivingPlayer> _arrived = ListSignal([]);
 
   late final ListSignal<HomeArrivingPlayer> _arriving =
       ListSignal(_listHomeArriving);

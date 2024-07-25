@@ -14,32 +14,36 @@ class PresenceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: Watch(
-            (context) {
-              var homeArrived = presence.getArrivedWith(true).value;
-              var length = homeArrived.length;
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          Expanded(
+            child: Watch(
+              (context) {
+                var homeArrived = presence.getArrivedWith(true).value;
+                var length = homeArrived.length;
 
-              return ListView.builder(
-                itemCount: length,
-                itemBuilder: (context, index) {
-                  var homeArrivedPlayer = homeArrived[index];
-                  return PlayerTile(
-                    player: homeArrivedPlayer.player,
-                    arrived: homeArrivedPlayer.hasArrived,
-                    onChangeArriving: (value) => onChangeMissing(
-                      homeArrivedPlayer.player,
-                      value,
-                    ),
-                  );
-                },
-              );
-            },
+                return ListView.builder(
+                  itemCount: length,
+                  itemBuilder: (context, index) {
+                    var homeArrivedPlayer = homeArrived[index];
+                    return PlayerTile(
+                      player: homeArrivedPlayer.player,
+                      arrived: homeArrivedPlayer.hasArrived,
+                      onChangeArriving: (value) => onChangeMissing(
+                        homeArrivedPlayer.player,
+                        value,
+                      ),
+                      showStars: true,
+                    );
+                  },
+                );
+              },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

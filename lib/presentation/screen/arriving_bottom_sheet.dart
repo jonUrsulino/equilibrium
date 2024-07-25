@@ -19,26 +19,23 @@ class ArrivingBottomSheet extends StatelessWidget {
           style: Theme.of(context).textTheme.headlineSmall,
         ),
         Expanded(
-          child: Container(
-            color: Colors.white10,
-            child: ListView.builder(
-              physics: const ClampingScrollPhysics(),
-              itemCount: presence.arrivingSortedByName.watch(context).length,
-              itemBuilder: (context, index) {
-                return PlayerTile(
-                  player: presence.arrivingSortedByName
-                      .watch(context)[index]
-                      .player,
-                  arrived: presence.arrivingSortedByName
-                      .watch(context)[index]
-                      .hasArrived,
-                  onChangeArriving: (value) => onChangeArriving(
+          child: ListView.builder(
+            physics: const ClampingScrollPhysics(),
+            itemCount: presence.arrivingSortedByName.watch(context).length,
+            itemBuilder: (context, index) {
+              return PlayerTile(
+                player:
                     presence.arrivingSortedByName.watch(context)[index].player,
-                    value,
-                  ),
-                );
-              },
-            ),
+                arrived: presence.arrivingSortedByName
+                    .watch(context)[index]
+                    .hasArrived,
+                onChangeArriving: (value) => onChangeArriving(
+                  presence.arrivingSortedByName.watch(context)[index].player,
+                  value,
+                ),
+                showStars: false,
+              );
+            },
           ),
         )
       ],

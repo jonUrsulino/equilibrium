@@ -6,11 +6,13 @@ class PlayerTile extends StatefulWidget {
   final Player player;
   final bool arrived;
   final Function onChangeArriving;
+  final bool showStars;
 
   const PlayerTile({
     required this.player,
     required this.arrived,
     required this.onChangeArriving,
+    required this.showStars,
     super.key,
   });
 
@@ -26,13 +28,13 @@ class _PlayerTileState extends State<PlayerTile> {
     final bool isGoalkeeper = widget.player.isGoalkeeper;
 
     return Padding(
-      padding: const EdgeInsets.all(4.0),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Text(
             playerName,
-            style: Theme.of(context).textTheme.titleLarge,
+            style: Theme.of(context).textTheme.bodyLarge,
           ),
           Visibility(
             visible: isGoalkeeper,
@@ -41,8 +43,12 @@ class _PlayerTileState extends State<PlayerTile> {
           const Spacer(
             flex: 5,
           ),
-          RatingStars(
-            value: playerStars,
+          Visibility(
+            visible: widget.showStars,
+            child: RatingStars(
+              value: playerStars,
+              starSize: 18,
+            ),
           ),
           Checkbox(
             value: widget.arrived,

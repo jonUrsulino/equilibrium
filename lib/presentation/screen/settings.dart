@@ -23,56 +23,55 @@ class SettingsScreen extends StatelessWidget {
           },
         ),
       ),
-      body: Column(
-        children: [
-          Text(
-            'Preferências',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          Column(
-            children: [
-              Row(
-                children: [
-                  Text(
-                    'Máximo de jogadores por time',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const Spacer(),
-                  IconButton(
-                    onPressed: () => settings.decMaxPlayersByTeam(),
-                    icon: const Icon(
-                      Icons.exposure_minus_1,
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Column(
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      'Máximo de jogadores por time',
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
-                  ),
-                  Text(
-                    '${settings.maxPlayersByTeam.watch(context)}',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  IconButton(
-                    onPressed: () => settings.incMaxPlayersByTeam(),
-                    icon: const Icon(
-                      Icons.exposure_plus_1,
+                    const Spacer(),
+                    IconButton(
+                      onPressed: () => settings.decMaxPlayersByTeam(),
+                      icon: const Icon(
+                        Icons.exposure_minus_1,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  Text(
-                    'Considerar goleiros no balanceamento',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const Spacer(),
-                  Checkbox(
-                    value: settings.isBalancedWithGoalkeeper.watch(context),
-                    onChanged: (value) =>
-                        settings.isBalancedWithGoalkeeper.set(value!),
-                  ),
-                ],
-              )
-            ],
-          ),
-        ],
+                    Text(
+                      '${settings.maxPlayersByTeam.watch(context)}',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    IconButton(
+                      onPressed: () => settings.incMaxPlayersByTeam(),
+                      icon: const Icon(
+                        Icons.exposure_plus_1,
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text(
+                      'Considerar goleiros no balanceamento',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const Spacer(),
+                    Checkbox(
+                      value: settings.isBalancedWithGoalkeeper.watch(context),
+                      onChanged: (value) =>
+                          settings.isBalancedWithGoalkeeper.set(value!),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
