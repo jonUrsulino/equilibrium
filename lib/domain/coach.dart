@@ -47,11 +47,14 @@ class Coach {
     List<Shirt> remainingShirts =
         defineShirtsToCompleteTeams(amountCompleteTeams);
 
-    if (amountRemainingPlayers > 2) {
+    if (amountRemainingPlayers > 0) {
       teams.add(defineIncompleteTeam(remainingShirts.firstOrNull));
-      balanceTeamsByStars(arrivingPlayers.toList(), maxPromised);
+      createIncompleteTeamToBalanceWithPromisedPlayers(maxPromised);
+      balanceTeamsByStars(arrivingPlayers.toList());
     } else {
-      balanceTeamsByStars(arrivingPlayers.toList(), maxPromised);
+      balanceTeamsByStars(arrivingPlayers.toList());
+      teams.add(defineIncompleteTeam(remainingShirts.firstOrNull));
+      createPromisedTeamNotBalanced(maxPlayersByTeam);
     }
   }
 
@@ -70,29 +73,7 @@ class Coach {
     return remainingShirts;
   }
 
-  void balanceTeamsByStars(
-      List<HomeArrivingPlayer> listPlayers, int promisedNeeded) {
-    var promisedListPlayers = presence.promisedSortedByName.value;
-
-    promisedListPlayers.shuffle();
-    var shufflePromisesLimited = promisedListPlayers.toList();
-    if (promisedListPlayers.length >= promisedNeeded) {
-      shufflePromisesLimited =
-          promisedListPlayers.getRange(0, promisedNeeded).toList();
-    } else {
-      var needs = promisedNeeded - shufflePromisesLimited.length;
-      for (int i = 0; needs > i; i++) {
-        var homeArrivingPlayer =
-            HomeArrivingPlayer.initial(Player.normal("Fake", 3));
-        shufflePromisesLimited.add(homeArrivingPlayer);
-      }
-    }
-
-    var incompleteTeam = teams.firstWhere((element) => element.incomplete);
-    incompleteTeam.players.addAll(shufflePromisesLimited);
-
-    print('team incomplete with not arrived players\n'
-        ': ${incompleteTeam.players.toString()}');
+  void balanceTeamsByStars(List<HomeArrivingPlayer> listPlayers) {
     // listPlayers.addAll(shufflePromisesLimited);
     List<HomeArrivingPlayer> sortedPlayersByStars =
         sortByStarsShufflingEquals(listPlayers);
@@ -126,6 +107,47 @@ class Coach {
         sortedPlayersByStars.remove(nextGoodPlayer);
       }
     }
+  }
+
+  void createIncompleteTeamToBalanceWithPromisedPlayers(int promisedNeeded) {
+    var promisedListPlayers = presence.promisedSortedByName.value;
+
+    promisedListPlayers.shuffle();
+    var shufflePromisesLimited = promisedListPlayers.toList();
+    if (promisedListPlayers.length >= promisedNeeded) {
+      shufflePromisesLimited =
+          promisedListPlayers.getRange(0, promisedNeeded).toList();
+    } else {
+      var needs = promisedNeeded - shufflePromisesLimited.length;
+      for (int i = 0; needs > i; i++) {
+        var homeArrivingPlayer =
+            HomeArrivingPlayer.initial(Player.normal("Fake", 3));
+        shufflePromisesLimited.add(homeArrivingPlayer);
+      }
+    }
+
+    var incompleteTeam = teams.firstWhere((element) => element.incomplete);
+    incompleteTeam.players.addAll(shufflePromisesLimited);
+
+    print('team incomplete with not arrived players\n'
+        ': ${incompleteTeam.players.toString()}');
+  }
+
+  void createPromisedTeamNotBalanced(int maxPlayersByTeam) {
+    var promisedListPlayers = presence.promisedSortedByName.value;
+
+    promisedListPlayers.shuffle();
+    var shufflePromisesLimited = promisedListPlayers.toList();
+    if (promisedListPlayers.length > maxPlayersByTeam) {
+      shufflePromisesLimited =
+          promisedListPlayers.getRange(0, maxPlayersByTeam).toList();
+    }
+
+    var incompleteTeam = teams.firstWhere((element) => element.incomplete);
+    incompleteTeam.players.addAll(shufflePromisesLimited);
+
+    print('team incomplete not balanced only with not arrived players\n'
+        ': ${incompleteTeam.players.toString()}');
   }
 
   bool isTeamFullOfPromisedPlayers(Team team, int maxPromised) {
