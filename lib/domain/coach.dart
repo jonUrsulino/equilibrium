@@ -71,14 +71,29 @@ class Coach {
   }
 
   void balanceTeamsByStars(
-      List<HomeArrivingPlayer> listPlayers, int maxPromised) {
+      List<HomeArrivingPlayer> listPlayers, int promisedNeeded) {
     var promisedListPlayers = presence.promisedSortedByName.value;
 
     promisedListPlayers.shuffle();
-    var shufflePromisesLimited =
-        promisedListPlayers.getRange(0, maxPromised).toList();
-    print('promises: ${shufflePromisesLimited.toString()}');
-    listPlayers.addAll(shufflePromisesLimited);
+    var shufflePromisesLimited = promisedListPlayers.toList();
+    if (promisedListPlayers.length >= promisedNeeded) {
+      shufflePromisesLimited =
+          promisedListPlayers.getRange(0, promisedNeeded).toList();
+    } else {
+      var needs = promisedNeeded - shufflePromisesLimited.length;
+      for (int i = 0; needs > i; i++) {
+        var homeArrivingPlayer =
+            HomeArrivingPlayer.initial(Player.normal("Fake", 3));
+        shufflePromisesLimited.add(homeArrivingPlayer);
+      }
+    }
+
+    var incompleteTeam = teams.firstWhere((element) => element.incomplete);
+    incompleteTeam.players.addAll(shufflePromisesLimited);
+
+    print('team incomplete with not arrived players\n'
+        ': ${incompleteTeam.players.toString()}');
+    // listPlayers.addAll(shufflePromisesLimited);
     List<HomeArrivingPlayer> sortedPlayersByStars =
         sortByStarsShufflingEquals(listPlayers);
     final maxPlayersByTeam = settings.getMaxPlayersByTeam();
@@ -105,21 +120,6 @@ class Coach {
         }
 
         var nextGoodPlayer = sortedPlayersByStars.first;
-        if (team.incomplete) {
-          if (!nextGoodPlayer.hasArrived &&
-              isTeamFullOfPromisedPlayers(team, maxPromised)) {
-            print(
-                'avoid max ${nextGoodPlayer.player.name} in ${team.shirt.name}');
-            nextGoodPlayer = sortedPlayersByStars
-                .firstWhere((element) => element.hasArrived);
-          }
-        } else {
-          if (!nextGoodPlayer.hasArrived && !team.incomplete) {
-            print('avoid ${nextGoodPlayer.player.name} in ${team.shirt.name}');
-            nextGoodPlayer = sortedPlayersByStars
-                .firstWhere((element) => element.hasArrived);
-          }
-        }
         print('apply ${nextGoodPlayer.player.name} in ${team.shirt.name}');
 
         team.addPlayer(nextGoodPlayer);
