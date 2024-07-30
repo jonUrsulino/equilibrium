@@ -69,44 +69,36 @@ class PresencePlayers {
     }
   }
 
-  void playerArrived(Player player, bool value) {
-    print('player arrived ${player.name}');
-
-    var homeArrivingPlayer = HomeArrivingPlayer(player);
+  void playerArrived(HomeArrivingPlayer homeArrivingPlayer, bool value) {
+    print('player arrived ${homeArrivingPlayer.player.name}');
 
     _arrived.add(homeArrivingPlayer);
     _promised.remove(homeArrivingPlayer);
     _arriving.remove(homeArrivingPlayer);
   }
 
-  void playerPromised(Player player, bool value) {
-    print('player promised ${player.name}');
-
-    var homeArrivingPlayer = HomeArrivingPlayer(player);
+  void playerPromised(HomeArrivingPlayer homeArrivingPlayer, bool value) {
+    print('player promised ${homeArrivingPlayer.player.name}');
 
     _promised.add(homeArrivingPlayer);
     _arrived.remove(homeArrivingPlayer);
     _arriving.remove(homeArrivingPlayer);
   }
 
-  void playerMissed(Player player, bool value) {
-    print('player missed ${player.name}');
+  void playerMissed(HomeArrivingPlayer homeArrivingPlayer, bool value) {
+    print('player missed ${homeArrivingPlayer.player.name}');
 
-    var missedPlayer = HomeArrivingPlayer(player);
-
-    _promised.add(missedPlayer);
-    _arrived.remove(missedPlayer);
-    _arriving.remove(missedPlayer);
+    _promised.add(homeArrivingPlayer);
+    _arrived.remove(homeArrivingPlayer);
+    _arriving.remove(homeArrivingPlayer);
   }
 
-  void playerCanceled(Player player) {
-    print('player canceled ${player.name}');
+  void playerCanceled(HomeArrivingPlayer homeArrivingPlayer) {
+    print('player canceled ${homeArrivingPlayer.player.name}');
 
-    var canceledPlayer = HomeArrivingPlayer(player);
-
-    _arriving.add(canceledPlayer);
-    _arrived.remove(canceledPlayer);
-    _promised.remove(canceledPlayer);
+    _arriving.add(homeArrivingPlayer);
+    _arrived.remove(homeArrivingPlayer);
+    _promised.remove(homeArrivingPlayer);
   }
 
   late final effecting = effect(() {

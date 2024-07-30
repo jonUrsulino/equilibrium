@@ -5,8 +5,17 @@ import 'package:equilibrium/domain/shirt.dart';
 class Team extends Equatable {
   final Shirt shirt;
   final List<Player> players = [];
+  late final bool incomplete;
 
-  Team({required this.shirt});
+  Team._({required this.shirt}) : incomplete = false;
+
+  Team.complete({required this.shirt}) {
+    incomplete = false;
+  }
+
+  Team.incomplete({required this.shirt}) {
+    incomplete = true;
+  }
 
   void addPlayer(Player player) {
     players.add(player);
@@ -26,7 +35,7 @@ class Team extends Equatable {
   List<Object> get props => [shirt, players];
 
   Team copyWith({Shirt? shirt}) {
-    return Team(
+    return Team._(
       shirt: shirt ?? this.shirt,
     );
   }

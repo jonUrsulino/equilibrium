@@ -1,3 +1,4 @@
+import 'package:equilibrium/domain/home_arriving_player.dart';
 import 'package:equilibrium/domain/player.dart';
 import 'package:equilibrium/domain/presence.dart';
 import 'package:equilibrium/presentation/screen/arriving_bottom_sheet.dart';
@@ -69,7 +70,7 @@ class PresenceScreen extends StatelessWidget {
                       player: homeArrivedPlayer.player,
                       arrived: true,
                       onChangeArriving: (value) => onChangeMissing(
-                        homeArrivedPlayer.player,
+                        homeArrivedPlayer,
                         value,
                       ),
                       showStars: true,
@@ -84,8 +85,8 @@ class PresenceScreen extends StatelessWidget {
     );
   }
 
-  onChangeMissing(Player player, value) {
-    presence.playerMissed(player, value);
+  onChangeMissing(HomeArrivingPlayer homeArrivingPlayer, value) {
+    presence.playerMissed(homeArrivingPlayer, value);
   }
 
   Widget _buildPromised() {
@@ -107,7 +108,7 @@ class PresenceScreen extends StatelessWidget {
                       player: homeArrivedPlayer.player,
                       arrived: true,
                       onChangeArriving: (value) => onChangeMissing(
-                        homeArrivedPlayer.player,
+                        homeArrivedPlayer,
                         value,
                       ),
                       showStars: true,

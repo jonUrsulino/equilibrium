@@ -8,6 +8,7 @@ import 'package:equilibrium/domain/shirt.dart';
 import 'package:get_it/get_it.dart';
 import 'package:signals/signals.dart';
 
+//TODO: put it in the settings to edit colors and names of teams.
 final List<Shirt> availableShirts = [
   Shirt.white(),
   Shirt.black(),
@@ -47,7 +48,7 @@ class Coach {
       Shirt? shirt = shirts.firstOrNull;
       shirts.remove(shirt);
 
-      teams.add(Team(
+      teams.add(Team.complete(
         shirt: shirt ?? Shirt.undefined(),
       ));
     }
@@ -105,8 +106,11 @@ class Coach {
   }
 
   Team createIncompleteTeamByRandomNumber(
-      List<Player> players, Shirt? shirt, int remainingPlayers) {
-    Team team = Team(
+    List<Player> players,
+    Shirt? shirt,
+    int remainingPlayers,
+  ) {
+    Team team = Team.incomplete(
       shirt: shirt ?? Shirt.undefined(),
     );
     print('incomplete team: ${team.shirt.name}');

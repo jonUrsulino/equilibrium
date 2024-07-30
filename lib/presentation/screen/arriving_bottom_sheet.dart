@@ -1,3 +1,4 @@
+import 'package:equilibrium/domain/home_arriving_player.dart';
 import 'package:equilibrium/domain/player.dart';
 import 'package:equilibrium/domain/presence.dart';
 import 'package:equilibrium/presentation/screen/player_tile.dart';
@@ -28,7 +29,7 @@ class ArrivingBottomSheet extends StatelessWidget {
                     presence.arrivingSortedByName.watch(context)[index].player,
                 arrived: false,
                 onChangeArriving: (value) => onChangePromised(
-                  presence.arrivingSortedByName.watch(context)[index].player,
+                  presence.arrivingSortedByName.watch(context)[index],
                   value,
                 ),
                 showStars: false,
@@ -40,7 +41,7 @@ class ArrivingBottomSheet extends StatelessWidget {
     );
   }
 
-  onChangePromised(Player player, value) {
-    presence.playerPromised(player, value);
+  onChangePromised(HomeArrivingPlayer homeArrivingPlayer, value) {
+    presence.playerPromised(homeArrivingPlayer, value);
   }
 }

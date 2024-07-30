@@ -1,3 +1,4 @@
+import 'package:equilibrium/domain/home_arriving_player.dart';
 import 'package:equilibrium/domain/player.dart';
 import 'package:equilibrium/domain/presence.dart';
 import 'package:equilibrium/presentation/screen/player_tile.dart';
@@ -26,18 +27,19 @@ class PromisedBottomSheet extends StatelessWidget {
               var homeArrivingPlayer =
                   presence.promisedSortedByName.watch(context)[index];
               return Dismissible(
+                background: Container(color: Colors.deepOrange),
                 onDismissed: (direction) {
-                  onChangeCanceled(homeArrivingPlayer.player);
+                  onChangeCanceled(homeArrivingPlayer);
                 },
                 key: Key(homeArrivingPlayer.player.name),
                 child: PlayerTile(
                   player: homeArrivingPlayer.player,
                   arrived: false,
                   onChangeArriving: (value) => onChangeArriving(
-                    homeArrivingPlayer.player,
+                    homeArrivingPlayer,
                     value,
                   ),
-                  showStars: false,
+                  showStars: true,
                 ),
               );
             },
@@ -47,11 +49,11 @@ class PromisedBottomSheet extends StatelessWidget {
     );
   }
 
-  onChangeArriving(Player player, value) {
-    presence.playerArrived(player, value);
+  onChangeArriving(HomeArrivingPlayer homeArrivingPlayer, value) {
+    presence.playerArrived(homeArrivingPlayer, value);
   }
 
-  onChangeCanceled(Player player) {
-    presence.playerCanceled(player);
+  onChangeCanceled(HomeArrivingPlayer homeArrivingPlayer) {
+    presence.playerCanceled(homeArrivingPlayer);
   }
 }
