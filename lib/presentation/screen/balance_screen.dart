@@ -84,7 +84,7 @@ class BalanceScreen extends StatelessWidget {
           var player = team.players[index];
           return MemberTeam(
             position: (index + 1).toString(),
-            player: player,
+            player: player.player,
             arrived: true,
           );
         },

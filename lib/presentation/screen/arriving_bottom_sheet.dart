@@ -1,5 +1,4 @@
 import 'package:equilibrium/domain/home_arriving_player.dart';
-import 'package:equilibrium/domain/player.dart';
 import 'package:equilibrium/domain/presence.dart';
 import 'package:equilibrium/presentation/screen/player_tile.dart';
 import 'package:flutter/material.dart';

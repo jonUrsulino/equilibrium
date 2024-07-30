@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:equilibrium/domain/home_arriving_player.dart';
 import 'package:equilibrium/domain/player.dart';
 import 'package:equilibrium/domain/presence.dart';
 import 'package:equilibrium/domain/settings.dart';
@@ -41,35 +42,45 @@ class Coach {
     print("amount complete teams: $amountCompleteTeams");
     print("balance with goalkeeper: $balanceGoalkeeper");
 
-    List<Shirt> shirts = [];
-    shirts.addAll(availableShirts);
+    List<Shirt> remainingShirts =
+        defineShirtsToCompleteTeams(amountCompleteTeams);
+    // final List<HomeArrivingPlayer> listPlayers =
+    //     arrivingPlayers.map((e) => e).toList();
+
+    // Remove unlucky players to mount the incomplete team.
+    // var incompleteTeam = createIncompleteTeamByRandomNumber(
+    //   listPlayers,
+    //   remainingShirts.firstOrNull,
+    //   amountRemainingPlayers,
+    // );
+
+    teams.add(defineIncompleteTeam(remainingShirts.firstOrNull));
+    balanceTeamsByStars(arrivingPlayers.toList());
+
+    // teams.add(incompleteTeam);
+  }
+
+  List<Shirt> defineShirtsToCompleteTeams(int amountCompleteTeams) {
+    List<Shirt> remainingShirts = [];
+    remainingShirts.addAll(availableShirts);
     // create teams
     for (int i = 0; i < amountCompleteTeams; i++) {
-      Shirt? shirt = shirts.firstOrNull;
-      shirts.remove(shirt);
+      Shirt? shirt = remainingShirts.firstOrNull;
+      remainingShirts.remove(shirt);
 
       teams.add(Team.complete(
         shirt: shirt ?? Shirt.undefined(),
       ));
     }
-    final listPlayers = arrivingPlayers.map((e) => e.player).toList();
-
-    // Remove unlucky players to mount the incomplete team.
-    var incompleteTeam = createIncompleteTeamByRandomNumber(
-      listPlayers,
-      shirts.firstOrNull,
-      amountRemainingPlayers,
-    );
-    balanceTeamsByStars(listPlayers);
-
-    teams.add(incompleteTeam);
+    return remainingShirts;
   }
 
-  void balanceTeamsByStars(List<Player> listPlayers) {
-    List<Player> sortedPlayersByStars = sortByStars(listPlayers);
+  void balanceTeamsByStars(List<HomeArrivingPlayer> listPlayers) {
+    listPlayers.addAll(presence.promisedSortedByName.value);
+    List<HomeArrivingPlayer> sortedPlayersByStars = sortByStars(listPlayers);
 
     // split listPlayers based on sort of starts
-    for (Player _ in listPlayers) {
+    for (HomeArrivingPlayer _ in listPlayers) {
       teams.sort((a, b) {
         return a.calculatePower().compareTo(b.calculatePower());
       });
@@ -89,8 +100,8 @@ class Coach {
     }
   }
 
-  List<Player> sortByStars(List<Player> players) {
-    players.sort((a, b) => a.stars.compareTo(b.stars));
+  List<HomeArrivingPlayer> sortByStars(List<HomeArrivingPlayer> players) {
+    players.sort((a, b) => a.player.stars.compareTo(b.player.stars));
     return players.reversed.toList();
   }
 
@@ -98,11 +109,22 @@ class Coach {
     for (Team team in teams) {
       print('Time ${team.shirt.name}: Poder: ${team.calculatePower()} '
           '\nQuantidade: ${team.players.length}');
-      for (Player player in team.players) {
-        print('Jogador: ${player.stars} - ${player.name}');
+      for (HomeArrivingPlayer arrivingPlayer in team.players) {
+        print(
+            'Jogador: ${arrivingPlayer.player.stars} - ${arrivingPlayer.player.name}');
       }
       print("---------");
     }
+  }
+
+  Team defineIncompleteTeam(
+    Shirt? shirt,
+  ) {
+    Team team = Team.incomplete(
+      shirt: shirt ?? Shirt.undefined(),
+    );
+    print('incomplete team: ${team.shirt.name}');
+    return team;
   }
 
   Team createIncompleteTeamByRandomNumber(
@@ -125,7 +147,7 @@ class Coach {
       players.remove(unluckyPlayer);
       print('Unlucky: ${unluckyPlayer.name}');
 
-      team.addPlayer(unluckyPlayer);
+      // team.addPlayer(unluckyPlayer);
     }
 
     return team;

@@ -72,7 +72,9 @@ class PresencePlayers {
   void playerArrived(HomeArrivingPlayer homeArrivingPlayer, bool value) {
     print('player arrived ${homeArrivingPlayer.player.name}');
 
-    _arrived.add(homeArrivingPlayer);
+    var changed = homeArrivingPlayer.copyWith(hasArrived: true);
+
+    _arrived.add(changed);
     _promised.remove(homeArrivingPlayer);
     _arriving.remove(homeArrivingPlayer);
   }
@@ -88,7 +90,9 @@ class PresencePlayers {
   void playerMissed(HomeArrivingPlayer homeArrivingPlayer, bool value) {
     print('player missed ${homeArrivingPlayer.player.name}');
 
-    _promised.add(homeArrivingPlayer);
+    var changed = homeArrivingPlayer.copyWith(hasArrived: false);
+
+    _promised.add(changed);
     _arrived.remove(homeArrivingPlayer);
     _arriving.remove(homeArrivingPlayer);
   }

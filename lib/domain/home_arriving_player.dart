@@ -18,13 +18,13 @@ class HomeArrivingPlayer extends Equatable {
   final bool isUnlucky;
 
   @override
-  List<Object?> get props => [player];
+  List<Object?> get props => [player, hasArrived, isUnlucky];
 
-  HomeArrivingPlayer copyWith(
+  HomeArrivingPlayer copyWith({
     Player? player,
     bool? hasArrived,
     bool? isUnlucky,
-  ) {
+  }) {
     return HomeArrivingPlayer._(
       player: player ?? this.player,
       hasArrived: hasArrived ?? this.hasArrived,
