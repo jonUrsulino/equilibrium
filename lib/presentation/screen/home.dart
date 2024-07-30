@@ -1,3 +1,4 @@
+import 'package:equilibrium/domain/Manager.dart';
 import 'package:equilibrium/domain/coach.dart';
 import 'package:equilibrium/domain/presence.dart';
 import 'package:equilibrium/domain/settings.dart';
@@ -24,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
   final presence = GetIt.I.get<PresencePlayers>();
   final coach = GetIt.I.get<Coach>();
   final settings = GetIt.I.get<Settings>();
+  final manager = GetIt.I.get<Manager>();
 
   final bottomNavAction = Signal(BottomNavigationType.home);
 
@@ -60,7 +62,6 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          centerTitle: true,
           title: Text(
             _title(bottomNavAction.watch(context).index),
             style: Theme.of(context).textTheme.headlineLarge,

@@ -4,23 +4,20 @@ import 'package:equilibrium/domain/player.dart';
 class HomeArrivingPlayer extends Equatable {
   const HomeArrivingPlayer(
     this.player,
-    this.hasArrived,
   );
 
   factory HomeArrivingPlayer.initial(Player player) {
-    return HomeArrivingPlayer(player, false);
+    return HomeArrivingPlayer(player);
   }
 
   final Player player;
-  final bool hasArrived;
 
   @override
-  List<Object?> get props => [player, hasArrived];
+  List<Object?> get props => [player];
 
-  HomeArrivingPlayer copyWith(Player? player, double? stars, bool? hasArrived) {
+  HomeArrivingPlayer copyWith(Player? player) {
     return HomeArrivingPlayer(
       player = player ?? this.player,
-      hasArrived = hasArrived ?? this.hasArrived,
     );
   }
 }

@@ -15,7 +15,7 @@ class ArrivingBottomSheet extends StatelessWidget {
     return Column(
       children: [
         Text(
-          'Aguardando chegada',
+          'Marque quem confirmou que vai',
           style: Theme.of(context).textTheme.headlineSmall,
         ),
         Expanded(
@@ -26,10 +26,8 @@ class ArrivingBottomSheet extends StatelessWidget {
               return PlayerTile(
                 player:
                     presence.arrivingSortedByName.watch(context)[index].player,
-                arrived: presence.arrivingSortedByName
-                    .watch(context)[index]
-                    .hasArrived,
-                onChangeArriving: (value) => onChangeArriving(
+                arrived: false,
+                onChangeArriving: (value) => onChangePromised(
                   presence.arrivingSortedByName.watch(context)[index].player,
                   value,
                 ),
@@ -42,7 +40,7 @@ class ArrivingBottomSheet extends StatelessWidget {
     );
   }
 
-  onChangeArriving(Player player, value) {
-    presence.playerArrived(player, value);
+  onChangePromised(Player player, value) {
+    presence.playerPromised(player, value);
   }
 }

@@ -16,10 +16,10 @@ final List<Shirt> availableShirts = [
 ];
 
 class Coach {
-  Coach({required this.settings});
+  Coach();
 
   final PresencePlayers presence = GetIt.I.get<PresencePlayers>();
-  final Settings settings;
+  final Settings settings = GetIt.I.get<Settings>();
 
   final ListSignal<Team> teams = ListSignal([]);
 
