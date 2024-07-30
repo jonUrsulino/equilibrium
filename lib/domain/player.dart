@@ -1,6 +1,8 @@
+import 'dart:math';
+
 import 'package:equatable/equatable.dart';
 
-class Player extends Equatable {
+class Player extends Equatable implements Comparable<Player> {
   const Player(this.name, this.stars, this.isGoalkeeper);
 
   factory Player.normal(String name, double stars) {
@@ -32,5 +34,13 @@ class Player extends Equatable {
       stars ?? this.stars,
       isGoalkeeper ?? this.isGoalkeeper,
     );
+  }
+
+  @override
+  int compareTo(Player other) {
+    if (stars == other.stars) {
+      return Random().nextInt(3) - 1;
+    }
+    return compareTo(other);
   }
 }

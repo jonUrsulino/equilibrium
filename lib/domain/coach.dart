@@ -36,32 +36,23 @@ class Coach {
     int amountRemainingPlayers = amountPlayers % maxPlayersByTeam;
     int amountCompleteTeams =
         (amountPlayers - amountRemainingPlayers) ~/ maxPlayersByTeam;
+    int maxPromised = maxPlayersByTeam - amountRemainingPlayers;
     print("max line players: $maxPlayersByTeam");
     print("amount line players: $amountPlayers");
     print("remaining line players: $amountRemainingPlayers");
+    print("max promised to incomplete team: $maxPromised");
     print("amount complete teams: $amountCompleteTeams");
     print("balance with goalkeeper: $balanceGoalkeeper");
 
     List<Shirt> remainingShirts =
         defineShirtsToCompleteTeams(amountCompleteTeams);
-    // final List<HomeArrivingPlayer> listPlayers =
-    //     arrivingPlayers.map((e) => e).toList();
-
-    // Remove unlucky players to mount the incomplete team.
-    // var incompleteTeam = createIncompleteTeamByRandomNumber(
-    //   listPlayers,
-    //   remainingShirts.firstOrNull,
-    //   amountRemainingPlayers,
-    // );
 
     if (amountRemainingPlayers > 2) {
       teams.add(defineIncompleteTeam(remainingShirts.firstOrNull));
-      balanceTeamsByStars(arrivingPlayers.toList());
+      balanceTeamsByStars(arrivingPlayers.toList(), maxPromised);
     } else {
-      balanceTeamsByStars(arrivingPlayers.toList());
+      balanceTeamsByStars(arrivingPlayers.toList(), maxPromised);
     }
-
-    // teams.add(incompleteTeam);
   }
 
   List<Shirt> defineShirtsToCompleteTeams(int amountCompleteTeams) {
@@ -79,11 +70,17 @@ class Coach {
     return remainingShirts;
   }
 
-  void balanceTeamsByStars(List<HomeArrivingPlayer> listPlayers) {
+  void balanceTeamsByStars(
+      List<HomeArrivingPlayer> listPlayers, int maxPromised) {
     var promisedListPlayers = presence.promisedSortedByName.value;
+
     promisedListPlayers.shuffle();
-    listPlayers.addAll(promisedListPlayers);
-    List<HomeArrivingPlayer> sortedPlayersByStars = sortByStars(listPlayers);
+    var shufflePromisesLimited =
+        promisedListPlayers.getRange(0, maxPromised).toList();
+    print('promises: ${shufflePromisesLimited.toString()}');
+    listPlayers.addAll(shufflePromisesLimited);
+    List<HomeArrivingPlayer> sortedPlayersByStars =
+        sortByStarsShufflingEquals(listPlayers);
     final maxPlayersByTeam = settings.getMaxPlayersByTeam();
 
     // split listPlayers based on sort of starts
@@ -97,8 +94,7 @@ class Coach {
       }
 
       teams.sort((a, b) {
-        if (a.incomplete) return -1;
-        if (b.incomplete) return -1;
+        if (a.incomplete || b.incomplete) return -1;
         return a.calculatePower().compareTo(b.calculatePower());
       });
 
@@ -107,11 +103,22 @@ class Coach {
           print('team full ${team.shirt.name}');
           break;
         }
+
         var nextGoodPlayer = sortedPlayersByStars.first;
-        if (!nextGoodPlayer.hasArrived && !team.incomplete) {
-          print('avoid ${nextGoodPlayer.player.name} in ${team.shirt.name}');
-          nextGoodPlayer =
-              sortedPlayersByStars.firstWhere((element) => element.hasArrived);
+        if (team.incomplete) {
+          if (!nextGoodPlayer.hasArrived &&
+              isTeamFullOfPromisedPlayers(team, maxPromised)) {
+            print(
+                'avoid max ${nextGoodPlayer.player.name} in ${team.shirt.name}');
+            nextGoodPlayer = sortedPlayersByStars
+                .firstWhere((element) => element.hasArrived);
+          }
+        } else {
+          if (!nextGoodPlayer.hasArrived && !team.incomplete) {
+            print('avoid ${nextGoodPlayer.player.name} in ${team.shirt.name}');
+            nextGoodPlayer = sortedPlayersByStars
+                .firstWhere((element) => element.hasArrived);
+          }
         }
         print('apply ${nextGoodPlayer.player.name} in ${team.shirt.name}');
 
@@ -121,8 +128,23 @@ class Coach {
     }
   }
 
-  List<HomeArrivingPlayer> sortByStars(List<HomeArrivingPlayer> players) {
-    players.sort((a, b) => a.player.stars.compareTo(b.player.stars));
+  bool isTeamFullOfPromisedPlayers(Team team, int maxPromised) {
+    var bool =
+        team.players.toList().where((element) => !element.hasArrived).length >=
+            maxPromised;
+    print('isTeamFullOfPromisedPlayers ${team.shirt.name} $bool');
+    return bool;
+  }
+
+  List<HomeArrivingPlayer> sortByStarsShufflingEquals(
+      List<HomeArrivingPlayer> players) {
+    players.sort((a, b) {
+      final compare = a.player.stars.compareTo(b.player.stars);
+      if (compare == 0) {
+        return Random().nextInt(3) - 1;
+      }
+      return compare;
+    });
     return players.reversed.toList();
   }
 
@@ -136,6 +158,16 @@ class Coach {
       }
       print("---------");
     }
+
+    final a = Player.normal("A", 3.5);
+    final b = Player.normal("B", 3.5);
+    final c = Player.normal("C", 3.5);
+    final d = Player.normal("D", 3.1);
+    final list = [a, b, c, d];
+    list.sort((a, b) {
+      return Random().nextInt(3) - 1;
+    });
+    print('MAIOR ${list.toString()} ${Random().nextInt(3) - 1}');
   }
 
   Team defineIncompleteTeam(
