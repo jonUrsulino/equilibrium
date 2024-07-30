@@ -33,10 +33,10 @@ class BalanceScreen extends StatelessWidget {
         physics: const ClampingScrollPhysics(),
         itemCount: coach.presence.getArrivedWith(true).length,
         itemBuilder: (context, index) {
-          var player = coach.presence.getArrivedWith(true)[index].player;
+          var homeArrivingPlayer = coach.presence.getArrivedWith(true)[index];
           return MemberTeam(
             position: (index + 1).toString(),
-            player: player,
+            homeArrivingPlayer: homeArrivingPlayer,
             arrived: true,
           );
         },
@@ -81,10 +81,10 @@ class BalanceScreen extends StatelessWidget {
         physics: const ClampingScrollPhysics(),
         itemCount: team.players.length,
         itemBuilder: (context, index) {
-          var player = team.players[index];
+          var homeArrivingPlayer = team.players[index];
           return MemberTeam(
             position: (index + 1).toString(),
-            player: player.player,
+            homeArrivingPlayer: homeArrivingPlayer,
             arrived: true,
           );
         },

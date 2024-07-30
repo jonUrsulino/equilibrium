@@ -54,8 +54,12 @@ class Coach {
     //   amountRemainingPlayers,
     // );
 
-    teams.add(defineIncompleteTeam(remainingShirts.firstOrNull));
-    balanceTeamsByStars(arrivingPlayers.toList());
+    if (amountRemainingPlayers > 2) {
+      teams.add(defineIncompleteTeam(remainingShirts.firstOrNull));
+      balanceTeamsByStars(arrivingPlayers.toList());
+    } else {
+      balanceTeamsByStars(arrivingPlayers.toList());
+    }
 
     // teams.add(incompleteTeam);
   }
@@ -76,25 +80,42 @@ class Coach {
   }
 
   void balanceTeamsByStars(List<HomeArrivingPlayer> listPlayers) {
-    listPlayers.addAll(presence.promisedSortedByName.value);
+    var promisedListPlayers = presence.promisedSortedByName.value;
+    promisedListPlayers.shuffle();
+    listPlayers.addAll(promisedListPlayers);
     List<HomeArrivingPlayer> sortedPlayersByStars = sortByStars(listPlayers);
+    final maxPlayersByTeam = settings.getMaxPlayersByTeam();
 
     // split listPlayers based on sort of starts
-    for (HomeArrivingPlayer _ in listPlayers) {
+    for (int i = 0; i < listPlayers.length; i++) {
+      print('index $i of ${listPlayers.length}');
+      HomeArrivingPlayer _ = listPlayers[i];
+
+      if (sortedPlayersByStars.isEmpty) {
+        print('sortedPlayersByStars.isEmpty');
+        return;
+      }
+
       teams.sort((a, b) {
+        if (a.incomplete) return -1;
+        if (b.incomplete) return -1;
         return a.calculatePower().compareTo(b.calculatePower());
       });
 
       for (Team team in teams) {
-        if (sortedPlayersByStars.isEmpty) {
-          return;
-        }
-        if (team.players.length >= settings.getMaxPlayersByTeam()) {
+        if (team.players.length >= maxPlayersByTeam) {
+          print('team full ${team.shirt.name}');
           break;
         }
         var nextGoodPlayer = sortedPlayersByStars.first;
-        team.addPlayer(nextGoodPlayer);
+        if (!nextGoodPlayer.hasArrived && !team.incomplete) {
+          print('avoid ${nextGoodPlayer.player.name} in ${team.shirt.name}');
+          nextGoodPlayer =
+              sortedPlayersByStars.firstWhere((element) => element.hasArrived);
+        }
+        print('apply ${nextGoodPlayer.player.name} in ${team.shirt.name}');
 
+        team.addPlayer(nextGoodPlayer);
         sortedPlayersByStars.remove(nextGoodPlayer);
       }
     }
