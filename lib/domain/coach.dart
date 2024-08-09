@@ -11,10 +11,11 @@ import 'package:signals/signals.dart';
 
 //TODO: put it in the settings to edit colors and names of teams.
 final List<Shirt> availableShirts = [
-  Shirt.white(),
   Shirt.black(),
+  Shirt.orange(),
+  Shirt.blue(),
   Shirt.green(),
-  Shirt.blue()
+  Shirt.white(),
 ];
 
 class Coach {
