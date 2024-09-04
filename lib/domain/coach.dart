@@ -31,7 +31,10 @@ class Coach {
     final maxPlayersByTeam = settings.getMaxPlayersByTeam();
 
     final balanceGoalkeeper = settings.isConsideredBalanceWithGoalkeeper();
-    final arrivingPlayers = presence.getArrivedWith(balanceGoalkeeper).value;
+    var arrivingPlayers = presence.arrived.value;
+    if (!balanceGoalkeeper) {
+      arrivingPlayers = presence.arrivedWithoutGoalkeeper.value;
+    }
     int amountPlayers = arrivingPlayers.length;
 
     int amountRemainingPlayers = amountPlayers % maxPlayersByTeam;

@@ -17,69 +17,70 @@ class NewPlayerDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     effect(() => print('Estrelas $stars'));
-    return AlertDialog.adaptive(
-      scrollable: true,
-      contentPadding: EdgeInsets.all(8),
-      title: const Text('Novo jogador'),
-      content: Column(children: [
-        TextField(
-          keyboardType: TextInputType.text,
-          decoration: const InputDecoration(
-            contentPadding: EdgeInsets.all(8),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(children: [
+          const Text('Novo jogador'),
+          TextField(
+            keyboardType: TextInputType.text,
+            decoration: const InputDecoration(
+              contentPadding: EdgeInsets.all(8),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+              ),
+            ),
+            autofocus: true,
+            controller: textEditingController,
+          ),
+          Row(
+            children: [
+              Text(
+                'É goleiro',
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+              Checkbox(
+                value: isGoalkeeper.watch(context),
+                onChanged: (value) => isGoalkeeper.set(value),
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: RatingStars(
+              value: stars.watch(context),
+              maxValue: 5,
+              starSize: 25,
+              starColor: Colors.amber,
+              onValueChanged: (v) {
+                stars.set(v);
+              },
             ),
           ),
-          autofocus: true,
-          controller: textEditingController,
-        ),
-        Row(
-          children: [
-            Text(
-              'É goleiro',
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-            Checkbox(
-              value: isGoalkeeper.watch(context),
-              onChanged: (value) => isGoalkeeper.set(value),
-            ),
-          ],
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: RatingStars(
-            value: stars.watch(context),
-            maxValue: 5,
-            starSize: 25,
-            starColor: Colors.amber,
-            onValueChanged: (v) {
-              stars.set(v);
+          TextButton(
+            child: const Text('Adicionar'),
+            onPressed: () {
+              onPressedAddPlayer(context);
             },
           ),
-        )
-      ]),
-      actions: <Widget>[
-        TextButton(
-          child: const Text('Adicionar'),
-          onPressed: () {
-            final playerName = textEditingController.text;
-            final rating = stars.value;
-            final isGoalkeeper = this.isGoalkeeper.value ?? false;
-            presence.addNewPlayer(
-              HomeArrivingPlayer.initial(
-                Player(playerName, rating, isGoalkeeper),
-              ),
-            );
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  "Jogador $playerName criado. Estrelas: $rating",
-                ),
-              ),
-            );
-          },
+        ]),
+    );
+  }
+
+  void onPressedAddPlayer(BuildContext context) {
+    final playerName = textEditingController.text;
+    final rating = stars.value;
+    final isGoalkeeper = this.isGoalkeeper.value ?? false;
+    presence.addNewPlayer(
+      HomeArrivingPlayer.initial(
+        Player(playerName, rating, isGoalkeeper),
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "Jogador $playerName criado. Estrelas: $rating",
         ),
-      ],
+      ),
     );
   }
 }

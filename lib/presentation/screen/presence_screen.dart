@@ -59,8 +59,8 @@ class PresenceScreen extends StatelessWidget {
           Expanded(
             child: Watch(
               (context) {
-                var homeArrived = presence.getArrivedWith(true).value;
-                var length = homeArrived.length;
+                final homeArrived = presence.arrived.value;
+                final length = homeArrived.length;
 
                 return ListView.builder(
                   itemCount: length,

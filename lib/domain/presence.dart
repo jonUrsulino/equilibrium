@@ -23,6 +23,8 @@ class PresencePlayers {
         (a, b) => a.player.name.compareTo(b.player.name),
       ));
 
+  late final arrivedWithoutGoalkeeper = computed<List<HomeArrivingPlayer>>(() => arrived.value.where((element) => !element.player.isGoalkeeper).toList());
+
   void addNewPlayer(HomeArrivingPlayer value) {
     _arriving[value.player.name] = value;
   }

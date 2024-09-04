@@ -182,7 +182,7 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
   void _addPlayers() {
     print("add new player");
 
-    showDialog(
+    showModalBottomSheet(
       context: context,
       builder: (context) {
         return NewPlayerDialog();

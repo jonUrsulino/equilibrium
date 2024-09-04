@@ -26,14 +26,15 @@ class BalanceScreen extends StatelessWidget {
   }
 
   Widget _buildPresence() {
+    final arrivedPlayers = coach.presence.arrived.value;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ListView.builder(
         shrinkWrap: true,
         physics: const ClampingScrollPhysics(),
-        itemCount: coach.presence.getArrivedWith(true).length,
+        itemCount: arrivedPlayers.length,
         itemBuilder: (context, index) {
-          var homeArrivingPlayer = coach.presence.getArrivedWith(true)[index];
+          var homeArrivingPlayer = arrivedPlayers[index];
           return MemberTeam(
             position: (index + 1).toString(),
             homeArrivingPlayer: homeArrivingPlayer,
