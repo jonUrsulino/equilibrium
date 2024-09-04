@@ -13,11 +13,11 @@ class PromisedBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var confirmedPlayersList = presence.promisedSortedByName.watch(context);
+    final confirmedPlayersList = presence.promisedSortedByName.watch(context);
     return Column(
       children: [
         Text(
-          'Confirme quem já chegou',
+          'Confirme quem já chegou. Confirmados: ${confirmedPlayersList.length}',
           style: Theme.of(context).textTheme.headlineSmall,
         ),
         Expanded(
@@ -27,13 +27,7 @@ class PromisedBottomSheet extends StatelessWidget {
             itemBuilder: (context, index) {
               var homeArrivingPlayer =
                   confirmedPlayersList[index];
-              return Dismissible(
-                background: Container(color: Colors.deepOrange),
-                onDismissed: (direction) {
-                  onChangeCanceled(homeArrivingPlayer);
-                },
-                key: Key(homeArrivingPlayer.player.name),
-                child: PlayerTile(
+              return PlayerTile(
                   player: homeArrivingPlayer.player,
                   arrived: false,
                   onChangeArriving: (value) => onChangeArriving(
@@ -41,7 +35,6 @@ class PromisedBottomSheet extends StatelessWidget {
                     value,
                   ),
                   showStars: true,
-                ),
               );
             },
           ),

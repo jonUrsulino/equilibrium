@@ -11,7 +11,7 @@ class PresencePlayers {
   final Map<String, HomeArrivingPlayer> _listHomeArriving;
 
   late final MapSignal<String, HomeArrivingPlayer> _arriving = MapSignal(_listHomeArriving);
-  late final _arrived = computed<List<HomeArrivingPlayer>>(() => _arriving.values.where((element) => element.statePresence == StatePresence.arrived).toList());
+  late final arrived = computed<List<HomeArrivingPlayer>>(() => _arriving.values.where((element) => element.statePresence == StatePresence.arrived).toList());
   late final _promised = computed<List<HomeArrivingPlayer>>(() => _arriving.values.where((element) => element.statePresence == StatePresence.confirmed).toList());
 
   late final initialSortedByName = computed<List<HomeArrivingPlayer>>(() => _arriving.values
@@ -29,9 +29,9 @@ class PresencePlayers {
 
   ListSignal<HomeArrivingPlayer> getArrivedWith(bool goalkeeper) {
     if (goalkeeper) {
-      return _arrived.value.toSignal();
+      return arrived.value.toSignal();
     } else {
-      return _arrived
+      return arrived
           .value
           .where((element) => !element.player.isGoalkeeper)
           .toList()
@@ -68,6 +68,6 @@ class PresencePlayers {
   }
 
   late final effecting = effect(() {
-    print('${_arrived.value.length}');
+    print('${arrived.value.length}');
   });
 }

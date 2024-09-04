@@ -5,6 +5,7 @@ import 'package:equilibrium/domain/settings.dart';
 import 'package:equilibrium/navigator/nav_extensions.dart';
 import 'package:equilibrium/presentation/screen/arriving_bottom_sheet.dart';
 import 'package:equilibrium/presentation/screen/balance_screen.dart';
+import 'package:equilibrium/presentation/screen/canceling_confirmation_bottom_sheet.dart';
 import 'package:equilibrium/presentation/screen/new_player_dialog.dart';
 import 'package:equilibrium/presentation/screen/presence_screen.dart';
 import 'package:equilibrium/presentation/screen/settings.dart';
@@ -155,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
       showDragHandle: true,
       context: context,
       builder: (context) {
-        return ArrivingBottomSheet();
+        return CancelingConfirmationBottomSheet();
       },
     );
   }
@@ -168,7 +169,7 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
   String _title(int index) {
     switch (index) {
       case 0:
-        return 'Presentes: ${presence.getArrivedWith(true).watch(context).length}';
+        return 'Presentes: ${presence.arrived.watch(context).length}';
       case 1:
         return 'Balanciamento';
       case 2:

@@ -5,31 +5,30 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:signals/signals_flutter.dart';
 
-class ArrivingBottomSheet extends StatelessWidget {
-  ArrivingBottomSheet({super.key});
+class CancelingConfirmationBottomSheet extends StatelessWidget {
+  CancelingConfirmationBottomSheet({super.key});
 
   final presence = GetIt.I.get<PresencePlayers>();
 
   @override
   Widget build(BuildContext context) {
-    final initialPlayers = presence.initialSortedByName.watch(context);
+    final confirmedPlayers = presence.promisedSortedByName.watch(context);
     return Column(
       children: [
         Text(
-          'Marque quem confirmou que vai. Confirmados: ${presence.promisedSortedByName.watch(context).length}',
+          'Marque quem cancelou: ${confirmedPlayers.length}',
           style: Theme.of(context).textTheme.headlineSmall,
         ),
         Expanded(
           child: ListView.builder(
             physics: const ClampingScrollPhysics(),
-            itemCount: initialPlayers.length,
+            itemCount: confirmedPlayers.length,
             itemBuilder: (context, index) {
               return PlayerTile(
-                player:
-                    initialPlayers[index].player,
+                player: confirmedPlayers[index].player,
                 arrived: false,
-                onChangeArriving: (value) => onChangePromised(
-                  initialPlayers[index],
+                onChangeArriving: (value) => onChangeCanceled(
+                  confirmedPlayers[index],
                   value,
                 ),
                 showStars: false,
@@ -41,7 +40,7 @@ class ArrivingBottomSheet extends StatelessWidget {
     );
   }
 
-  onChangePromised(HomeArrivingPlayer homeArrivingPlayer, value) {
-    presence.playerPromised(homeArrivingPlayer, value);
+  onChangeCanceled(HomeArrivingPlayer homeArrivingPlayer, value) {
+    presence.playerCanceled(homeArrivingPlayer);
   }
 }
