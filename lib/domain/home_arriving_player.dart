@@ -8,30 +8,31 @@ class HomeArrivingPlayer extends Equatable
     implements Comparable<HomeArrivingPlayer> {
   const HomeArrivingPlayer._({
     required this.player,
-    required this.hasArrived,
+    required this.statePresence,
     required this.isUnlucky,
   });
 
   const HomeArrivingPlayer.initial(
     this.player,
-  )   : hasArrived = false,
+  )   : statePresence = StatePresence.initial,
         isUnlucky = false;
 
   final Player player;
-  final bool hasArrived;
+  final StatePresence statePresence;
   final bool isUnlucky;
 
   @override
-  List<Object?> get props => [player, hasArrived, isUnlucky];
+  List<Object?> get props => [player, statePresence, isUnlucky];
 
   HomeArrivingPlayer copyWith({
     Player? player,
+    StatePresence? statePresence,
     bool? hasArrived,
     bool? isUnlucky,
   }) {
     return HomeArrivingPlayer._(
       player: player ?? this.player,
-      hasArrived: hasArrived ?? this.hasArrived,
+      statePresence: statePresence ?? this.statePresence,
       isUnlucky: isUnlucky ?? this.isUnlucky,
     );
   }
@@ -46,4 +47,8 @@ class HomeArrivingPlayer extends Equatable
     }
     return 0;
   }
+}
+
+enum StatePresence {
+  initial, confirmed, arrived
 }

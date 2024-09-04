@@ -13,6 +13,7 @@ class PromisedBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var confirmedPlayersList = presence.promisedSortedByName.watch(context);
     return Column(
       children: [
         Text(
@@ -22,10 +23,10 @@ class PromisedBottomSheet extends StatelessWidget {
         Expanded(
           child: ListView.builder(
             physics: const ClampingScrollPhysics(),
-            itemCount: presence.promisedSortedByName.watch(context).length,
+            itemCount: confirmedPlayersList.length,
             itemBuilder: (context, index) {
               var homeArrivingPlayer =
-                  presence.promisedSortedByName.watch(context)[index];
+                  confirmedPlayersList[index];
               return Dismissible(
                 background: Container(color: Colors.deepOrange),
                 onDismissed: (direction) {

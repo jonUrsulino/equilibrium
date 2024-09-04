@@ -1,4 +1,5 @@
 import 'package:equilibrium/domain/home_arriving_player.dart';
+import 'package:get_it/get_it.dart';
 import 'package:signals/signals.dart';
 
 class PresencePlayers {
@@ -7,29 +8,31 @@ class PresencePlayers {
   final lastName = Signal('Equilibrium');
 
   //streaming
-  final List<HomeArrivingPlayer> _listHomeArriving;
+  final Map<String, HomeArrivingPlayer> _listHomeArriving;
 
-  final ListSignal<HomeArrivingPlayer> _arrived = ListSignal([]);
-  final ListSignal<HomeArrivingPlayer> _promised = ListSignal([]);
+  late final MapSignal<String, HomeArrivingPlayer> _arriving = MapSignal(_listHomeArriving);
+  late final _arrived = computed<List<HomeArrivingPlayer>>(() => _arriving.values.where((element) => element.statePresence == StatePresence.arrived).toList());
+  late final _promised = computed<List<HomeArrivingPlayer>>(() => _arriving.values.where((element) => element.statePresence == StatePresence.confirmed).toList());
 
-  late final ListSignal<HomeArrivingPlayer> _arriving = ListSignal(_listHomeArriving);
-  late final arrivingSortedByName = computed(() => _arriving.sorted(
-        (a, b) => a.player.name.compareTo(b.player.name),
-      ));
+  late final initialSortedByName = computed<List<HomeArrivingPlayer>>(() => _arriving.values
+      .where((element) => element.statePresence == StatePresence.initial).toList()..sort(
+          (a, b) => a.player.name.compareTo(b.player.name),
+  ));
 
-  late final promisedSortedByName = computed(() => _promised.sorted(
+  late final promisedSortedByName = computed<List<HomeArrivingPlayer>>(() => _promised.value.toList()..sort(
         (a, b) => a.player.name.compareTo(b.player.name),
       ));
 
   void addNewPlayer(HomeArrivingPlayer value) {
-    _promised.add(value);
+    _arriving[value.player.name] = value;
   }
 
   ListSignal<HomeArrivingPlayer> getArrivedWith(bool goalkeeper) {
     if (goalkeeper) {
-      return _arrived;
+      return _arrived.value.toSignal();
     } else {
       return _arrived
+          .value
           .where((element) => !element.player.isGoalkeeper)
           .toList()
           .toSignal();
@@ -39,44 +42,32 @@ class PresencePlayers {
   void playerArrived(HomeArrivingPlayer homeArrivingPlayer, bool value) {
     print('player arrived ${homeArrivingPlayer.player.name}');
 
-    var changed = homeArrivingPlayer.copyWith(hasArrived: true);
-
-    _arrived.add(changed);
-    _promised.remove(homeArrivingPlayer);
-    _arriving.remove(homeArrivingPlayer);
+    var changed = homeArrivingPlayer.copyWith(statePresence: StatePresence.arrived);
+    _arriving[homeArrivingPlayer.player.name] = changed;
   }
 
   void playerPromised(HomeArrivingPlayer homeArrivingPlayer, bool value) {
     print('player promised ${homeArrivingPlayer.player.name}');
 
-    _promised.add(homeArrivingPlayer);
-    _arrived.remove(homeArrivingPlayer);
-    _arriving.remove(homeArrivingPlayer);
+    var changed = homeArrivingPlayer.copyWith(statePresence: StatePresence.confirmed);
+    _arriving[homeArrivingPlayer.player.name] = changed;
   }
 
   void playerMissed(HomeArrivingPlayer homeArrivingPlayer, bool value) {
     print('player missed ${homeArrivingPlayer.player.name}');
 
-    var changed = homeArrivingPlayer.copyWith(hasArrived: false);
-
-    _promised.add(changed);
-    _arrived.remove(homeArrivingPlayer);
-    _arriving.remove(homeArrivingPlayer);
+    var changed = homeArrivingPlayer.copyWith(statePresence: StatePresence.confirmed);
+    _arriving[homeArrivingPlayer.player.name] = changed;
   }
 
   void playerCanceled(HomeArrivingPlayer homeArrivingPlayer) {
     print('player canceled ${homeArrivingPlayer.player.name}');
 
-    _arriving.add(homeArrivingPlayer);
-    _arrived.remove(homeArrivingPlayer);
-    _promised.remove(homeArrivingPlayer);
+    var changed = homeArrivingPlayer.copyWith(statePresence: StatePresence.initial);
+    _arriving[homeArrivingPlayer.player.name] = changed;
   }
 
   late final effecting = effect(() {
     print('${_arrived.value.length}');
   });
-
-  // List<HomeArrivingPlayer> getPlayers() {
-  //   return _useCase.execute().toFutureSignal().requireValue;
-  // }
 }

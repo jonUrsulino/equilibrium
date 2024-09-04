@@ -152,9 +152,9 @@ class Coach {
   }
 
   bool isTeamFullOfPromisedPlayers(Team team, int maxPromised) {
-    var bool =
-        team.players.toList().where((element) => !element.hasArrived).length >=
-            maxPromised;
+    var bool = team.players.toList()
+        .where((element) => element.statePresence == StatePresence.confirmed)
+        .length >= maxPromised;
     print('isTeamFullOfPromisedPlayers ${team.shirt.name} $bool');
     return bool;
   }

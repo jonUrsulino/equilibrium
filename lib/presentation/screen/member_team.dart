@@ -28,7 +28,7 @@ class _MemberTeamState extends State<MemberTeam> {
   @override
   Widget build(BuildContext context) {
     final Player player = widget.homeArrivingPlayer.player;
-    final bool hasArrived = widget.homeArrivingPlayer.hasArrived;
+    final bool hasNotArrived = widget.homeArrivingPlayer.statePresence == StatePresence.confirmed;
     final String playerName = player.name;
     final double playerStars = player.stars;
     final bool isGoalkeeper = player.isGoalkeeper;
@@ -57,7 +57,7 @@ class _MemberTeamState extends State<MemberTeam> {
             child: const Icon(Icons.sports_handball),
           ),
           Visibility(
-            visible: !hasArrived,
+            visible: hasNotArrived,
             child: const Icon(Icons.call_missed),
           ),
           const Spacer(),

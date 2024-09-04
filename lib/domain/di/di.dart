@@ -1,6 +1,7 @@
 import 'package:equilibrium/data/repository/player_repository.dart';
 import 'package:equilibrium/domain/Manager.dart';
 import 'package:equilibrium/domain/coach.dart';
+import 'package:equilibrium/domain/home_arriving_player.dart';
 import 'package:equilibrium/domain/presence.dart';
 import 'package:equilibrium/domain/repository/player_repository.dart';
 import 'package:equilibrium/domain/settings.dart';
@@ -14,7 +15,9 @@ abstract class DiDomain {
     GetIt.I.registerSingleton(GetHomeArrivingPlayersSortByStarts(repository: GetIt.I.get()));
     GetIt.I.registerLazySingleton<PresencePlayers>(() {
       GetHomeArrivingPlayersSortByStarts useCase = GetIt.I.get();
-        return PresencePlayers(useCase.execute());
+        List<HomeArrivingPlayer> list = useCase.execute();
+        Map<String, HomeArrivingPlayer> map = { for (var h in list) h.player.name : h };
+        return PresencePlayers(map);
     });
     GetIt.I.registerSingleton<Settings>(Settings());
     GetIt.I.registerSingleton<Coach>(Coach());

@@ -15,20 +15,20 @@ class ArrivingBottomSheet extends StatelessWidget {
     return Column(
       children: [
         Text(
-          'Marque quem confirmou que vai',
+          'Marque quem confirmou que vai: ${presence.promisedSortedByName.watch(context).length}',
           style: Theme.of(context).textTheme.headlineSmall,
         ),
         Expanded(
           child: ListView.builder(
             physics: const ClampingScrollPhysics(),
-            itemCount: presence.arrivingSortedByName.watch(context).length,
+            itemCount: presence.initialSortedByName.watch(context).length,
             itemBuilder: (context, index) {
               return PlayerTile(
                 player:
-                    presence.arrivingSortedByName.watch(context)[index].player,
+                    presence.initialSortedByName.watch(context)[index].player,
                 arrived: false,
                 onChangeArriving: (value) => onChangePromised(
-                  presence.arrivingSortedByName.watch(context)[index],
+                  presence.initialSortedByName.watch(context)[index],
                   value,
                 ),
                 showStars: false,
