@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
     FABActionType.balancePlayers: const FABData(BottomNavigationType.balance, "Balanciar times", Icons.balance,),
     FABActionType.gameCreation: const FABData(BottomNavigationType.game, "Criar partida", Icons.create,),
     FABActionType.gameStart: const FABData(BottomNavigationType.game, "Iniciar partida", Icons.not_started,),
-    FABActionType.gamePlaying: const FABData(BottomNavigationType.game, "Terminar partida", Icons.run_circle,),
+    FABActionType.gameFinish: const FABData(BottomNavigationType.game, "Terminar partida", Icons.sports,),
     FABActionType.changeTeams: const FABData(BottomNavigationType.game, "Trocar times", Icons.close_fullscreen,),
   };
 
@@ -83,16 +83,27 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
     switch (gameAction) {
       case GameAction.creation:
         controllerManager.initManagerGame();
-        fabData.value = maps[FABActionType.gameStart];
       case GameAction.readyToPlay:
         controllerManager.startGame();
-        fabData.value = maps[FABActionType.gamePlaying];
       case GameAction.playing:
         controllerManager.finishGame();
-        fabData.value = maps[FABActionType.changeTeams];
       case GameAction.finish:
         controllerManager.nextGame();
+      default:
+    }
+  }
+
+  void updateFABGameIcon() {
+    var gameAction = controllerManager.gameAction.watch(context);
+    switch (gameAction) {
+      case GameAction.creation:
         fabData.value = maps[FABActionType.gameCreation];
+      case GameAction.readyToPlay:
+        fabData.value = maps[FABActionType.gameStart];
+      case GameAction.playing:
+        fabData.value = maps[FABActionType.gameFinish];
+      case GameAction.finish:
+        fabData.value = maps[FABActionType.changeTeams];
       default:
     }
   }
@@ -185,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
         fabData.value = maps[FABActionType.balancePlayers];
       case 2:
         bottomNavAction.set(BottomNavigationType.game);
-        fabData.value = maps[FABActionType.gameCreation];
+        updateFABGameIcon();
       default:
         bottomNavAction.set(BottomNavigationType.home);
     }
@@ -247,6 +258,7 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
         balance();
       case BottomNavigationType.game:
         actionManagerGame();
+        updateFABGameIcon();
     }
   }
 }
@@ -261,4 +273,4 @@ class FABData {
   final IconData icon;
 }
 
-enum FABActionType { addPlayer, balancePlayers, gameCreation, gameStart, gamePlaying, changeTeams }
+enum FABActionType { addPlayer, balancePlayers, gameCreation, gameStart, gameFinish, changeTeams }

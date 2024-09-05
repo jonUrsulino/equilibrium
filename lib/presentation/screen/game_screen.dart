@@ -1,7 +1,10 @@
 import 'package:equilibrium/domain/controller_manager.dart';
+import 'package:equilibrium/domain/settings.dart';
 import 'package:equilibrium/domain/team.dart';
 import 'package:equilibrium/presentation/screen/member_team.dart';
+import 'package:equilibrium/presentation/screen/team_card.dart';
 import 'package:flutter/material.dart';
+import 'package:signals/signals_flutter.dart';
 
 class GameScreen extends StatelessWidget {
 
@@ -14,10 +17,22 @@ class GameScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _buildTeams(context);
+    return SingleChildScrollView(
+      physics: const ScrollPhysics(),
+      child: Column(
+          children: [
+            _buildCardGame(context),
+            const Padding(
+                padding: EdgeInsets.all(8),
+                child: Text('Próximos')
+            ),
+            _nextTeams(context)
+          ]
+      ),
+    );
   }
 
-  Widget _buildTeams(BuildContext context) {
+  Widget _buildCardGame(BuildContext context) {
     var game = controller.managerGame?.game;
 
     if (game != null) {
@@ -114,6 +129,25 @@ class GameScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _nextTeams(BuildContext context) {
+    final teams = controller.nextTeams.watch(context);
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: teams.length,
+          itemBuilder: (context, index) {
+            var team = teams[index];
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TeamCard(team),
+            );
+          }),
     );
   }
 }
