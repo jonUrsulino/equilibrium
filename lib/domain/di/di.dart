@@ -1,5 +1,5 @@
 import 'package:equilibrium/data/repository/player_repository.dart';
-import 'package:equilibrium/domain/Manager.dart';
+import 'package:equilibrium/domain/manager.dart';
 import 'package:equilibrium/domain/coach.dart';
 import 'package:equilibrium/domain/home_arriving_player.dart';
 import 'package:equilibrium/domain/presence.dart';
@@ -21,6 +21,5 @@ abstract class DiDomain {
     });
     GetIt.I.registerSingleton<Settings>(Settings());
     GetIt.I.registerSingleton<Coach>(Coach());
-    GetIt.I.registerSingleton<Manager>(Manager());
   }
 }

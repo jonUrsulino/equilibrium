@@ -1,11 +1,11 @@
-import 'package:equilibrium/domain/Manager.dart';
+import 'package:equilibrium/domain/controller_manager.dart';
 import 'package:equilibrium/domain/coach.dart';
 import 'package:equilibrium/domain/presence.dart';
 import 'package:equilibrium/domain/settings.dart';
 import 'package:equilibrium/navigator/nav_extensions.dart';
-import 'package:equilibrium/presentation/screen/arriving_bottom_sheet.dart';
 import 'package:equilibrium/presentation/screen/balance_screen.dart';
 import 'package:equilibrium/presentation/screen/canceling_confirmation_bottom_sheet.dart';
+import 'package:equilibrium/presentation/screen/game_screen.dart';
 import 'package:equilibrium/presentation/screen/new_player_dialog.dart';
 import 'package:equilibrium/presentation/screen/presence_screen.dart';
 import 'package:equilibrium/presentation/screen/settings.dart';
@@ -26,9 +26,22 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
   final presence = GetIt.I.get<PresencePlayers>();
   final coach = GetIt.I.get<Coach>();
   final settings = GetIt.I.get<Settings>();
-  final manager = GetIt.I.get<Manager>();
+  // final manager = GetIt.I.get<ManagerGame>();
+  final controllerManager = ControllerManager();
 
   final bottomNavAction = Signal(BottomNavigationType.home);
+
+  //TODO: Refactorar isso para usar state ou sealed class ou named constructor.
+  final Map<FABActionType, FABData> maps = {
+    FABActionType.addPlayer: const FABData(BottomNavigationType.home, "Adicionar jogador", Icons.add, ),
+    FABActionType.balancePlayers: const FABData(BottomNavigationType.balance, "Balanciar times", Icons.balance,),
+    FABActionType.gameCreation: const FABData(BottomNavigationType.game, "Criar partida", Icons.create,),
+    FABActionType.gameStart: const FABData(BottomNavigationType.game, "Iniciar partida", Icons.not_started,),
+    FABActionType.gamePlaying: const FABData(BottomNavigationType.game, "Terminar partida", Icons.run_circle,),
+    FABActionType.changeTeams: const FABData(BottomNavigationType.game, "Trocar times", Icons.close_fullscreen,),
+  };
+
+  late final fabData = Signal(maps[FABActionType.addPlayer]);
 
   final List<FABData> fabActions = [
     const FABData(
@@ -43,14 +56,45 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
     ),
     const FABData(
       BottomNavigationType.game,
+      "Criar partida",
+      Icons.create,
+    ),
+    const FABData(
+      BottomNavigationType.game,
       "Iniciar partida",
-      Icons.start,
+      Icons.not_started,
+    ),
+    const FABData(
+      BottomNavigationType.game,
+      "Terminar partida",
+      Icons.close_fullscreen,
     )
   ];
 
   void balance() {
     coach.balanceTeams();
     coach.printTeams();
+    controllerManager.initManagerGame();
+    fabData.value = maps[FABActionType.gameStart];
+  }
+
+  void actionManagerGame() {
+    var gameAction = controllerManager.gameAction.watch(context);
+    switch (gameAction) {
+      case GameAction.creation:
+        controllerManager.initManagerGame();
+        fabData.value = maps[FABActionType.gameStart];
+      case GameAction.readyToPlay:
+        controllerManager.startGame();
+        fabData.value = maps[FABActionType.gamePlaying];
+      case GameAction.playing:
+        controllerManager.finishGame();
+        fabData.value = maps[FABActionType.changeTeams];
+      case GameAction.finish:
+        controllerManager.nextGame();
+        fabData.value = maps[FABActionType.gameCreation];
+      default:
+    }
   }
 
   @override
@@ -90,8 +134,9 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
               return PresenceScreen(presence: presence);
             case BottomNavigationType.balance:
               return BalanceScreen(coach: coach);
+            case BottomNavigationType.game:
             default:
-              return Text('A fazer: Cronometro, Placar e próximos times');
+              return GameScreen(controller: controllerManager,);
           }
         }),
         bottomNavigationBar: BottomNavigationBar(
@@ -119,25 +164,28 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
         floatingActionButton: _buildFAB());
   }
 
-  FloatingActionButton _buildFAB() {
-    var fab = fabActions.singleWhere(
-        (element) => element.type == bottomNavAction.watch(context));
-
-    return FloatingActionButton(
-      onPressed: () => onPressed(fab),
-      tooltip: fab.name,
-      child: Icon(fab.icon),
-    );
+  Widget _buildFAB() {
+    return Watch((context) {
+      var fab = fabData.value!;
+      return FloatingActionButton(
+        onPressed: () => onPressed(fab),
+        tooltip: fab.name,
+        child: Icon(fab.icon),
+      );
+    });
   }
 
   void onTapBottomNavigation(int value) {
     switch (value) {
       case 0:
         bottomNavAction.set(BottomNavigationType.home);
+        fabData.value = maps[FABActionType.addPlayer];
       case 1:
         bottomNavAction.set(BottomNavigationType.balance);
+        fabData.value = maps[FABActionType.balancePlayers];
       case 2:
         bottomNavAction.set(BottomNavigationType.game);
+        fabData.value = maps[FABActionType.gameCreation];
       default:
         bottomNavAction.set(BottomNavigationType.home);
     }
@@ -191,13 +239,14 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
   }
 
   void onPressed(FABData fab) {
+    print('onPressed fab ${fab.name}');
     switch (fab.type) {
       case BottomNavigationType.home:
         _addPlayers();
       case BottomNavigationType.balance:
         balance();
       case BottomNavigationType.game:
-        print('Iniciar partida');
+        actionManagerGame();
     }
   }
 }
@@ -211,3 +260,5 @@ class FABData {
   final String name;
   final IconData icon;
 }
+
+enum FABActionType { addPlayer, balancePlayers, gameCreation, gameStart, gamePlaying, changeTeams }
