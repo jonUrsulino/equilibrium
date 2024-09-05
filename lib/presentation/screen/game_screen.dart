@@ -33,27 +33,46 @@ class GameScreen extends StatelessWidget {
   }
 
   Widget _buildCardGame(BuildContext context) {
-    var game = controller.managerGame?.game;
+    return Watch((context) {
+      var game = controller.managerGame?.game.watch(context);
 
-    if (game != null) {
-      final teamA = game.teamA;
-      final teamB = game.teamB;
+      if (game != null) {
+        final teamA = game.teamA;
+        final teamB = game.teamB;
+        print('card teamA: ${teamA.shirt.name}');
+        print('card teamB: ${teamB.shirt.name}');
 
-      return Container(
-        color: Colors.white10,
-        child: Row(
-          children: [
-            _buildTeam(context, teamA),
-            _buildTeam(context, teamB)
-          ],
-        ),
-      );
-    } else {
-      return const Text('Game not created');
-    }
+        return Card(
+          shape: const RoundedRectangleBorder(),
+          elevation: 8,
+          child: Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Container(
+              color: Colors.white10,
+              child: Row(
+                children: [
+                  _buildTeam(context, teamA, SideTeam.teamA),
+                  _buildTeam(context, teamB, SideTeam.teamB)
+                ],
+              ),
+            ),
+          ),
+        );
+      } else {
+        return const Text('Game not created');
+      }
+    });
   }
 
-  Widget _buildTeam(BuildContext context, Team team) {
+  Widget _buildTeam(BuildContext context, Team teammm, SideTeam sideTeam) {
+    Team team;
+    switch (sideTeam) {
+      case SideTeam.teamA:
+        team = controller.teamA.watch(context);
+      case SideTeam.teamB:
+      default:
+        team = controller.teamB.watch(context);
+    }
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -63,10 +82,11 @@ class GameScreen extends StatelessWidget {
             _headerTeam(context, team),
             _teamMembers(team),
             const SizedBox(
-              height: 20,
+              height: 10,
             ),
-            const Divider(
-              height: 1,
+            TextButton(
+              onPressed: () => onRemoveTeam(team, sideTeam),
+              child: const Text('Perdeu'),
             )
           ],
         ),
@@ -150,4 +170,13 @@ class GameScreen extends StatelessWidget {
           }),
     );
   }
+
+  onRemoveTeam(Team team, SideTeam sideTeam) {
+    print('onRemoveTeam ${team.shirt.name} $sideTeam');
+    controller.changeTeam(team, sideTeam);
+  }
+}
+
+enum SideTeam {
+  teamA, teamB
 }

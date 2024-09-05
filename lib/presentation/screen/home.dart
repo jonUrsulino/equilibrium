@@ -88,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
       case GameAction.playing:
         controllerManager.finishGame();
       case GameAction.finish:
-        controllerManager.nextGame();
+        // controllerManager.changeTeam();
       default:
     }
   }
