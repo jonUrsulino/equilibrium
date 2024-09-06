@@ -29,31 +29,7 @@ class SettingsScreen extends StatelessWidget {
           children: [
             Column(
               children: [
-                Row(
-                  children: [
-                    Text(
-                      'Máximo de jogadores por time',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const Spacer(),
-                    IconButton(
-                      onPressed: () => settings.decMaxPlayersByTeam(),
-                      icon: const Icon(
-                        Icons.exposure_minus_1,
-                      ),
-                    ),
-                    Text(
-                      '${settings.maxPlayersByTeam.watch(context)}',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    IconButton(
-                      onPressed: () => settings.incMaxPlayersByTeam(),
-                      icon: const Icon(
-                        Icons.exposure_plus_1,
-                      ),
-                    ),
-                  ],
-                ),
+                buildRowDecInc(context),
                 Row(
                   children: [
                     Text(
@@ -73,6 +49,34 @@ class SettingsScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget buildRowDecInc(BuildContext context) {
+    return Row(
+      children: [
+        Text(
+          'Máximo de jogadores por time',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const Spacer(),
+        IconButton(
+          onPressed: () => settings.decMaxPlayersByTeam(),
+          icon: const Icon(
+            Icons.exposure_minus_1,
+          ),
+        ),
+        Text(
+          '${settings.maxPlayersByTeam.watch(context)}',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        IconButton(
+          onPressed: () => settings.incMaxPlayersByTeam(),
+          icon: const Icon(
+            Icons.exposure_plus_1,
+          ),
+        ),
+      ],
     );
   }
 }

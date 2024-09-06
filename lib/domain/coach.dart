@@ -125,7 +125,7 @@ class Coach {
       var needs = promisedNeeded - shufflePromisesLimited.length;
       for (int i = 0; needs > i; i++) {
         var homeArrivingPlayer =
-            HomeArrivingPlayer.initial(Player.normal("Fake", 3));
+            HomeArrivingPlayer.initial(Player.normal("Vaga aberta", 3));
         shufflePromisesLimited.add(homeArrivingPlayer);
       }
     }

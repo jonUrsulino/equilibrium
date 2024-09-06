@@ -16,7 +16,7 @@ class ArrivingBottomSheet extends StatelessWidget {
     return Column(
       children: [
         Text(
-          'Marque quem confirmou que vai. Confirmados: ${presence.promisedSortedByName.watch(context).length}',
+          'Marque os confirmados: ${presence.promisedSortedByName.watch(context).length}',
           style: Theme.of(context).textTheme.headlineSmall,
         ),
         Expanded(

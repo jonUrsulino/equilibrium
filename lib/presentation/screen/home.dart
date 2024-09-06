@@ -9,6 +9,7 @@ import 'package:equilibrium/presentation/screen/game_screen.dart';
 import 'package:equilibrium/presentation/screen/new_player_dialog.dart';
 import 'package:equilibrium/presentation/screen/presence_screen.dart';
 import 'package:equilibrium/presentation/screen/settings.dart';
+import 'package:equilibrium/presentation/screen/sort_next_team_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:signals/signals_flutter.dart';
@@ -130,6 +131,10 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
                   : Icons.visibility_off),
             ),
             IconButton(
+              onPressed: () => _onTapSortPlayers(),
+              icon: const Icon(Icons.published_with_changes),
+            ),
+            IconButton(
               onPressed: () => _onTapCheckPresence(),
               icon: const Icon(Icons.check),
             ),
@@ -208,9 +213,23 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
     settings.toggleStarsVisible();
   }
 
+  void _onTapSortPlayers() {
+    print('presence');
+    showModalBottomSheet(
+      isScrollControlled: true,
+      enableDrag: true,
+      showDragHandle: true,
+      context: context,
+      builder: (context) {
+        return SortNextTeamBottomSheet();
+      },
+    );
+  }
+
   void _onTapCheckPresence() {
     print('presence');
     showModalBottomSheet(
+      isScrollControlled: true,
       enableDrag: true,
       showDragHandle: true,
       context: context,

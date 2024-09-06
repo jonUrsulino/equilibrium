@@ -1,5 +1,4 @@
 import 'package:equilibrium/domain/home_arriving_player.dart';
-import 'package:get_it/get_it.dart';
 import 'package:signals/signals.dart';
 
 class PresencePlayers {

@@ -17,7 +17,7 @@ class PromisedBottomSheet extends StatelessWidget {
     return Column(
       children: [
         Text(
-          'Confirme quem já chegou. Confirmados: ${confirmedPlayersList.length}',
+          'Confirme quem já chegou',
           style: Theme.of(context).textTheme.headlineSmall,
         ),
         Expanded(
