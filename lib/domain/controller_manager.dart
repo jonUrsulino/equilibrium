@@ -1,7 +1,7 @@
 
 
 import 'package:equilibrium/domain/manager.dart';
-import 'package:equilibrium/domain/team.dart';
+import 'package:equilibrium/domain/model/team.dart';
 import 'package:equilibrium/presentation/screen/game_screen.dart';
 import 'package:get_it/get_it.dart';
 import 'package:signals/signals.dart';

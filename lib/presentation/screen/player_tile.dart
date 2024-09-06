@@ -1,4 +1,4 @@
-import 'package:equilibrium/domain/player.dart';
+import 'package:equilibrium/domain/model/player.dart';
 import 'package:equilibrium/domain/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';

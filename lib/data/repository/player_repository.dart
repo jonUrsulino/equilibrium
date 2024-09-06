@@ -1,11 +1,12 @@
 
 
-import 'package:equilibrium/domain/player.dart';
+import 'package:equilibrium/domain/model/player.dart';
 import 'package:equilibrium/domain/repository/player_repository.dart';
+import 'package:signals/signals.dart';
 
 class PlayerRepositoryImpl implements PlayerRepository {
 
-  final players = [
+  final players = ListSignal([
     Player.goalkeeper("Murilo", 5),
     Player.normal("Tiago Valadão", 5),
     Player.normal("Jocivaldo", 5),
@@ -44,10 +45,12 @@ class PlayerRepositoryImpl implements PlayerRepository {
     Player.normal("Caio", 4.5),
     Player.normal("Gustavo", 2),
     // Player.normal("Breno", 4),
-  ];
+  ]);
 
   @override
-  List<Player> getPlayers() {
+  ListSignal<Player> getPlayers() {
     return players;
   }
+
+
 }

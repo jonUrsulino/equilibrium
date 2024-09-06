@@ -1,6 +1,5 @@
 import 'package:equilibrium/domain/controller_manager.dart';
-import 'package:equilibrium/domain/settings.dart';
-import 'package:equilibrium/domain/team.dart';
+import 'package:equilibrium/domain/model/team.dart';
 import 'package:equilibrium/presentation/screen/member_team.dart';
 import 'package:equilibrium/presentation/screen/team_card.dart';
 import 'package:flutter/material.dart';

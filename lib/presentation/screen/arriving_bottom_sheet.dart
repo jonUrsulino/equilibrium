@@ -1,5 +1,7 @@
-import 'package:equilibrium/domain/presence_player.dart';
-import 'package:equilibrium/domain/presence.dart';
+import 'package:equilibrium/domain/model/presence_player.dart';
+import 'package:equilibrium/domain/repository/presence_player_repository.dart';
+import 'package:equilibrium/domain/use_case/get_computed_confirmed_players_sort_by_name.dart';
+import 'package:equilibrium/domain/use_case/get_computed_presence_players_sorted_by_name.dart';
 import 'package:equilibrium/presentation/screen/player_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -8,15 +10,17 @@ import 'package:signals/signals_flutter.dart';
 class ArrivingBottomSheet extends StatelessWidget {
   ArrivingBottomSheet({super.key});
 
-  final presence = GetIt.I.get<PresencePlayers>();
+  final PresencePlayerRepository presencePlayerRepository = GetIt.I.get();
+  final getComputedPresencePlayersSortedByName = GetIt.I.get<GetComputedPresencePlayersSortedByName>();
+  final getConfirmedPlayersSortByName = GetIt.I.get<GetComputedConfirmedPlayersSortByName>();
 
   @override
   Widget build(BuildContext context) {
-    final initialPlayers = presence.initialSortedByName.watch(context);
+    final initialPlayers = getComputedPresencePlayersSortedByName.execute().watch(context);
     return Column(
       children: [
         Text(
-          'Marque os confirmados: ${presence.confirmedSortedByName.watch(context).length}',
+          'Marque os confirmados: ${getConfirmedPlayersSortByName.execute().watch(context).length}',
           style: Theme.of(context).textTheme.headlineSmall,
         ),
         Expanded(
@@ -42,6 +46,6 @@ class ArrivingBottomSheet extends StatelessWidget {
   }
 
   onChangeConfirmed(PresencePlayer presencePlayer, value) {
-    presence.playerConfirmed(presencePlayer, value);
+    presencePlayerRepository.playerConfirmed(presencePlayer, value);
   }
 }

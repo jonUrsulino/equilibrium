@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:equilibrium/domain/player.dart';
-import 'package:equilibrium/domain/presence.dart';
+import 'package:equilibrium/domain/model/player.dart';
+import 'package:equilibrium/domain/use_case/get_computed_arrived_players.dart';
 import 'package:equilibrium/presentation/screen/player_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -10,20 +10,19 @@ import 'package:signals/signals_flutter.dart';
 class SortNextTeamBottomSheet extends StatelessWidget {
   SortNextTeamBottomSheet({super.key});
 
-  final presence = GetIt.I.get<PresencePlayers>();
-
   final ListSignal<Player> markedPlayers = ListSignal([]);
   final ListSignal<String> sortedPlayers = ListSignal([]);
   final ListSignal<Player> arrivedPlayers = ListSignal([]);
   final unluckyNumber = Signal(3);
   final textController = TextEditingController();
+  final getComputedArrivedPresencePlayers = GetIt.I.get<GetComputedArrivedPresencePlayers>();
 
   var numberToSortUnlucky = signal(3);
   var isSorted = signal(false);
 
   @override
   Widget build(BuildContext context) {
-    final arrived = presence.arrived.watch(context);
+    final arrived = getComputedArrivedPresencePlayers.execute().watch(context);
     final marked = markedPlayers.watch(context);
 
     return SingleChildScrollView(

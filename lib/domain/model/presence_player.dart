@@ -2,7 +2,7 @@ import 'dart:core';
 import 'dart:math';
 
 import 'package:equatable/equatable.dart';
-import 'package:equilibrium/domain/player.dart';
+import 'package:equilibrium/domain/model/player.dart';
 
 class PresencePlayer extends Equatable
     implements Comparable<PresencePlayer> {

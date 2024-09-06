@@ -1,18 +1,21 @@
 import 'package:equilibrium/domain/coach.dart';
-import 'package:equilibrium/domain/team.dart';
+import 'package:equilibrium/domain/model/team.dart';
+import 'package:equilibrium/domain/use_case/get_computed_arrived_players.dart';
 import 'package:equilibrium/presentation/screen/member_team.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:signals/signals_flutter.dart';
 
 class BalanceScreen extends StatelessWidget {
   static const route = "BalanceScreen";
 
-  const BalanceScreen({
+  BalanceScreen({
     required this.coach,
     super.key,
   });
 
   final Coach coach;
+  final getListArrivedPresencePlayers = GetIt.I.get<GetComputedArrivedPresencePlayers>();
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +29,7 @@ class BalanceScreen extends StatelessWidget {
   }
 
   Widget _buildPresence() {
-    final arrivedPlayers = coach.presence.arrived.value;
+    final arrivedPlayers = getListArrivedPresencePlayers.execute().value;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ListView.builder(

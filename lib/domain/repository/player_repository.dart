@@ -1,7 +1,8 @@
 
 
-import 'package:equilibrium/domain/player.dart';
+import 'package:equilibrium/domain/model/player.dart';
+import 'package:signals/signals.dart';
 
 abstract class PlayerRepository {
-  List<Player> getPlayers();
+  ListSignal<Player> getPlayers();
 }

@@ -1,5 +1,5 @@
 
-import 'package:equilibrium/domain/team.dart';
+import 'package:equilibrium/domain/model/team.dart';
 import 'package:equilibrium/presentation/screen/member_team.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

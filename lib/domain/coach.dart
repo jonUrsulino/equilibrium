@@ -1,11 +1,13 @@
 import 'dart:math';
 
-import 'package:equilibrium/domain/presence_player.dart';
-import 'package:equilibrium/domain/player.dart';
-import 'package:equilibrium/domain/presence.dart';
+import 'package:equilibrium/domain/model/player.dart';
+import 'package:equilibrium/domain/model/presence_player.dart';
+import 'package:equilibrium/domain/model/shirt.dart';
+import 'package:equilibrium/domain/model/team.dart';
 import 'package:equilibrium/domain/settings.dart';
-import 'package:equilibrium/domain/team.dart';
-import 'package:equilibrium/domain/shirt.dart';
+import 'package:equilibrium/domain/use_case/get_computed_arrived_players.dart';
+import 'package:equilibrium/domain/use_case/get_computed_arrived_players_except_goalkeepers.dart';
+import 'package:equilibrium/domain/use_case/get_computed_confirmed_players_sort_by_name.dart';
 import 'package:get_it/get_it.dart';
 import 'package:signals/signals.dart';
 
@@ -21,7 +23,9 @@ final List<Shirt> availableShirts = [
 class Coach {
   Coach();
 
-  final PresencePlayers presence = GetIt.I.get<PresencePlayers>();
+  final getListArrivedPresencePlayers = GetIt.I.get<GetComputedArrivedPresencePlayers>();
+  final getListArrivedPresencePlayersExceptGoalkeepers = GetIt.I.get<GetComputedArrivedPresencePlayersExceptGoalkeepers>();
+  final getConfirmedPlayersSortByName = GetIt.I.get<GetComputedConfirmedPlayersSortByName>();
   final Settings settings = GetIt.I.get<Settings>();
 
   final ListSignal<Team> teams = ListSignal([]);
@@ -31,9 +35,9 @@ class Coach {
     final maxPlayersByTeam = settings.getMaxPlayersByTeam();
 
     final balanceGoalkeeper = settings.isConsideredBalanceWithGoalkeeper();
-    var arrivingPlayers = presence.arrived.value;
+    var arrivingPlayers = getListArrivedPresencePlayers.execute().value;
     if (!balanceGoalkeeper) {
-      arrivingPlayers = presence.arrivedWithoutGoalkeeper.value;
+      arrivingPlayers = getListArrivedPresencePlayersExceptGoalkeepers.execute().value;
     }
     int amountPlayers = arrivingPlayers.length;
 
@@ -114,7 +118,7 @@ class Coach {
   }
 
   void createIncompleteTeamToBalanceWithPromisedPlayers(int promisedNeeded) {
-    var promisedListPlayers = presence.confirmedSortedByName.value;
+    var promisedListPlayers = getConfirmedPlayersSortByName.execute().value;
 
     promisedListPlayers.shuffle();
     var shufflePromisesLimited = promisedListPlayers.toList();
@@ -138,7 +142,7 @@ class Coach {
   }
 
   void createPromisedTeamNotBalanced(int maxPlayersByTeam) {
-    var promisedListPlayers = presence.confirmedSortedByName.value;
+    var promisedListPlayers = getConfirmedPlayersSortByName.execute().value;
 
     promisedListPlayers.shuffle();
     var shufflePromisesLimited = promisedListPlayers.toList();

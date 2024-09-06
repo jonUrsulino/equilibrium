@@ -1,7 +1,7 @@
-import 'package:equilibrium/domain/controller_manager.dart';
 import 'package:equilibrium/domain/coach.dart';
-import 'package:equilibrium/domain/presence.dart';
+import 'package:equilibrium/domain/controller_manager.dart';
 import 'package:equilibrium/domain/settings.dart';
+import 'package:equilibrium/domain/use_case/get_computed_arrived_players.dart';
 import 'package:equilibrium/navigator/nav_extensions.dart';
 import 'package:equilibrium/presentation/screen/balance_screen.dart';
 import 'package:equilibrium/presentation/screen/canceling_confirmation_bottom_sheet.dart';
@@ -24,10 +24,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
-  final presence = GetIt.I.get<PresencePlayers>();
+  final getListArrivedPresencePlayers = GetIt.I.get<GetComputedArrivedPresencePlayers>();
   final coach = GetIt.I.get<Coach>();
   final settings = GetIt.I.get<Settings>();
-  // final manager = GetIt.I.get<ManagerGame>();
   final controllerManager = ControllerManager();
 
   final bottomNavAction = Signal(BottomNavigationType.home);
@@ -110,12 +109,6 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
   }
 
   @override
-  void initState() {
-    presence.effecting;
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
@@ -147,7 +140,7 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
         body: Watch((context) {
           switch (bottomNavAction.value) {
             case BottomNavigationType.home:
-              return PresenceScreen(presence: presence);
+              return PresenceScreen();
             case BottomNavigationType.balance:
               return BalanceScreen(coach: coach);
             case BottomNavigationType.game:
@@ -247,7 +240,7 @@ class _HomeScreenState extends State<HomeScreen> with SignalsAutoDisposeMixin {
   String _title(int index) {
     switch (index) {
       case 0:
-        return 'Presentes: ${presence.arrived.watch(context).length}';
+        return 'Presentes: ${getListArrivedPresencePlayers.execute().watch(context).length}';
       case 1:
         return 'Balanciamento';
       case 2:

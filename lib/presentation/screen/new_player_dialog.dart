@@ -1,6 +1,6 @@
-import 'package:equilibrium/domain/presence_player.dart';
-import 'package:equilibrium/domain/player.dart';
-import 'package:equilibrium/domain/presence.dart';
+import 'package:equilibrium/domain/model/player.dart';
+import 'package:equilibrium/domain/model/presence_player.dart';
+import 'package:equilibrium/domain/repository/presence_player_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:get_it/get_it.dart';
@@ -9,7 +9,7 @@ import 'package:signals/signals_flutter.dart';
 class NewPlayerDialog extends StatelessWidget {
   NewPlayerDialog({super.key});
 
-  final PresencePlayers presence = GetIt.I.get();
+  final PresencePlayerRepository repository = GetIt.I.get();
   final Signal<double> stars = Signal(3);
   final Signal<bool?> isGoalkeeper = Signal(false);
   final textEditingController = TextEditingController();
@@ -70,7 +70,7 @@ class NewPlayerDialog extends StatelessWidget {
     final playerName = textEditingController.text;
     final rating = stars.value;
     final isGoalkeeper = this.isGoalkeeper.value ?? false;
-    presence.addNewPlayer(
+    repository.addNewPlayer(
       PresencePlayer.initial(
         Player(playerName, rating, isGoalkeeper),
       ),

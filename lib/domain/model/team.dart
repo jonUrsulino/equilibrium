@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:equilibrium/domain/presence_player.dart';
-import 'package:equilibrium/domain/shirt.dart';
+import 'package:equilibrium/domain/model/presence_player.dart';
+import 'package:equilibrium/domain/model/shirt.dart';
 
 class Team extends Equatable {
   final Shirt shirt;

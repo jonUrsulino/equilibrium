@@ -1,6 +1,6 @@
 
 import 'package:equatable/equatable.dart';
-import 'package:equilibrium/domain/team.dart';
+import 'package:equilibrium/domain/model/team.dart';
 
 class Game extends Equatable {
   const Game._({

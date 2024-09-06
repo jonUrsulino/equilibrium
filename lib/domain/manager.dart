@@ -1,6 +1,6 @@
 
-import 'package:equilibrium/domain/game.dart';
-import 'package:equilibrium/domain/team.dart';
+import 'package:equilibrium/domain/model/game.dart';
+import 'package:equilibrium/domain/model/team.dart';
 import 'package:equilibrium/presentation/screen/game_screen.dart';
 import 'package:signals/signals.dart';
 
