@@ -1,4 +1,4 @@
-import 'package:equilibrium/domain/home_arriving_player.dart';
+import 'package:equilibrium/domain/presence_player.dart';
 import 'package:equilibrium/domain/player.dart';
 import 'package:equilibrium/domain/presence.dart';
 import 'package:flutter/material.dart';
@@ -71,7 +71,7 @@ class NewPlayerDialog extends StatelessWidget {
     final rating = stars.value;
     final isGoalkeeper = this.isGoalkeeper.value ?? false;
     presence.addNewPlayer(
-      HomeArrivingPlayer.initial(
+      PresencePlayer.initial(
         Player(playerName, rating, isGoalkeeper),
       ),
     );

@@ -4,15 +4,15 @@ import 'dart:math';
 import 'package:equatable/equatable.dart';
 import 'package:equilibrium/domain/player.dart';
 
-class HomeArrivingPlayer extends Equatable
-    implements Comparable<HomeArrivingPlayer> {
-  const HomeArrivingPlayer._({
+class PresencePlayer extends Equatable
+    implements Comparable<PresencePlayer> {
+  const PresencePlayer._({
     required this.player,
     required this.statePresence,
     required this.isUnlucky,
   });
 
-  const HomeArrivingPlayer.initial(
+  const PresencePlayer.initial(
     this.player,
   )   : statePresence = StatePresence.initial,
         isUnlucky = false;
@@ -24,13 +24,13 @@ class HomeArrivingPlayer extends Equatable
   @override
   List<Object?> get props => [player, statePresence, isUnlucky];
 
-  HomeArrivingPlayer copyWith({
+  PresencePlayer copyWith({
     Player? player,
     StatePresence? statePresence,
     bool? hasArrived,
     bool? isUnlucky,
   }) {
-    return HomeArrivingPlayer._(
+    return PresencePlayer._(
       player: player ?? this.player,
       statePresence: statePresence ?? this.statePresence,
       isUnlucky: isUnlucky ?? this.isUnlucky,
@@ -38,7 +38,7 @@ class HomeArrivingPlayer extends Equatable
   }
 
   @override
-  int compareTo(HomeArrivingPlayer other) {
+  int compareTo(PresencePlayer other) {
     print("-------987654323456789------------");
     if (player.stars == other.player.stars) {
       var returns = Random().nextInt(3) - 1;

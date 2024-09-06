@@ -34,37 +34,33 @@ class GameScreen extends StatelessWidget {
 
   Widget _buildCardGame(BuildContext context) {
     return Watch((context) {
-      var game = controller.managerGame?.game.watch(context);
+      var game = controller.managerGame.game.watch(context);
 
-      if (game != null) {
-        final teamA = game.teamA;
-        final teamB = game.teamB;
-        print('card teamA: ${teamA.shirt.name}');
-        print('card teamB: ${teamB.shirt.name}');
+      // final teamA = game.teamA;
+      // final teamB = game.teamB;
+      // print('card teamA: ${teamA.shirt.name}');
+      // print('card teamB: ${teamB.shirt.name}');
 
-        return Card(
-          shape: const RoundedRectangleBorder(),
-          elevation: 8,
-          child: Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Container(
-              color: Colors.white10,
-              child: Row(
-                children: [
-                  _buildTeam(context, teamA, SideTeam.teamA),
-                  _buildTeam(context, teamB, SideTeam.teamB)
-                ],
-              ),
+      return Card(
+        shape: const RoundedRectangleBorder(),
+        elevation: 8,
+        child: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Container(
+            color: Colors.white10,
+            child: Row(
+              children: [
+                _buildTeam(context, SideTeam.teamA),
+                _buildTeam(context, SideTeam.teamB)
+              ],
             ),
           ),
-        );
-      } else {
-        return const Text('Game not created');
-      }
+        ),
+      );
     });
   }
 
-  Widget _buildTeam(BuildContext context, Team teammm, SideTeam sideTeam) {
+  Widget _buildTeam(BuildContext context, SideTeam sideTeam) {
     Team team;
     switch (sideTeam) {
       case SideTeam.teamA:
@@ -102,10 +98,10 @@ class GameScreen extends StatelessWidget {
         physics: const ClampingScrollPhysics(),
         itemCount: team.players.length,
         itemBuilder: (context, index) {
-          var homeArrivingPlayer = team.players[index];
+          var presencePlayer = team.players[index];
           return MemberTeam(
             position: (index + 1).toString(),
-            homeArrivingPlayer: homeArrivingPlayer,
+            presencePlayer: presencePlayer,
             arrived: true,
           );
         },

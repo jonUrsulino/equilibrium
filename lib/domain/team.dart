@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
-import 'package:equilibrium/domain/home_arriving_player.dart';
+import 'package:equilibrium/domain/presence_player.dart';
 import 'package:equilibrium/domain/shirt.dart';
 
 class Team extends Equatable {
   final Shirt shirt;
-  final List<HomeArrivingPlayer> players = [];
+  final List<PresencePlayer> players = [];
   late final bool incomplete;
 
   Team._({required this.shirt}) : incomplete = false;
@@ -17,12 +17,12 @@ class Team extends Equatable {
     incomplete = true;
   }
 
-  void addPlayer(HomeArrivingPlayer homeArrivingPlayer) {
-    players.add(homeArrivingPlayer);
+  void addPlayer(PresencePlayer presencePlayer) {
+    players.add(presencePlayer);
   }
 
-  void removePlayer(HomeArrivingPlayer homeArrivingPlayer) {
-    players.remove(homeArrivingPlayer);
+  void removePlayer(PresencePlayer presencePlayer) {
+    players.remove(presencePlayer);
   }
 
   double calculatePower() {

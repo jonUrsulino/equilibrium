@@ -1,9 +1,9 @@
-import 'package:equilibrium/domain/home_arriving_player.dart';
+import 'package:equilibrium/domain/presence_player.dart';
 import 'package:equilibrium/domain/player.dart';
 import 'package:equilibrium/domain/presence.dart';
 import 'package:equilibrium/presentation/screen/arriving_bottom_sheet.dart';
 import 'package:equilibrium/presentation/screen/player_tile.dart';
-import 'package:equilibrium/presentation/screen/promised_bottom_sheet.dart';
+import 'package:equilibrium/presentation/screen/confirmed_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
 
@@ -42,7 +42,7 @@ class PresenceScreen extends StatelessWidget {
           body: TabBarView(
             children: [
               ArrivingBottomSheet(),
-              PromisedBottomSheet(),
+              ConfirmedBottomSheet(),
               _buildArrived(),
             ],
           ),
@@ -85,11 +85,11 @@ class PresenceScreen extends StatelessWidget {
     );
   }
 
-  onChangeMissing(HomeArrivingPlayer homeArrivingPlayer, value) {
-    presence.playerMissed(homeArrivingPlayer, value);
+  onChangeMissing(PresencePlayer presencePlayer, value) {
+    presence.playerMissed(presencePlayer, value);
   }
 
-  Widget _buildPromised() {
+  Widget _buildConfirmed() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(

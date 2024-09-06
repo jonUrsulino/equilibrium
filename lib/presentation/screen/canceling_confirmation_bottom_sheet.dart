@@ -1,4 +1,4 @@
-import 'package:equilibrium/domain/home_arriving_player.dart';
+import 'package:equilibrium/domain/presence_player.dart';
 import 'package:equilibrium/domain/presence.dart';
 import 'package:equilibrium/presentation/screen/player_tile.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +12,7 @@ class CancelingConfirmationBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final confirmedPlayers = presence.promisedSortedByName.watch(context);
+    final confirmedPlayers = presence.confirmedSortedByName.watch(context);
     return Column(
       children: [
         Text(
@@ -40,7 +40,7 @@ class CancelingConfirmationBottomSheet extends StatelessWidget {
     );
   }
 
-  onChangeCanceled(HomeArrivingPlayer homeArrivingPlayer, value) {
-    presence.playerCanceled(homeArrivingPlayer);
+  onChangeCanceled(PresencePlayer presencePlayer, value) {
+    presence.playerCanceled(presencePlayer);
   }
 }

@@ -1,4 +1,4 @@
-import 'package:equilibrium/domain/home_arriving_player.dart';
+import 'package:equilibrium/domain/presence_player.dart';
 import 'package:equilibrium/domain/presence.dart';
 import 'package:equilibrium/presentation/screen/player_tile.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +16,7 @@ class ArrivingBottomSheet extends StatelessWidget {
     return Column(
       children: [
         Text(
-          'Marque os confirmados: ${presence.promisedSortedByName.watch(context).length}',
+          'Marque os confirmados: ${presence.confirmedSortedByName.watch(context).length}',
           style: Theme.of(context).textTheme.headlineSmall,
         ),
         Expanded(
@@ -28,7 +28,7 @@ class ArrivingBottomSheet extends StatelessWidget {
                 player:
                     initialPlayers[index].player,
                 arrived: false,
-                onChangeArriving: (value) => onChangePromised(
+                onChangeArriving: (value) => onChangeConfirmed(
                   initialPlayers[index],
                   value,
                 ),
@@ -41,7 +41,7 @@ class ArrivingBottomSheet extends StatelessWidget {
     );
   }
 
-  onChangePromised(HomeArrivingPlayer homeArrivingPlayer, value) {
-    presence.playerPromised(homeArrivingPlayer, value);
+  onChangeConfirmed(PresencePlayer presencePlayer, value) {
+    presence.playerConfirmed(presencePlayer, value);
   }
 }

@@ -1,34 +1,34 @@
-import 'package:equilibrium/domain/home_arriving_player.dart';
+import 'package:equilibrium/domain/presence_player.dart';
 import 'package:signals/signals.dart';
 
 class PresencePlayers {
-  PresencePlayers(this._listHomeArriving);
+  PresencePlayers(this._initialPresencePlayers);
 
   final lastName = Signal('Equilibrium');
 
   //streaming
-  final Map<String, HomeArrivingPlayer> _listHomeArriving;
+  final Map<String, PresencePlayer> _initialPresencePlayers;
 
-  late final MapSignal<String, HomeArrivingPlayer> _arriving = MapSignal(_listHomeArriving);
-  late final arrived = computed<List<HomeArrivingPlayer>>(() => _arriving.values.where((element) => element.statePresence == StatePresence.arrived).toList());
-  late final _promised = computed<List<HomeArrivingPlayer>>(() => _arriving.values.where((element) => element.statePresence == StatePresence.confirmed).toList());
+  late final MapSignal<String, PresencePlayer> _arriving = MapSignal(_initialPresencePlayers);
+  late final arrived = computed<List<PresencePlayer>>(() => _arriving.values.where((element) => element.statePresence == StatePresence.arrived).toList());
+  late final _confirmed = computed<List<PresencePlayer>>(() => _arriving.values.where((element) => element.statePresence == StatePresence.confirmed).toList());
 
-  late final initialSortedByName = computed<List<HomeArrivingPlayer>>(() => _arriving.values
+  late final initialSortedByName = computed<List<PresencePlayer>>(() => _arriving.values
       .where((element) => element.statePresence == StatePresence.initial).toList()..sort(
           (a, b) => a.player.name.compareTo(b.player.name),
   ));
 
-  late final promisedSortedByName = computed<List<HomeArrivingPlayer>>(() => _promised.value.toList()..sort(
+  late final confirmedSortedByName = computed<List<PresencePlayer>>(() => _confirmed.value.toList()..sort(
         (a, b) => a.player.name.compareTo(b.player.name),
       ));
 
-  late final arrivedWithoutGoalkeeper = computed<List<HomeArrivingPlayer>>(() => arrived.value.where((element) => !element.player.isGoalkeeper).toList());
+  late final arrivedWithoutGoalkeeper = computed<List<PresencePlayer>>(() => arrived.value.where((element) => !element.player.isGoalkeeper).toList());
 
-  void addNewPlayer(HomeArrivingPlayer value) {
+  void addNewPlayer(PresencePlayer value) {
     _arriving[value.player.name] = value;
   }
 
-  ListSignal<HomeArrivingPlayer> getArrivedWith(bool goalkeeper) {
+  ListSignal<PresencePlayer> getArrivedWith(bool goalkeeper) {
     if (goalkeeper) {
       return arrived.value.toSignal();
     } else {
@@ -40,32 +40,32 @@ class PresencePlayers {
     }
   }
 
-  void playerArrived(HomeArrivingPlayer homeArrivingPlayer, bool value) {
-    print('player arrived ${homeArrivingPlayer.player.name}');
+  void playerArrived(PresencePlayer presencePlayer, bool value) {
+    print('player arrived ${presencePlayer.player.name}');
 
-    var changed = homeArrivingPlayer.copyWith(statePresence: StatePresence.arrived);
-    _arriving[homeArrivingPlayer.player.name] = changed;
+    var changed = presencePlayer.copyWith(statePresence: StatePresence.arrived);
+    _arriving[presencePlayer.player.name] = changed;
   }
 
-  void playerPromised(HomeArrivingPlayer homeArrivingPlayer, bool value) {
-    print('player promised ${homeArrivingPlayer.player.name}');
+  void playerConfirmed(PresencePlayer presencePlayer, bool value) {
+    print('player promised ${presencePlayer.player.name}');
 
-    var changed = homeArrivingPlayer.copyWith(statePresence: StatePresence.confirmed);
-    _arriving[homeArrivingPlayer.player.name] = changed;
+    var changed = presencePlayer.copyWith(statePresence: StatePresence.confirmed);
+    _arriving[presencePlayer.player.name] = changed;
   }
 
-  void playerMissed(HomeArrivingPlayer homeArrivingPlayer, bool value) {
-    print('player missed ${homeArrivingPlayer.player.name}');
+  void playerMissed(PresencePlayer presencePlayer, bool value) {
+    print('player missed ${presencePlayer.player.name}');
 
-    var changed = homeArrivingPlayer.copyWith(statePresence: StatePresence.confirmed);
-    _arriving[homeArrivingPlayer.player.name] = changed;
+    var changed = presencePlayer.copyWith(statePresence: StatePresence.confirmed);
+    _arriving[presencePlayer.player.name] = changed;
   }
 
-  void playerCanceled(HomeArrivingPlayer homeArrivingPlayer) {
-    print('player canceled ${homeArrivingPlayer.player.name}');
+  void playerCanceled(PresencePlayer presencePlayer) {
+    print('player canceled ${presencePlayer.player.name}');
 
-    var changed = homeArrivingPlayer.copyWith(statePresence: StatePresence.initial);
-    _arriving[homeArrivingPlayer.player.name] = changed;
+    var changed = presencePlayer.copyWith(statePresence: StatePresence.initial);
+    _arriving[presencePlayer.player.name] = changed;
   }
 
   late final effecting = effect(() {

@@ -1,4 +1,4 @@
-import 'package:equilibrium/domain/home_arriving_player.dart';
+import 'package:equilibrium/domain/presence_player.dart';
 import 'package:equilibrium/domain/player.dart';
 import 'package:equilibrium/domain/settings.dart';
 import 'package:flutter/material.dart';
@@ -8,12 +8,12 @@ import 'package:signals/signals_flutter.dart';
 
 class MemberTeam extends StatefulWidget {
   final String position;
-  final HomeArrivingPlayer homeArrivingPlayer;
+  final PresencePlayer presencePlayer;
   final bool arrived;
 
   const MemberTeam({
     required this.position,
-    required this.homeArrivingPlayer,
+    required this.presencePlayer,
     required this.arrived,
     super.key,
   });
@@ -27,8 +27,8 @@ class _MemberTeamState extends State<MemberTeam> {
 
   @override
   Widget build(BuildContext context) {
-    final Player player = widget.homeArrivingPlayer.player;
-    final bool hasNotArrived = widget.homeArrivingPlayer.statePresence == StatePresence.confirmed;
+    final Player player = widget.presencePlayer.player;
+    final bool hasNotArrived = widget.presencePlayer.statePresence == StatePresence.confirmed;
     final String playerName = player.name;
     final double playerStars = player.stars;
     final bool isGoalkeeper = player.isGoalkeeper;

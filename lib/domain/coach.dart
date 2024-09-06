@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:equilibrium/domain/home_arriving_player.dart';
+import 'package:equilibrium/domain/presence_player.dart';
 import 'package:equilibrium/domain/player.dart';
 import 'package:equilibrium/domain/presence.dart';
 import 'package:equilibrium/domain/settings.dart';
@@ -77,16 +77,16 @@ class Coach {
     return remainingShirts;
   }
 
-  void balanceTeamsByStars(List<HomeArrivingPlayer> listPlayers) {
+  void balanceTeamsByStars(List<PresencePlayer> listPlayers) {
     // listPlayers.addAll(shufflePromisesLimited);
-    List<HomeArrivingPlayer> sortedPlayersByStars =
+    List<PresencePlayer> sortedPlayersByStars =
         sortByStarsShufflingEquals(listPlayers);
     final maxPlayersByTeam = settings.getMaxPlayersByTeam();
 
     // split listPlayers based on sort of starts
     for (int i = 0; i < listPlayers.length; i++) {
       print('index $i of ${listPlayers.length}');
-      HomeArrivingPlayer _ = listPlayers[i];
+      PresencePlayer _ = listPlayers[i];
 
       if (sortedPlayersByStars.isEmpty) {
         print('sortedPlayersByStars.isEmpty');
@@ -114,7 +114,7 @@ class Coach {
   }
 
   void createIncompleteTeamToBalanceWithPromisedPlayers(int promisedNeeded) {
-    var promisedListPlayers = presence.promisedSortedByName.value;
+    var promisedListPlayers = presence.confirmedSortedByName.value;
 
     promisedListPlayers.shuffle();
     var shufflePromisesLimited = promisedListPlayers.toList();
@@ -124,9 +124,9 @@ class Coach {
     } else {
       var needs = promisedNeeded - shufflePromisesLimited.length;
       for (int i = 0; needs > i; i++) {
-        var homeArrivingPlayer =
-            HomeArrivingPlayer.initial(Player.normal("Vaga aberta", 3));
-        shufflePromisesLimited.add(homeArrivingPlayer);
+        var presencePlayer =
+            PresencePlayer.initial(Player.normal("Vaga aberta", 3));
+        shufflePromisesLimited.add(presencePlayer);
       }
     }
 
@@ -138,7 +138,7 @@ class Coach {
   }
 
   void createPromisedTeamNotBalanced(int maxPlayersByTeam) {
-    var promisedListPlayers = presence.promisedSortedByName.value;
+    var promisedListPlayers = presence.confirmedSortedByName.value;
 
     promisedListPlayers.shuffle();
     var shufflePromisesLimited = promisedListPlayers.toList();
@@ -162,8 +162,8 @@ class Coach {
     return bool;
   }
 
-  List<HomeArrivingPlayer> sortByStarsShufflingEquals(
-      List<HomeArrivingPlayer> players) {
+  List<PresencePlayer> sortByStarsShufflingEquals(
+      List<PresencePlayer> players) {
     players.sort((a, b) {
       final compare = a.player.stars.compareTo(b.player.stars);
       if (compare == 0) {
@@ -178,7 +178,7 @@ class Coach {
     for (Team team in teams) {
       print('Time ${team.shirt.name}: Poder: ${team.calculatePower()} '
           '\nQuantidade: ${team.players.length}');
-      for (HomeArrivingPlayer arrivingPlayer in team.players) {
+      for (PresencePlayer arrivingPlayer in team.players) {
         print(
             'Jogador: ${arrivingPlayer.player.stars} - ${arrivingPlayer.player.name}');
       }
