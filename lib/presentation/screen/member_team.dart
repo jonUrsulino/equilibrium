@@ -1,6 +1,7 @@
 import 'package:equilibrium/domain/model/presence_player.dart';
 import 'package:equilibrium/domain/model/player.dart';
 import 'package:equilibrium/domain/settings.dart';
+import 'package:equilibrium/domain/use_case/get_computed_presence_player_by_team.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:get_it/get_it.dart';
@@ -24,11 +25,15 @@ class MemberTeam extends StatefulWidget {
 
 class _MemberTeamState extends State<MemberTeam> {
   final settings = GetIt.I.get<Settings>();
+  final getComputedPresencePlayerByName = GetIt.I.get<GetComputedPresencePlayerByName>();
 
   @override
   Widget build(BuildContext context) {
-    final Player player = widget.presencePlayer.player;
-    final bool hasNotArrived = widget.presencePlayer.statePresence == StatePresence.confirmed;
+    PresencePlayer? presencePlayer = getComputedPresencePlayerByName.execute(widget.presencePlayer.player.name).watch(context);
+    presencePlayer ??= widget.presencePlayer;
+
+    final Player player = presencePlayer.player;
+    final bool hasNotArrived = presencePlayer.statePresence == StatePresence.confirmed;
     final String playerName = player.name;
     final double playerStars = player.stars;
     final bool isGoalkeeper = player.isGoalkeeper;

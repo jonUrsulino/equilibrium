@@ -57,4 +57,8 @@ class PresencePlayerRepositoryImpl implements PresencePlayerRepository {
     }
   }
 
+  @override
+  PresencePlayer? getPlayerByName(String playerName) {
+    return _arriving[playerName];
+  }
 }

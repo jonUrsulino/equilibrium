@@ -6,6 +6,7 @@ abstract class PresencePlayerRepository {
   MapSignal<String, PresencePlayer> getPresencePlayers();
 
   void addNewPlayer(PresencePlayer value);
+  PresencePlayer? getPlayerByName(String playerName);
   void playerArrived(PresencePlayer presencePlayer, bool value);
   void playerConfirmed(PresencePlayer presencePlayer, bool value);
   void playerMissed(PresencePlayer presencePlayer, bool value);
