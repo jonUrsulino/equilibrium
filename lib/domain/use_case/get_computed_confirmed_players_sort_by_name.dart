@@ -8,14 +8,20 @@ class GetComputedConfirmedPlayersSortByName {
 
   final PresencePlayerRepository repository;
 
-  late final _confirmed = computed<List<PresencePlayer>>(() => repository.getPresencePlayers()
-      .values
-      .where((element) => element.statePresence == StatePresence.confirmed)
-      .toList());
+  get _value => computed<List<PresencePlayer>>(() {
+    return repository
+        .getPresencePlayers()
+        .values
+        .where((element) {
+      return element.statePresence == StatePresence.confirmed;
+    }).toList();
+  });
 
   Computed<List<PresencePlayer>> execute() {
-    return computed<List<PresencePlayer>>(() => _confirmed.value.toList()..sort(
-          (a, b) => a.player.name.compareTo(b.player.name),
-    ));
+    return _value;
+  }
+
+  void dispose() {
+    // repository.dispose();
   }
 }

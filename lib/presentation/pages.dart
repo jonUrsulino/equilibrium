@@ -1,4 +1,5 @@
-import 'package:equilibrium/presentation/screen/home.dart';
+import 'package:equilibrium/home/presentation/home_route.dart';
+import 'package:equilibrium/home/presentation/home_screen.dart';
 import 'package:equilibrium/presentation/screen/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -11,13 +12,13 @@ class Pages {
       routes: [
         GoRoute(
           path: "/",
-          name: HomeScreen.route,
-          builder: (context, state) => const HomeScreen(),
+          name: HomeRoute.route,
+          builder: (context, state) => const HomeRoute(),
         ),
         GoRoute(
           path: "/settings",
           name: SettingsScreen.route,
-          builder: (context, state) => SettingsScreen(),
+          builder: (context, state) => const SettingsScreen(),
         ),
       ]);
 }

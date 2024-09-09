@@ -1,20 +1,17 @@
 import 'package:equilibrium/domain/model/presence_player.dart';
-import 'package:equilibrium/domain/repository/presence_player_repository.dart';
-import 'package:equilibrium/domain/use_case/get_computed_confirmed_players_sort_by_name.dart';
+import 'package:equilibrium/home/business_logic/confirmed_players_bloc.dart';
 import 'package:equilibrium/presentation/screen/player_tile.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:signals/signals_flutter.dart';
 
 class ConfirmedBottomSheet extends StatelessWidget {
-  ConfirmedBottomSheet({super.key});
-
-  final repository = GetIt.I.get<PresencePlayerRepository>();
-  final getComputedConfirmedPlayersSortByName = GetIt.I.get<GetComputedConfirmedPlayersSortByName>();
+  const ConfirmedBottomSheet({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final confirmedPlayersList = getComputedConfirmedPlayersSortByName.execute().watch(context);
+    final ConfirmedPlayersBloc bloc = context.read();
+    final confirmedPlayersList = bloc.getComputedConfirmedPlayersSortByName.execute().watch(context);
     return Column(
       children: [
         Text(
@@ -31,6 +28,7 @@ class ConfirmedBottomSheet extends StatelessWidget {
                   player: presencePlayer.player,
                   arrived: false,
                   onChangeArriving: (value) => onChangeArriving(
+                    bloc,
                     presencePlayer,
                     value,
                   ),
@@ -43,11 +41,7 @@ class ConfirmedBottomSheet extends StatelessWidget {
     );
   }
 
-  onChangeArriving(PresencePlayer presencePlayer, value) {
-    repository.playerArrived(presencePlayer, value);
-  }
-
-  onChangeCanceled(PresencePlayer presencePlayer) {
-    repository.playerCanceled(presencePlayer);
+  onChangeArriving(ConfirmedPlayersBloc bloc, PresencePlayer presencePlayer, value) {
+    bloc.repository.playerArrived(presencePlayer, value);
   }
 }

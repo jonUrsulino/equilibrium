@@ -61,4 +61,10 @@ class PresencePlayerRepositoryImpl implements PresencePlayerRepository {
   PresencePlayer? getPlayerByName(String playerName) {
     return _arriving[playerName];
   }
+
+  @override
+  void dispose() {
+    // _arriving.dispose();
+    // useCase.dispose();
+  }
 }

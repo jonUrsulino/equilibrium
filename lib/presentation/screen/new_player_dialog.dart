@@ -6,9 +6,14 @@ import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:get_it/get_it.dart';
 import 'package:signals/signals_flutter.dart';
 
-class NewPlayerDialog extends StatelessWidget {
-  NewPlayerDialog({super.key});
+class NewPlayerDialog extends StatefulWidget {
+  const NewPlayerDialog({super.key});
 
+  @override
+  State<NewPlayerDialog> createState() => _NewPlayerDialogState();
+}
+
+class _NewPlayerDialogState extends State<NewPlayerDialog> {
   final PresencePlayerRepository repository = GetIt.I.get();
   final Signal<double> stars = Signal(3);
   final Signal<bool?> isGoalkeeper = Signal(false);

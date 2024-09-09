@@ -1,13 +1,27 @@
+import 'package:bloc/bloc.dart';
+import 'package:equilibrium/home/business_logic/home_bloc.dart';
 import 'package:equilibrium/navigator/di/di_nav.dart';
 import 'package:equilibrium/presentation/pages.dart';
 import 'package:equilibrium/domain/di/di.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   DI.initializeNavigatorDependencies();
   DiDomain.initializeDomainDependencies();
-  runApp(const MyApp());
+
+  runApp(MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => HomeBloc(
+          getListArrivedPresencePlayers: GetIt.I.get(),
+          coach: GetIt.I.get(),
+          settings: GetIt.I.get(),
+        ),)
+      ],
+      child: const MyApp()
+  ));
 }
 
 class MyApp extends StatelessWidget {

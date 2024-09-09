@@ -10,7 +10,6 @@ class GetInitialPresencePlayersSortByStarts {
     return repository
         .getPlayers()
         .map((player) => PresencePlayer.initial(player))
-        .toList()
-      ..sort((a, b) => a.player.name.compareTo(b.player.name));
+        .toList()..sort((a, b) => a.player.name.compareTo(b.player.name));
   }
 }

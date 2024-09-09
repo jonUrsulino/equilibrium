@@ -12,4 +12,7 @@ class GetComputedPresencePlayerByName {
     return computed<PresencePlayer?>(() => repository.getPresencePlayers()[playerName]);
   }
 
+  void dispose() {
+    // repository.dispose();
+  }
 }

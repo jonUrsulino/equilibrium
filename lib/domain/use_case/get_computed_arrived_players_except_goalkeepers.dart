@@ -8,11 +8,17 @@ class GetComputedArrivedPresencePlayersExceptGoalkeepers {
 
   final GetComputedArrivedPresencePlayers useCase;
 
+  get _value => computed<List<PresencePlayer>>(() {
+    return useCase.execute().get().where((element) {
+      return !element.player.isGoalkeeper;
+    }).toList();
+  });
+
   Computed<List<PresencePlayer>> execute() {
-    return computed<List<PresencePlayer>>(() {
-      return useCase.execute().get().where((element) {
-        return !element.player.isGoalkeeper;
-      }).toList();
-    });
+    return _value;
+  }
+
+  void dispose() {
+    // useCase.dispose();
   }
 }

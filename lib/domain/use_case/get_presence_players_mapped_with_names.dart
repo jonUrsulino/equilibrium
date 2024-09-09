@@ -11,4 +11,8 @@ class GetPresencePlayersMappedWithNames {
     List<PresencePlayer> list = useCase.execute();
     return { for (var h in list) h.player.name : h };
   }
+
+  void dispose() {
+    useCase.dispose();
+  }
 }

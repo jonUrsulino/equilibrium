@@ -24,8 +24,8 @@ class MemberTeam extends StatefulWidget {
 }
 
 class _MemberTeamState extends State<MemberTeam> {
-  final settings = GetIt.I.get<Settings>();
-  final getComputedPresencePlayerByName = GetIt.I.get<GetComputedPresencePlayerByName>();
+  final Settings settings = GetIt.I.get();
+  final GetComputedPresencePlayerByName getComputedPresencePlayerByName = GetIt.I.get();
 
   @override
   Widget build(BuildContext context) {
@@ -76,5 +76,11 @@ class _MemberTeamState extends State<MemberTeam> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    getComputedPresencePlayerByName.dispose();
+    super.dispose();
   }
 }

@@ -8,11 +8,17 @@ class GetComputedArrivedPresencePlayers {
 
   final PresencePlayerRepository repository;
 
+  get _value => computed<List<PresencePlayer>>(() {
+    return repository.getPresencePlayers().values.where((element) {
+      return element.statePresence == StatePresence.arrived;
+    }).toList();
+  });
+
   Computed<List<PresencePlayer>> execute() {
-    return computed<List<PresencePlayer>>(() {
-      return repository.getPresencePlayers().values.where((element) {
-        return element.statePresence == StatePresence.arrived;
-      }).toList();
-    });
+    return _value;
+  }
+
+  void dispose() {
+    repository.dispose();
   }
 }

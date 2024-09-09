@@ -3,13 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:signals/signals_flutter.dart';
 
-class SettingsScreen extends StatelessWidget {
-  SettingsScreen({super.key});
+class SettingsScreen extends StatefulWidget {
+  const SettingsScreen({super.key,});
 
   static const route = 'SettingsScreen';
 
-  final maxPlayersController = TextEditingController();
-  final settings = GetIt.I.get<Settings>();
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  final Settings settings = GetIt.I.get();
+  final TextEditingController maxPlayersController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {

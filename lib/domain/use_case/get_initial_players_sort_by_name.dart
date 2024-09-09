@@ -14,4 +14,8 @@ class GetInitialPresencePlayersSortByNames {
         .toList()
       ..sort((a, b) => a.player.name.compareTo(b.player.name));
   }
+
+  void dispose() {
+    // do nothing.
+  }
 }

@@ -7,16 +7,20 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:signals/signals_flutter.dart';
 
-class SortNextTeamBottomSheet extends StatelessWidget {
-  SortNextTeamBottomSheet({super.key});
+class SortNextTeamBottomSheet extends StatefulWidget {
+  const SortNextTeamBottomSheet({super.key});
 
+  @override
+  State<SortNextTeamBottomSheet> createState() => _SortNextTeamBottomSheetState();
+}
+
+class _SortNextTeamBottomSheetState extends State<SortNextTeamBottomSheet> {
   final ListSignal<Player> markedPlayers = ListSignal([]);
   final ListSignal<String> sortedPlayers = ListSignal([]);
   final ListSignal<Player> arrivedPlayers = ListSignal([]);
   final unluckyNumber = Signal(3);
   final textController = TextEditingController();
   final getComputedArrivedPresencePlayers = GetIt.I.get<GetComputedArrivedPresencePlayers>();
-
   var numberToSortUnlucky = signal(3);
   var isSorted = signal(false);
 

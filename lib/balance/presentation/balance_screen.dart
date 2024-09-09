@@ -1,35 +1,29 @@
-import 'package:equilibrium/domain/coach.dart';
+import 'package:equilibrium/balance/business/balance_bloc.dart';
 import 'package:equilibrium/domain/model/team.dart';
-import 'package:equilibrium/domain/use_case/get_computed_arrived_players.dart';
 import 'package:equilibrium/presentation/screen/member_team.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:signals/signals_flutter.dart';
 
 class BalanceScreen extends StatelessWidget {
-  static const route = "BalanceScreen";
-
-  BalanceScreen({
-    required this.coach,
-    super.key,
-  });
-
-  final Coach coach;
-  final getListArrivedPresencePlayers = GetIt.I.get<GetComputedArrivedPresencePlayers>();
+  const BalanceScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final teams = coach.teams.watch(context);
+    final BalanceBloc bloc = context.read();
+
+    final teams = bloc.coach.teams.watch(context);
 
     if (teams.isEmpty) {
-      return _buildPresence();
+      return _buildPresence(context);
     } else {
       return _buildTeams(context);
     }
   }
 
-  Widget _buildPresence() {
-    final arrivedPlayers = getListArrivedPresencePlayers.execute().value;
+  Widget _buildPresence(BuildContext context) {
+    final BalanceBloc bloc = context.read();
+    final arrivedPlayers = bloc.getListArrivedPresencePlayers.execute().watch(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ListView.builder(
@@ -49,7 +43,8 @@ class BalanceScreen extends StatelessWidget {
   }
 
   Widget _buildTeams(BuildContext context) {
-    final teams = coach.teams.watch(context);
+    final BalanceBloc bloc = context.read();
+    final teams = bloc.coach.teams.watch(context);
 
     return Container(
       color: Colors.white10,
