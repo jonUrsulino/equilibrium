@@ -4,7 +4,7 @@ import 'package:signals/signals_flutter.dart';
 class Settings {
   Settings();
 
-  final maxPlayersByTeam = Signal(6);
+  final maxPlayersByTeam = Signal(7);
 
   void incMaxPlayersByTeam() {
     maxPlayersByTeam.set(maxPlayersByTeam.value + 1);
@@ -16,7 +16,7 @@ class Settings {
 
   int getMaxPlayersByTeam() => maxPlayersByTeam.value;
 
-  final isBalancedWithGoalkeeper = Signal(false);
+  final isBalancedWithGoalkeeper = Signal(true);
 
   bool isConsideredBalanceWithGoalkeeper() {
     return isBalancedWithGoalkeeper.value;

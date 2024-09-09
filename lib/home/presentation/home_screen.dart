@@ -7,7 +7,7 @@ import 'package:equilibrium/presentation/screen/canceling_confirmation_bottom_sh
 import 'package:equilibrium/presentation/screen/game_screen.dart';
 import 'package:equilibrium/presentation/screen/new_player_dialog.dart';
 import 'package:equilibrium/presentation/screen/settings.dart';
-import 'package:equilibrium/presentation/screen/sort_next_team_bottom_sheet.dart';
+import 'package:equilibrium/raffle_players/presentation/raffle_players_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -39,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case GameAction.playing:
         bloc.controllerManager.finishGame();
       case GameAction.finish:
-        // controllerManager.changeTeam();
+      // controllerManager.changeTeam();
       default:
     }
   }
@@ -167,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
       showDragHandle: true,
       context: context,
       builder: (context) {
-        return const SortNextTeamBottomSheet();
+        return const RafflePlayersWidget();
       },
     );
   }
