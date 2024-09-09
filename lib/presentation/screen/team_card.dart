@@ -1,7 +1,6 @@
 
 import 'package:equilibrium/domain/model/team.dart';
-import 'package:equilibrium/presentation/screen/member_team.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:equilibrium/member_team/presentation/member_team_component.dart';
 import 'package:flutter/material.dart';
 
 class TeamCard extends StatelessWidget {
@@ -75,10 +74,9 @@ class TeamCard extends StatelessWidget {
         itemCount: team.players.length,
         itemBuilder: (context, index) {
           var presencePlayer = team.players[index];
-          return MemberTeam(
+          return MemberTeamComponent(
+            playerName: presencePlayer.player.name,
             position: (index + 1).toString(),
-            presencePlayer: presencePlayer,
-            arrived: true,
           );
         },
       ),

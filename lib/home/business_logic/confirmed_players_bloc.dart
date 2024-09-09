@@ -8,6 +8,8 @@ part 'confirmed_players_state.dart';
 class ConfirmedPlayersBloc extends Bloc<ConfirmedPlayersEvent, ConfirmedPlayersState> {
   final PresencePlayerRepository repository;
 
+  late final confirmedPlayersSignals = repository.getComputedConfirmedPresencePlayers();
+
   ConfirmedPlayersBloc({
     required this.repository,
   }) : super(ConfirmedPlayersInitial()) {
@@ -18,7 +20,7 @@ class ConfirmedPlayersBloc extends Bloc<ConfirmedPlayersEvent, ConfirmedPlayersS
 
   @override
   Future<void> close() {
-    repository.dispose();
+    confirmedPlayersSignals.dispose();
     return super.close();
   }
 }

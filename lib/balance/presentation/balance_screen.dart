@@ -1,6 +1,6 @@
 import 'package:equilibrium/balance/business/balance_bloc.dart';
 import 'package:equilibrium/domain/model/team.dart';
-import 'package:equilibrium/presentation/screen/member_team.dart';
+import 'package:equilibrium/member_team/presentation/member_team_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:signals/signals_flutter.dart';
@@ -23,7 +23,7 @@ class BalanceScreen extends StatelessWidget {
 
   Widget _buildPresence(BuildContext context) {
     final BalanceBloc bloc = context.read();
-    final arrivedPlayers = bloc.repository.getComputedArrivedPresencePlayers().watch(context);
+    final arrivedPlayers = bloc.arrivedPlayersSignals.watch(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ListView.builder(
@@ -32,10 +32,9 @@ class BalanceScreen extends StatelessWidget {
         itemCount: arrivedPlayers.length,
         itemBuilder: (context, index) {
           var presencePlayer = arrivedPlayers[index];
-          return MemberTeam(
+          return MemberTeamComponent(
+            playerName: presencePlayer.player.name,
             position: (index + 1).toString(),
-            presencePlayer: presencePlayer,
-            arrived: true,
           );
         },
       ),
@@ -81,10 +80,9 @@ class BalanceScreen extends StatelessWidget {
         itemCount: team.players.length,
         itemBuilder: (context, index) {
           var presencePlayer = team.players[index];
-          return MemberTeam(
+          return MemberTeamComponent(
+            playerName: presencePlayer.player.name,
             position: (index + 1).toString(),
-            presencePlayer: presencePlayer,
-            arrived: true,
           );
         },
       ),

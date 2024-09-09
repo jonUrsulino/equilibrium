@@ -6,7 +6,7 @@ abstract class PresencePlayerRepository {
   MapSignal<String, PresencePlayer> getPresencePlayers();
 
   PresencePlayer? getPlayerByName(String playerName);
-  Computed<PresencePlayer?> getComputedPlayerByName(String playerName);
+  Computed<PresencePlayer> getComputedPlayerByName(String playerName);
   Computed<List<PresencePlayer>> getComputedPresencePlayersOrderedByName();
   Computed<List<PresencePlayer>> getComputedArrivedPresencePlayers();
   Computed<List<PresencePlayer>> getComputedArrivedPresencePlayersWithoutGoalkeepers();
@@ -19,8 +19,4 @@ abstract class PresencePlayerRepository {
   void playerConfirmed(PresencePlayer presencePlayer, bool value);
   void playerMissed(PresencePlayer presencePlayer, bool value);
   void playerCanceled(PresencePlayer presencePlayer);
-
-  void dispose();
-
-
 }

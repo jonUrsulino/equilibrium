@@ -17,9 +17,11 @@ class BalanceBloc extends Bloc<BalanceEvent, BalanceState> {
     });
   }
 
+  late final arrivedPlayersSignals = repository.getComputedArrivedPresencePlayers();
+
   @override
   Future<void> close() {
-    repository.dispose();
+    arrivedPlayersSignals.dispose();
     return super.close();
   }
 }

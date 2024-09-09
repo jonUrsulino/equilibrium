@@ -1,37 +1,24 @@
-import 'package:equilibrium/domain/model/presence_player.dart';
 import 'package:equilibrium/domain/model/player.dart';
-import 'package:equilibrium/domain/repository/presence_player_repository.dart';
+import 'package:equilibrium/domain/model/presence_player.dart';
 import 'package:equilibrium/domain/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
-import 'package:get_it/get_it.dart';
 import 'package:signals/signals_flutter.dart';
 
-class MemberTeam extends StatefulWidget {
-  final String position;
+class MemberTeamWidget extends StatelessWidget {
   final PresencePlayer presencePlayer;
-  final bool arrived;
+  final String position;
+  final Settings settings;
 
-  const MemberTeam({
-    required this.position,
+  const MemberTeamWidget({
+    required this.settings,
     required this.presencePlayer,
-    required this.arrived,
+    required this.position,
     super.key,
   });
 
   @override
-  State<MemberTeam> createState() => _MemberTeamState();
-}
-
-class _MemberTeamState extends State<MemberTeam> {
-  final Settings settings = GetIt.I.get();
-  final PresencePlayerRepository presencePlayerRepository = GetIt.I.get();
-
-  @override
   Widget build(BuildContext context) {
-    PresencePlayer? presencePlayer = presencePlayerRepository.getComputedPlayerByName(widget.presencePlayer.player.name).watch(context);
-    presencePlayer ??= widget.presencePlayer;
-
     final Player player = presencePlayer.player;
     final bool hasNotArrived = presencePlayer.statePresence == StatePresence.confirmed;
     final String playerName = player.name;
@@ -44,7 +31,7 @@ class _MemberTeamState extends State<MemberTeam> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Text(
-            "${widget.position}. ",
+            "${position}. ",
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium
@@ -76,11 +63,5 @@ class _MemberTeamState extends State<MemberTeam> {
         ],
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    presencePlayerRepository.dispose();
-    super.dispose();
   }
 }

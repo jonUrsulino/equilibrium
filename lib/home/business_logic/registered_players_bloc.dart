@@ -8,6 +8,8 @@ part 'registered_players_state.dart';
 class RegisteredPlayersBloc extends Bloc<RegisteredPlayersEvent, RegisteredPlayersState> {
   final PresencePlayerRepository presencePlayerRepository;
 
+  late final registeredPlayersSignals = presencePlayerRepository.getComputedPresencePlayersOrderedByName();
+
   RegisteredPlayersBloc({
     required this.presencePlayerRepository,
   }) : super(RegisteredPlayersInitial()) {
@@ -18,7 +20,7 @@ class RegisteredPlayersBloc extends Bloc<RegisteredPlayersEvent, RegisteredPlaye
 
   @override
   Future<void> close() {
-    presencePlayerRepository.dispose();
+    registeredPlayersSignals.dispose();
     return super.close();
   }
 }

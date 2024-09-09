@@ -11,8 +11,9 @@ class RegisteredPlayersScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final RegisteredPlayersBloc bloc = context.read();
-    final Computed<List<PresencePlayer>> computedPresencePlayersOrderedByName = bloc.presencePlayerRepository.getComputedPresencePlayersOrderedByName();
-    final initialPlayers = computedPresencePlayersOrderedByName.watch(context);
+    final initialPlayers = bloc.registeredPlayersSignals.watch(context);
+    // final Computed<List<PresencePlayer>> computedPresencePlayersOrderedByName = bloc.presencePlayerRepository.getComputedPresencePlayersOrderedByName();
+    // final initialPlayers = computedPresencePlayersOrderedByName.watch(context);
     return Column(
       children: [
         Text(
@@ -20,7 +21,7 @@ class RegisteredPlayersScreen extends StatelessWidget {
           style: Theme.of(context).textTheme.headlineSmall,
         ),
         Text(
-          'Jogadores nessa lista: ${computedPresencePlayersOrderedByName.watch(context).length}',
+          'Jogadores nessa lista: ${initialPlayers.length}',
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         Expanded(

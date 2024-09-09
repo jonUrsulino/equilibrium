@@ -25,6 +25,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     });
   }
 
+  late final arrivedPlayersSignals = repository.getComputedArrivedPresencePlayers();
   final Signal bottomNavAction = Signal(BottomNavigationType.home);
 
   //TODO: Refactorar isso para usar state ou sealed class ou named constructor.
@@ -69,7 +70,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   @override
   Future<void> close() {
-    // repository.dispose();
+    arrivedPlayersSignals.dispose();
 
     return super.close();
   }

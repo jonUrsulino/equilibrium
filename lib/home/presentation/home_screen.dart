@@ -195,7 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String _title(HomeBloc bloc, int index) {
     switch (index) {
       case 0:
-        return 'Presentes: ${bloc.repository.getComputedConfirmedPresencePlayers().watch(context).length}';
+        return 'Presentes: ${bloc.arrivedPlayersSignals.watch(context).length}';
       case 1:
         return 'Balanciamento';
       case 2:

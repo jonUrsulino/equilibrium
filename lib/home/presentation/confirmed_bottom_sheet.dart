@@ -11,7 +11,7 @@ class ConfirmedBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ConfirmedPlayersBloc bloc = context.read();
-    final confirmedPlayersList = bloc.repository.getComputedConfirmedPresencePlayers().watch(context);
+    final confirmedPlayersList = bloc.confirmedPlayersSignals.watch(context);
     return Column(
       children: [
         Text(

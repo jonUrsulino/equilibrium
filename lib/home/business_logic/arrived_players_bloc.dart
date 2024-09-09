@@ -9,6 +9,8 @@ class ArrivedPlayersBloc extends Bloc<ArrivedPlayersEvent, ArrivedPlayersState> 
 
   final PresencePlayerRepository repository;
 
+  late final arrivedPlayersSignals = repository.getComputedArrivedPresencePlayers();
+
   ArrivedPlayersBloc({
     required this.repository,
   }) : super(ArrivedPlayersInitial()) {
@@ -19,7 +21,7 @@ class ArrivedPlayersBloc extends Bloc<ArrivedPlayersEvent, ArrivedPlayersState> 
 
   @override
   Future<void> close() {
-    repository.dispose();
+    arrivedPlayersSignals.dispose();
     return super.close();
   }
 }

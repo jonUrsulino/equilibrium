@@ -63,9 +63,10 @@ class PresencePlayerRepositoryImpl implements PresencePlayerRepository {
     return _arriving[playerName];
   }
 
+  //TODO: Refactor this to be sure about this playerName contains in map.
   @override
-  Computed<PresencePlayer?> getComputedPlayerByName(String playerName) {
-    return computed<PresencePlayer?>(() => getPresencePlayers()[playerName]);
+  Computed<PresencePlayer> getComputedPlayerByName(String playerName) {
+    return computed<PresencePlayer>(() => getPresencePlayers()[playerName]!);
   }
 
   @override
@@ -105,11 +106,5 @@ class PresencePlayerRepositoryImpl implements PresencePlayerRepository {
         return element.statePresence == StatePresence.confirmed;
       }).toList();
     });
-  }
-
-  @override
-  void dispose() {
-    // _arriving.dispose();
-    // useCase.dispose();
   }
 }
