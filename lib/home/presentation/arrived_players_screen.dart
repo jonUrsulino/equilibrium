@@ -12,7 +12,7 @@ class ArrivedPlayersScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ArrivedPlayersBloc bloc = context.read();
-    final homeArrived = bloc.getComputedArrivedPresencePlayers.execute().watch(context);
+    final homeArrived = bloc.repository.getComputedArrivedPresencePlayers().watch(context);
     final length = homeArrived.length;
 
     return Padding(

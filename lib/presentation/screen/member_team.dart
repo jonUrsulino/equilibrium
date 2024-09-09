@@ -1,7 +1,7 @@
 import 'package:equilibrium/domain/model/presence_player.dart';
 import 'package:equilibrium/domain/model/player.dart';
+import 'package:equilibrium/domain/repository/presence_player_repository.dart';
 import 'package:equilibrium/domain/settings.dart';
-import 'package:equilibrium/domain/use_case/get_computed_presence_player_by_team.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:get_it/get_it.dart';
@@ -25,11 +25,11 @@ class MemberTeam extends StatefulWidget {
 
 class _MemberTeamState extends State<MemberTeam> {
   final Settings settings = GetIt.I.get();
-  final GetComputedPresencePlayerByName getComputedPresencePlayerByName = GetIt.I.get();
+  final PresencePlayerRepository presencePlayerRepository = GetIt.I.get();
 
   @override
   Widget build(BuildContext context) {
-    PresencePlayer? presencePlayer = getComputedPresencePlayerByName.execute(widget.presencePlayer.player.name).watch(context);
+    PresencePlayer? presencePlayer = presencePlayerRepository.getComputedPlayerByName(widget.presencePlayer.player.name).watch(context);
     presencePlayer ??= widget.presencePlayer;
 
     final Player player = presencePlayer.player;
@@ -80,7 +80,7 @@ class _MemberTeamState extends State<MemberTeam> {
 
   @override
   void dispose() {
-    getComputedPresencePlayerByName.dispose();
+    presencePlayerRepository.dispose();
     super.dispose();
   }
 }

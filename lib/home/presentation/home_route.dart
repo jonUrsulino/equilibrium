@@ -13,7 +13,7 @@ class HomeRoute extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (context) => HomeBloc(
-          getListArrivedPresencePlayers: GetIt.I.get(),
+          repository: GetIt.I.get(),
           coach: GetIt.I.get(),
           settings: GetIt.I.get(),
         ),

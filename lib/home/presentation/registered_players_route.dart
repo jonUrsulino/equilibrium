@@ -14,8 +14,6 @@ class RegisteredPlayersRoute extends StatelessWidget {
     return BlocProvider(
       create: (context) => RegisteredPlayersBloc(
           presencePlayerRepository: GetIt.I.get(),
-          getComputedPresencePlayersSortedByName: GetIt.I.get(),
-          getConfirmedPlayersSortByName: GetIt.I.get()
       ),
       child: const RegisteredPlayersScreen(),
     );

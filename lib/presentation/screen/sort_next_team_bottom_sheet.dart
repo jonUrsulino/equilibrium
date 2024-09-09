@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:equilibrium/domain/model/player.dart';
-import 'package:equilibrium/domain/use_case/get_computed_arrived_players.dart';
+import 'package:equilibrium/domain/repository/presence_player_repository.dart';
 import 'package:equilibrium/presentation/screen/player_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -20,13 +20,13 @@ class _SortNextTeamBottomSheetState extends State<SortNextTeamBottomSheet> {
   final ListSignal<Player> arrivedPlayers = ListSignal([]);
   final unluckyNumber = Signal(3);
   final textController = TextEditingController();
-  final getComputedArrivedPresencePlayers = GetIt.I.get<GetComputedArrivedPresencePlayers>();
+  final PresencePlayerRepository repository = GetIt.I.get();
   var numberToSortUnlucky = signal(3);
   var isSorted = signal(false);
 
   @override
   Widget build(BuildContext context) {
-    final arrived = getComputedArrivedPresencePlayers.execute().watch(context);
+    final arrived = repository.getComputedArrivedPresencePlayers().watch(context);
     final marked = markedPlayers.watch(context);
 
     return SingleChildScrollView(

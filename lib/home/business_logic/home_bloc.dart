@@ -1,10 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:equilibrium/domain/coach.dart';
 import 'package:equilibrium/domain/controller_manager.dart';
+import 'package:equilibrium/domain/repository/presence_player_repository.dart';
 import 'package:equilibrium/domain/settings.dart';
-import 'package:equilibrium/domain/use_case/get_computed_arrived_players.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 import 'package:signals/signals.dart';
 
 part 'home_event.dart';
@@ -12,12 +11,12 @@ part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final ControllerManager controllerManager = ControllerManager();
-  final GetComputedArrivedPresencePlayers getListArrivedPresencePlayers;
+  final PresencePlayerRepository repository;
   final Coach coach;
   final Settings settings;
 
   HomeBloc({
-    required this.getListArrivedPresencePlayers,
+    required this.repository,
     required this.coach,
     required this.settings
   }) : super(HomeInitial()) {
@@ -70,7 +69,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   @override
   Future<void> close() {
-    // getListArrivedPresencePlayers.dispose();
+    // repository.dispose();
 
     return super.close();
   }

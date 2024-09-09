@@ -14,7 +14,7 @@ class BalanceRoute extends StatelessWidget {
     return BlocProvider(
       create: (context) => BalanceBloc(
         coach: GetIt.I.get(),
-        getListArrivedPresencePlayers: GetIt.I.get(),
+        repository: GetIt.I.get(),
       ),
       child: const BalanceScreen(),
     );

@@ -2,6 +2,7 @@
 import 'package:equilibrium/domain/model/presence_player.dart';
 import 'package:equilibrium/domain/repository/presence_player_repository.dart';
 import 'package:equilibrium/domain/use_case/get_presence_players_mapped_with_names.dart';
+import 'package:signals/signals.dart';
 import 'package:signals_core/src/value/value.dart';
 
 class PresencePlayerRepositoryImpl implements PresencePlayerRepository {
@@ -60,6 +61,50 @@ class PresencePlayerRepositoryImpl implements PresencePlayerRepository {
   @override
   PresencePlayer? getPlayerByName(String playerName) {
     return _arriving[playerName];
+  }
+
+  @override
+  Computed<PresencePlayer?> getComputedPlayerByName(String playerName) {
+    return computed<PresencePlayer?>(() => getPresencePlayers()[playerName]);
+  }
+
+  @override
+  Computed<List<PresencePlayer>> getComputedPresencePlayersOrderedByName() {
+    return computed<List<PresencePlayer>>(() => getPresencePlayers().values
+        .where((element) {
+          return element.statePresence == StatePresence.initial;
+        })
+        .toList()..sort((a, b) => a.player.name.compareTo(b.player.name),
+    ));
+  }
+
+  @override
+  Computed<List<PresencePlayer>> getComputedArrivedPresencePlayers() {
+    return computed<List<PresencePlayer>>(() {
+      return getPresencePlayers().values.where((element) {
+        return element.statePresence == StatePresence.arrived;
+      }).toList();
+    });
+  }
+
+  @override
+  Computed<List<PresencePlayer>> getComputedArrivedPresencePlayersWithoutGoalkeepers() {
+    return computed<List<PresencePlayer>>(() {
+      return getComputedArrivedPresencePlayers().get().where((element) {
+        return !element.player.isGoalkeeper;
+      }).toList();
+    });
+  }
+
+  @override
+  Computed<List<PresencePlayer>> getComputedConfirmedPresencePlayers() {
+    return computed<List<PresencePlayer>>(() {
+      return getPresencePlayers()
+          .values
+          .where((element) {
+        return element.statePresence == StatePresence.confirmed;
+      }).toList();
+    });
   }
 
   @override

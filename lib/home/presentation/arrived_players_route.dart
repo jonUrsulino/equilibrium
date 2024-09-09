@@ -12,7 +12,6 @@ class ArrivedPlayersRoute extends StatelessWidget {
     return BlocProvider(
       create: (context) => ArrivedPlayersBloc(
         repository: GetIt.I.get(),
-        getComputedArrivedPresencePlayers: GetIt.I.get(),
       ),
       child: const ArrivedPlayersScreen(),
     );

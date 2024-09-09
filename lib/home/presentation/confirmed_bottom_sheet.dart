@@ -11,12 +11,16 @@ class ConfirmedBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ConfirmedPlayersBloc bloc = context.read();
-    final confirmedPlayersList = bloc.getComputedConfirmedPlayersSortByName.execute().watch(context);
+    final confirmedPlayersList = bloc.repository.getComputedConfirmedPresencePlayers().watch(context);
     return Column(
       children: [
         Text(
-          'Confirme quem já chegou',
+          'Marque quem está pronto em campo',
           style: Theme.of(context).textTheme.headlineSmall,
+        ),
+        Text(
+          'Confirmados: ${confirmedPlayersList.length}',
+          style: Theme.of(context).textTheme.bodyMedium,
         ),
         Expanded(
           child: ListView.builder(

@@ -23,7 +23,7 @@ class BalanceScreen extends StatelessWidget {
 
   Widget _buildPresence(BuildContext context) {
     final BalanceBloc bloc = context.read();
-    final arrivedPlayers = bloc.getListArrivedPresencePlayers.execute().watch(context);
+    final arrivedPlayers = bloc.repository.getComputedArrivedPresencePlayers().watch(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ListView.builder(

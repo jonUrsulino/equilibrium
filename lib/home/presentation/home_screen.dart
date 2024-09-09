@@ -182,7 +182,6 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context) {
         return CancelingConfirmationBottomSheet(
           repository: GetIt.I.get(),
-          getComputedConfirmedPlayersSortByName: GetIt.I.get(),
         );
       },
     );
@@ -196,7 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String _title(HomeBloc bloc, int index) {
     switch (index) {
       case 0:
-        return 'Presentes: ${bloc.getListArrivedPresencePlayers.execute().watch(context).length}';
+        return 'Presentes: ${bloc.repository.getComputedConfirmedPresencePlayers().watch(context).length}';
       case 1:
         return 'Balanciamento';
       case 2:

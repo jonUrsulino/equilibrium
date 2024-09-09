@@ -12,7 +12,6 @@ class ConfirmedPlayersRoute extends StatelessWidget {
     return BlocProvider(
       create: (context) => ConfirmedPlayersBloc(
         repository: GetIt.I.get(),
-        getComputedConfirmedPlayersSortByName: GetIt.I.get(),
       ),
       child: const ConfirmedBottomSheet(),
     );

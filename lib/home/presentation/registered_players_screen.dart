@@ -11,12 +11,17 @@ class RegisteredPlayersScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final RegisteredPlayersBloc bloc = context.read();
-    final initialPlayers = bloc.getComputedPresencePlayersSortedByName.execute().watch(context);
+    final Computed<List<PresencePlayer>> computedPresencePlayersOrderedByName = bloc.presencePlayerRepository.getComputedPresencePlayersOrderedByName();
+    final initialPlayers = computedPresencePlayersOrderedByName.watch(context);
     return Column(
       children: [
         Text(
-          'Marque os confirmados: ${bloc.getConfirmedPlayersSortByName.execute().watch(context).length}',
+          'Marque os jogadores confirmados',
           style: Theme.of(context).textTheme.headlineSmall,
+        ),
+        Text(
+          'Jogadores nessa lista: ${computedPresencePlayersOrderedByName.watch(context).length}',
+          style: Theme.of(context).textTheme.bodyMedium,
         ),
         Expanded(
           child: ListView.builder(
