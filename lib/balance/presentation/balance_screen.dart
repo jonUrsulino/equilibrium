@@ -1,6 +1,7 @@
 import 'package:equilibrium/balance/business/balance_bloc.dart';
 import 'package:equilibrium/domain/model/team.dart';
 import 'package:equilibrium/member_team/presentation/member_team_component.dart';
+import 'package:equilibrium/member_team/presentation/member_team_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:signals/signals_flutter.dart';
@@ -42,7 +43,8 @@ class BalanceScreen extends StatelessWidget {
         itemCount: arrivedPlayers.length,
         itemBuilder: (context, index) {
           var presencePlayer = arrivedPlayers[index];
-          return MemberTeamComponent(
+          return MemberTeamWidget(
+            Key(presencePlayer.player.name),
             presencePlayer: presencePlayer,
             position: (index + 1).toString(),
           );
@@ -90,8 +92,8 @@ class BalanceScreen extends StatelessWidget {
         itemCount: team.players.length,
         itemBuilder: (context, index) {
           var presencePlayer = team.players[index];
-          print('_teamMembers ${presencePlayer.player.name}');
-          return MemberTeamComponent(
+          return MemberTeamWidget(
+            Key(presencePlayer.player.name),
             presencePlayer: presencePlayer,
             position: (index + 1).toString(),
           );

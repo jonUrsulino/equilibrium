@@ -14,6 +14,7 @@ void main() {
   runApp(MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => HomeBloc(
+          controllerManager: GetIt.I.get(),
           repository: GetIt.I.get(),
           coach: GetIt.I.get(),
           settings: GetIt.I.get(),

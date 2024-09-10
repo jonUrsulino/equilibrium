@@ -6,7 +6,7 @@ import 'package:equilibrium/domain/manager.dart';
 import 'package:equilibrium/domain/model/presence_player.dart';
 import 'package:equilibrium/domain/model/team.dart';
 import 'package:equilibrium/domain/repository/team_repository.dart';
-import 'package:equilibrium/presentation/screen/game_screen.dart';
+import 'package:equilibrium/game/presentation/game_screen.dart';
 import 'package:get_it/get_it.dart';
 import 'package:signals/signals.dart';
 
@@ -18,12 +18,12 @@ class ControllerManager {
   final Coach coach = GetIt.I.get();
   final TeamRepository teamRepository = GetIt.I.get();
 
-  late var teams = teamRepository.getTeams();
-  final nextTeams = ListSignal([]);
+  late var teams = teamRepository.getTeams().value;
+  late final nextTeams = teamRepository.getNextTeams().value;
 
-  late ManagerGame managerGame;
-  late var teamA = signal(managerGame.teamA);
-  late var teamB = signal(managerGame.teamB);
+  late ManagerGame managerGame = ManagerGame(teamA: teams[0], teamB: teams[1]);
+  late Team teamA = managerGame.teamA;
+  late Team teamB = managerGame.teamB;
 
   final List<ManagerGame> history = [];
   final gameAction = signal(GameAction.creation);
@@ -32,20 +32,27 @@ class ControllerManager {
     print('initManagerGame');
 
     if (teams.length >= 2) {
-      managerGame = ManagerGame(teamA: teams[0], teamB: teams[1]);
       updateTeams();
-
-      nextTeams.clear();
-      nextTeams.addAll(teams.getRange(2, teams.length));
 
       gameAction.value = GameAction.readyToPlay;
       // history.add(managerGame!);
     }
+
+    effect(() {
+      for (var element in nextTeams) {
+        print("changing nextTeams ${element.shirt.name}");
+      }
+    });
+    effect(() {
+      for (var element in teams) {
+        print("changing teams ${element.shirt.name}");
+      }
+    });
   }
 
   void updateTeams() {
-    teamA.value = managerGame.teamA;
-    teamB.value = managerGame.teamB;
+    teamA = managerGame.teamA;
+    teamB = managerGame.teamB;
   }
 
   void startGame() {
@@ -58,17 +65,32 @@ class ControllerManager {
     gameAction.value = GameAction.finish;
   }
 
-  void recreateManagerGame(Team loserTeam, SideTeam sideTeam) {
+  void recreateManagerGame(Team loserTeam, SideTeam loserSide) {
+    print("recreateManagerGame");
     if (nextTeams.isNotEmpty) {
-
       Team nextTeam = nextTeams[0];
-      nextTeams.remove(nextTeam);
-      nextTeams.add(loserTeam);
-      dismount(loserTeam);
 
-      managerGame.createNewGame(nextTeam, sideTeam);
+      var goToField = dismount(loserTeam, nextTeam);
+      nextTeams.remove(goToField);
 
       updateTeams();
+      managerGame.createNewGame(nextTeam, loserSide);
+
+      List<Team> gameChange;
+      switch (loserSide) {
+        case SideTeam.teamA:
+          gameChange = [
+            nextTeam,
+            managerGame.teamB,
+          ];
+        case SideTeam.teamB:
+          gameChange = [
+            managerGame.teamA,
+            nextTeam,
+          ];
+      }
+      final List<Team> newOrder = gameChange + nextTeams;
+      teamRepository.changeOrder(newOrder);
 
       gameAction.value = GameAction.readyToPlay;
       history.add(managerGame);
@@ -77,17 +99,36 @@ class ControllerManager {
     }
   }
 
-  void dismount(Team loserTeam) {
-    final Signal<Team> nextIncompleteTeamSignal = teamRepository.nextIncompleteTeam();
-    var nextIncompleteTeam = nextIncompleteTeamSignal.value;
+  Team dismount(Team loserTeam, Team nextTeam) {
+    for (Team item in nextTeams) {
+      print('incomplete? ${item.shirt.name} ${item.incomplete}');
+    }
 
-    int lengthGhosts = nextIncompleteTeam.ghostPlayersLength();
+    int index = nextTeams.indexWhere((element) => element.notArrivedPlayers().isNotEmpty);
+    print('initial index $index');
+
+    if (index < 0) {
+      print("all teams are complete with arrived players");
+      var first = nextTeams.first;
+
+      return first;
+    }
+
+    Team incompleteTeam = nextTeams[index];
+    print('not arrived team $incompleteTeam');
+
+    final List<PresencePlayer> notArrivedPlayers = incompleteTeam.notArrivedPlayers();
+    int lengthGhosts = notArrivedPlayers.length;
 
     var random = Random();
-    final List<PresencePlayer> playersLoserTeam = loserTeam.players;
-    final List<PresencePlayer> sortedPlayersLoserTeam = [];
 
+    final List<PresencePlayer> playersLoserTeam = loserTeam.players;
+    final List<PresencePlayer> sortedPlayersLoserTeam = List.empty(growable: true);
+
+    print('initial sorted ${sortedPlayersLoserTeam.length}');
+    print('initial ghosts $lengthGhosts');
     while(sortedPlayersLoserTeam.length < lengthGhosts) {
+      print('while ${sortedPlayersLoserTeam.length} < $lengthGhosts');
       var numberRandomized = random.nextInt(playersLoserTeam.length);
 
       var luckyPlayer = playersLoserTeam[numberRandomized];
@@ -101,11 +142,23 @@ class ControllerManager {
       }
     }
 
-    final List<PresencePlayer> arrivedPlayers = nextIncompleteTeam.arrivedPlayers();
-    nextIncompleteTeamSignal.value.copyWith(
-        shirt: nextIncompleteTeam.shirt,
+    final List<PresencePlayer> arrivedPlayers = incompleteTeam.arrivedPlayers();
+
+    incompleteTeam = incompleteTeam.copyWith(
+        shirt: incompleteTeam.shirt,
         players: arrivedPlayers + sortedPlayersLoserTeam
     );
+    print('team incomplete adjusted ${incompleteTeam.shirt.name}');
+    for (var i in incompleteTeam.players) {
+      print('player incomplete adjusted ${i.player.name}');
+    }
+    loserTeam = loserTeam.copyWith(
+        shirt: loserTeam.shirt,
+        players: playersLoserTeam + notArrivedPlayers
+    );
+    nextTeams[index] = incompleteTeam;
+    nextTeams.add(loserTeam);
+    return nextTeam;
   }
 }
 

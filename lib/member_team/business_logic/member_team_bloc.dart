@@ -19,6 +19,7 @@ class MemberTeamBloc extends Bloc<MemberTeamEvent, MemberTeamState> {
     required this.playerName,
     required this.repository
   }) : super(MemberTeamInitial()) {
+    print("member bloc: $playerName");
     on<MemberTeamEvent>((event, emit) {
       // TODO: implement event handler
     });

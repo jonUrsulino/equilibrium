@@ -1,7 +1,7 @@
 
 import 'package:equilibrium/domain/model/game.dart';
 import 'package:equilibrium/domain/model/team.dart';
-import 'package:equilibrium/presentation/screen/game_screen.dart';
+import 'package:equilibrium/game/presentation/game_screen.dart';
 import 'package:signals/signals.dart';
 
 class ManagerGame {
@@ -9,20 +9,20 @@ class ManagerGame {
 
   Team teamA, teamB;
 
-  late final game = Signal(Game.initial(teamA, teamB));
+  late Game game = Game.initial(teamA, teamB);
 
   void createNewGame(Team team, SideTeam sideTeam) {
     switch (sideTeam) {
       case SideTeam.teamA:
         teamA = team;
-        game.value.copyWith(
+        game = game.copyWith(
             teamA: team,
             stateGame: StateGame.initial
         );
       case SideTeam.teamB:
       default:
         teamB = team;
-        game.value.copyWith(
+        game = game.copyWith(
             teamB: team,
             stateGame: StateGame.initial
         );
@@ -30,13 +30,13 @@ class ManagerGame {
   }
 
   void startGame() {
-    game.value.copyWith(
+    game.copyWith(
       stateGame: StateGame.playing
     );
   }
 
   void finishGame() {
-    game.value.copyWith(
+    game.copyWith(
         stateGame: StateGame.finished
     );
   }

@@ -66,7 +66,6 @@ class PresencePlayerRepositoryImpl implements PresencePlayerRepository {
   //TODO: Refactor this to be sure about this playerName contains in map.
   @override
   Computed<PresencePlayer?> getComputedPlayerByName(String playerName) {
-    print('getComputedPlayerByName $playerName');
     return computed(() => getPresencePlayers()[playerName]);
   }
 

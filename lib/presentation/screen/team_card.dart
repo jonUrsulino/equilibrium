@@ -1,16 +1,15 @@
 
 import 'package:equilibrium/domain/model/team.dart';
-import 'package:equilibrium/member_team/presentation/member_team_component.dart';
+import 'package:equilibrium/member_team/presentation/member_team_widget.dart';
 import 'package:flutter/material.dart';
 
 class TeamCard extends StatelessWidget {
-  const TeamCard(this.team, {super.key});
+  const TeamCard(Key? key, this.team): super(key: key);
 
   final Team team;
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -74,7 +73,8 @@ class TeamCard extends StatelessWidget {
         itemCount: team.players.length,
         itemBuilder: (context, index) {
           var presencePlayer = team.players[index];
-          return MemberTeamComponent(
+          return MemberTeamWidget(
+            Key(presencePlayer.player.name),
             presencePlayer: presencePlayer,
             position: (index + 1).toString(),
           );

@@ -36,10 +36,10 @@ class Team extends Equatable {
         .toList();
   }
 
-  int ghostPlayersLength() {
+  List<PresencePlayer> notArrivedPlayers() {
     return players
-        .where((element) => element.statePresence == StatePresence.ghost)
-        .length;
+        .where((element) => element.statePresence != StatePresence.arrived)
+        .toList();
   }
 
   @override

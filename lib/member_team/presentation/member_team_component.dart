@@ -17,6 +17,7 @@ class MemberTeamComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("member component: ${presencePlayer.player.name}");
     return BlocProvider(
       create: (context) =>
           MemberTeamBloc(
@@ -26,15 +27,10 @@ class MemberTeamComponent extends StatelessWidget {
           ),
       child: BlocBuilder<MemberTeamBloc, MemberTeamState>(
         builder: (context, state) {
-          final MemberTeamBloc bloc = context.read();
-          PresencePlayer? presencePlayer = bloc.presencePlayerSignal.value;
-          presencePlayer ??= this.presencePlayer;
-          print('member builder presence: $presencePlayer');
-          print('member builder presence name: ${presencePlayer.player.name}');
           return MemberTeamWidget(
+            Key(presencePlayer.player.name),
             presencePlayer: presencePlayer,
-            position: bloc.position,
-            settings: bloc.settings,
+            position: position,
           );
         },
       ),

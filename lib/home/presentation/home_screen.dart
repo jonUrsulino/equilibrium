@@ -1,10 +1,11 @@
 import 'package:equilibrium/balance/presentation/balance_route.dart';
 import 'package:equilibrium/domain/controller_manager.dart';
+import 'package:equilibrium/game/presentation/game_route.dart';
 import 'package:equilibrium/home/business_logic/home_bloc.dart';
 import 'package:equilibrium/home/presentation/presence_route.dart';
 import 'package:equilibrium/navigator/nav_extensions.dart';
 import 'package:equilibrium/presentation/screen/canceling_confirmation_bottom_sheet.dart';
-import 'package:equilibrium/presentation/screen/game_screen.dart';
+import 'package:equilibrium/game/presentation/game_screen.dart';
 import 'package:equilibrium/presentation/screen/new_player_dialog.dart';
 import 'package:equilibrium/presentation/screen/settings.dart';
 import 'package:equilibrium/raffle_players/presentation/raffle_players_widget.dart';
@@ -25,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void balance(HomeBloc bloc) {
     bloc.coach.balanceTeams();
     bloc.coach.printTeams();
-    bloc.controllerManager.initManagerGame();
+    // bloc.controllerManager.initManagerGame();
     bloc.fabData.value = bloc.maps[FABActionType.gameStart];
   }
 
@@ -97,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
               return const BalanceRoute();
             case BottomNavigationType.game:
             default:
-              return GameScreen(controller: bloc.controllerManager,);
+              return const GameRoute();
           }
         }),
         bottomNavigationBar: BottomNavigationBar(
