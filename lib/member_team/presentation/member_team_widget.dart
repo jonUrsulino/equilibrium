@@ -20,6 +20,7 @@ class MemberTeamWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Player player = presencePlayer.player;
+    print('player: ${player.name}');
     final bool hasNotArrived = presencePlayer.statePresence == StatePresence.confirmed;
     final String playerName = player.name;
     final double playerStars = player.stars;

@@ -100,7 +100,7 @@ class GameScreen extends StatelessWidget {
         itemBuilder: (context, index) {
           var presencePlayer = team.players[index];
           return MemberTeamComponent(
-            playerName: presencePlayer.player.name,
+            presencePlayer: presencePlayer,
             position: (index + 1).toString(),
           );
         },
@@ -168,7 +168,7 @@ class GameScreen extends StatelessWidget {
 
   onRemoveTeam(Team team, SideTeam sideTeam) {
     print('onRemoveTeam ${team.shirt.name} $sideTeam');
-    controller.changeTeam(team, sideTeam);
+    controller.recreateManagerGame(team, sideTeam);
   }
 }
 

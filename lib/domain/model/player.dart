@@ -21,6 +21,14 @@ class Player extends Equatable implements Comparable<Player> {
     );
   }
 
+  factory Player.ghost() {
+    return const Player(
+      "Vaga aberta",
+      3,
+      false,
+    );
+  }
+
   final String name;
   final double stars;
   final bool isGoalkeeper;

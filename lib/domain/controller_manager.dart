@@ -1,7 +1,11 @@
 
 
+import 'dart:math';
+
 import 'package:equilibrium/domain/manager.dart';
+import 'package:equilibrium/domain/model/presence_player.dart';
 import 'package:equilibrium/domain/model/team.dart';
+import 'package:equilibrium/domain/repository/team_repository.dart';
 import 'package:equilibrium/presentation/screen/game_screen.dart';
 import 'package:get_it/get_it.dart';
 import 'package:signals/signals.dart';
@@ -12,6 +16,9 @@ class ControllerManager {
   ControllerManager();
 
   final Coach coach = GetIt.I.get();
+  final TeamRepository teamRepository = GetIt.I.get();
+
+  late var teams = teamRepository.getTeams();
   final nextTeams = ListSignal([]);
 
   late ManagerGame managerGame;
@@ -23,17 +30,17 @@ class ControllerManager {
 
   void initManagerGame() {
     print('initManagerGame');
-    var teams = coach.teams.value;
-    managerGame = ManagerGame(teamA: teams[0], teamB: teams[1]);
-    updateTeams();
 
-    nextTeams.clear();
-    for (var i = 2; i < teams.length; i++) {
-      nextTeams.add(teams[i]);
+    if (teams.length >= 2) {
+      managerGame = ManagerGame(teamA: teams[0], teamB: teams[1]);
+      updateTeams();
+
+      nextTeams.clear();
+      nextTeams.addAll(teams.getRange(2, teams.length));
+
+      gameAction.value = GameAction.readyToPlay;
+      // history.add(managerGame!);
     }
-
-    gameAction.value = GameAction.readyToPlay;
-    // history.add(managerGame!);
   }
 
   void updateTeams() {
@@ -51,25 +58,54 @@ class ControllerManager {
     gameAction.value = GameAction.finish;
   }
 
-  void changeTeam(Team loserTeam, SideTeam sideTeam) {
-    recreateManagerGame(loserTeam, sideTeam);
+  void recreateManagerGame(Team loserTeam, SideTeam sideTeam) {
+    if (nextTeams.isNotEmpty) {
+
+      Team nextTeam = nextTeams[0];
+      nextTeams.remove(nextTeam);
+      nextTeams.add(loserTeam);
+      dismount(loserTeam);
+
+      managerGame.createNewGame(nextTeam, sideTeam);
+
+      updateTeams();
+
+      gameAction.value = GameAction.readyToPlay;
+      history.add(managerGame);
+    } else {
+      print('Need to create New Team with next players');
+    }
   }
 
-  void recreateManagerGame(Team loserTeam, SideTeam sideTeam) {
-      if (nextTeams.isNotEmpty) {
-        Team nextTeam = nextTeams[0];
-        nextTeams.remove(nextTeam);
-        nextTeams.add(loserTeam);
+  void dismount(Team loserTeam) {
+    final Signal<Team> nextIncompleteTeamSignal = teamRepository.nextIncompleteTeam();
+    var nextIncompleteTeam = nextIncompleteTeamSignal.value;
 
-        managerGame.createNewGame(nextTeam, sideTeam);
+    int lengthGhosts = nextIncompleteTeam.ghostPlayersLength();
 
-        updateTeams();
+    var random = Random();
+    final List<PresencePlayer> playersLoserTeam = loserTeam.players;
+    final List<PresencePlayer> sortedPlayersLoserTeam = [];
 
-        gameAction.value = GameAction.readyToPlay;
-        history.add(managerGame);
-      } else {
-        print('Need to create New Team with next players');
+    while(sortedPlayersLoserTeam.length < lengthGhosts) {
+      var numberRandomized = random.nextInt(playersLoserTeam.length);
+
+      var luckyPlayer = playersLoserTeam[numberRandomized];
+      playersLoserTeam.remove(luckyPlayer);
+
+      sortedPlayersLoserTeam.add(luckyPlayer);
+      print('Lucky: ${luckyPlayer.player.name}');
+
+      if (playersLoserTeam.isEmpty) {
+        break;
       }
+    }
+
+    final List<PresencePlayer> arrivedPlayers = nextIncompleteTeam.arrivedPlayers();
+    nextIncompleteTeamSignal.value.copyWith(
+        shirt: nextIncompleteTeam.shirt,
+        players: arrivedPlayers + sortedPlayersLoserTeam
+    );
   }
 }
 

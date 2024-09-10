@@ -5,6 +5,7 @@ import 'package:equilibrium/domain/model/presence_player.dart';
 import 'package:equilibrium/domain/model/shirt.dart';
 import 'package:equilibrium/domain/model/team.dart';
 import 'package:equilibrium/domain/repository/presence_player_repository.dart';
+import 'package:equilibrium/domain/repository/team_repository.dart';
 import 'package:equilibrium/domain/settings.dart';
 import 'package:get_it/get_it.dart';
 import 'package:signals/signals.dart';
@@ -23,8 +24,9 @@ class Coach {
 
   final PresencePlayerRepository presencePlayerRepository = GetIt.I.get();
   final Settings settings = GetIt.I.get<Settings>();
+  final TeamRepository teamRepository = GetIt.I.get();
 
-  final ListSignal<Team> teams = ListSignal([]);
+  final List<Team> teams = [];
 
   void balanceTeams() {
     teams.clear();
@@ -49,22 +51,27 @@ class Coach {
     print("balance with goalkeeper: $balanceGoalkeeper");
 
     List<Shirt> remainingShirts =
-        defineShirtsToCompleteTeams(amountCompleteTeams);
+        _defineShirtsToCompleteTeams(amountCompleteTeams);
 
     if (amountRemainingPlayers > 0) {
-      teams.add(defineIncompleteTeam(remainingShirts.firstOrNull));
-      createIncompleteTeamToBalanceWithPromisedPlayers(maxPromised);
-      balanceTeamsByStars(arrivingPlayers.toList());
+      teams.add(_defineIncompleteTeam(remainingShirts.firstOrNull));
+      _createIncompleteTeamToBalanceWithPromisedPlayers(maxPromised);
+      _balanceTeamsByStars(arrivingPlayers.toList());
     } else {
-      balanceTeamsByStars(arrivingPlayers.toList());
-      teams.add(defineIncompleteTeam(remainingShirts.firstOrNull));
-      createPromisedTeamNotBalanced(maxPlayersByTeam);
+      _balanceTeamsByStars(arrivingPlayers.toList());
+      teams.add(_defineIncompleteTeam(remainingShirts.firstOrNull));
+      _createPromisedTeamNotBalanced(maxPlayersByTeam);
     }
+    print('will add all');
+    teamRepository.load(teams);
+    print('has add all');
   }
 
-  List<Shirt> defineShirtsToCompleteTeams(int amountCompleteTeams) {
+  List<Shirt> _defineShirtsToCompleteTeams(int amountCompleteTeams) {
     List<Shirt> remainingShirts = [];
+    print('will2 add all');
     remainingShirts.addAll(availableShirts);
+    print('has2 add all');
     // create teams
     for (int i = 0; i < amountCompleteTeams; i++) {
       Shirt? shirt = remainingShirts.firstOrNull;
@@ -77,10 +84,10 @@ class Coach {
     return remainingShirts;
   }
 
-  void balanceTeamsByStars(List<PresencePlayer> listPlayers) {
+  void _balanceTeamsByStars(List<PresencePlayer> listPlayers) {
     // listPlayers.addAll(shufflePromisesLimited);
     List<PresencePlayer> sortedPlayersByStars =
-        sortByStarsShufflingEquals(listPlayers);
+        _sortByStarsShufflingEquals(listPlayers);
     final maxPlayersByTeam = settings.getMaxPlayersByTeam();
 
     // split listPlayers based on sort of starts
@@ -107,13 +114,15 @@ class Coach {
         var nextGoodPlayer = sortedPlayersByStars.first;
         print('apply ${nextGoodPlayer.player.name} in ${team.shirt.name}');
 
+        print('will add player');
         team.addPlayer(nextGoodPlayer);
+        print('has add player');
         sortedPlayersByStars.remove(nextGoodPlayer);
       }
     }
   }
 
-  void createIncompleteTeamToBalanceWithPromisedPlayers(int promisedNeeded) {
+  void _createIncompleteTeamToBalanceWithPromisedPlayers(int promisedNeeded) {
     var promisedListPlayers = presencePlayerRepository.getComputedConfirmedPresencePlayers().value;
 
     promisedListPlayers.shuffle();
@@ -124,20 +133,23 @@ class Coach {
     } else {
       var needs = promisedNeeded - shufflePromisesLimited.length;
       for (int i = 0; needs > i; i++) {
-        var presencePlayer =
-            PresencePlayer.initial(Player.normal("Vaga aberta", 3));
-        shufflePromisesLimited.add(presencePlayer);
+        shufflePromisesLimited.add(PresencePlayer.ghost(Player.ghost()));
       }
     }
 
-    var incompleteTeam = teams.firstWhere((element) => element.incomplete);
-    incompleteTeam.players.addAll(shufflePromisesLimited);
+    int indexIncomplete = teams.indexWhere((element) => element.incomplete);
+    final Team incompleteTeam = teams[indexIncomplete];
+    print('will3 add all');
+
+    final Team cloneIncompleteTeam = incompleteTeam.copyWith(players: incompleteTeam.players + shufflePromisesLimited);
+    print('has3 add all');
+    teams[indexIncomplete] = cloneIncompleteTeam;
 
     print('team incomplete with not arrived players\n'
-        ': ${incompleteTeam.players.toString()}');
+        ': ${cloneIncompleteTeam.players.toString()}');
   }
 
-  void createPromisedTeamNotBalanced(int maxPlayersByTeam) {
+  void _createPromisedTeamNotBalanced(int maxPlayersByTeam) {
     var promisedListPlayers = presencePlayerRepository.getComputedConfirmedPresencePlayers().value;
 
     promisedListPlayers.shuffle();
@@ -154,7 +166,7 @@ class Coach {
         ': ${incompleteTeam.players.toString()}');
   }
 
-  bool isTeamFullOfPromisedPlayers(Team team, int maxPromised) {
+  bool _isTeamFullOfPromisedPlayers(Team team, int maxPromised) {
     var bool = team.players.toList()
         .where((element) => element.statePresence == StatePresence.confirmed)
         .length >= maxPromised;
@@ -162,7 +174,7 @@ class Coach {
     return bool;
   }
 
-  List<PresencePlayer> sortByStarsShufflingEquals(
+  List<PresencePlayer> _sortByStarsShufflingEquals(
       List<PresencePlayer> players) {
     players.sort((a, b) {
       final compare = a.player.stars.compareTo(b.player.stars);
@@ -196,7 +208,7 @@ class Coach {
     print('MAIOR ${list.toString()} ${Random().nextInt(3) - 1}');
   }
 
-  Team defineIncompleteTeam(
+  Team _defineIncompleteTeam(
     Shirt? shirt,
   ) {
     Team team = Team.incomplete(
@@ -206,7 +218,7 @@ class Coach {
     return team;
   }
 
-  Team createIncompleteTeamByRandomNumber(
+  Team _createIncompleteTeamByRandomNumber(
     List<Player> players,
     Shirt? shirt,
     int remainingPlayers,

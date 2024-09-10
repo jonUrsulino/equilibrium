@@ -1,5 +1,5 @@
 
-import 'package:equilibrium/raffle_players/business_logic/sort_players_bloc.dart';
+import 'package:equilibrium/raffle_players/business_logic/raffle_players_bloc.dart';
 import 'package:equilibrium/raffle_players/presentation/raffle_players_component.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,10 +10,10 @@ class RafflePlayersWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => SortPlayersBloc(),
+      create: (context) => RafflePlayersBloc(),
       child: Builder(
         builder: (context) {
-          final SortPlayersBloc bloc = context.read();
+          final RafflePlayersBloc bloc = context.read();
           return RafflePlayersComponent(bloc: bloc);
         }
       ),

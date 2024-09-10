@@ -1,6 +1,6 @@
 import 'package:equilibrium/domain/model/player.dart';
 import 'package:equilibrium/presentation/screen/player_tile.dart';
-import 'package:equilibrium/raffle_players/business_logic/sort_players_bloc.dart';
+import 'package:equilibrium/raffle_players/business_logic/raffle_players_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
 
@@ -10,7 +10,7 @@ class RafflePlayersComponent extends StatelessWidget {
     super.key
   });
 
-  final SortPlayersBloc bloc;
+  final RafflePlayersBloc bloc;
 
   final textController = TextEditingController();
 

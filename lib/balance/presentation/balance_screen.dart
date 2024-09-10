@@ -12,13 +12,23 @@ class BalanceScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final BalanceBloc bloc = context.read();
 
-    final teams = bloc.coach.teams.watch(context);
+    return Watch((context) {
+      final List<Team> teams = bloc.teamsSignal.watch(context);
+      print('teams empty ${teams.isEmpty}');
 
-    if (teams.isEmpty) {
-      return _buildPresence(context);
-    } else {
-      return _buildTeams(context);
-    }
+      for (var team in teams) {
+        print('team ${team.shirt.name}');
+        for (var player in team.players) {
+          print('team repository player ${player.player.name}');
+        }
+      }
+
+      if (teams.isEmpty) {
+        return _buildPresence(context);
+      } else {
+        return _buildTeams(context);
+      }
+    },);
   }
 
   Widget _buildPresence(BuildContext context) {
@@ -33,7 +43,7 @@ class BalanceScreen extends StatelessWidget {
         itemBuilder: (context, index) {
           var presencePlayer = arrivedPlayers[index];
           return MemberTeamComponent(
-            playerName: presencePlayer.player.name,
+            presencePlayer: presencePlayer,
             position: (index + 1).toString(),
           );
         },
@@ -43,7 +53,7 @@ class BalanceScreen extends StatelessWidget {
 
   Widget _buildTeams(BuildContext context) {
     final BalanceBloc bloc = context.read();
-    final teams = bloc.coach.teams.watch(context);
+    final ListSignal<Team> teams = bloc.teamsSignal.watch(context);
 
     return Container(
       color: Colors.white10,
@@ -80,8 +90,9 @@ class BalanceScreen extends StatelessWidget {
         itemCount: team.players.length,
         itemBuilder: (context, index) {
           var presencePlayer = team.players[index];
+          print('_teamMembers ${presencePlayer.player.name}');
           return MemberTeamComponent(
-            playerName: presencePlayer.player.name,
+            presencePlayer: presencePlayer,
             position: (index + 1).toString(),
           );
         },

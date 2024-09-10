@@ -17,6 +17,11 @@ class PresencePlayer extends Equatable
   )   : statePresence = StatePresence.initial,
         isUnlucky = false;
 
+  const PresencePlayer.ghost(
+      this.player
+      )   : statePresence = StatePresence.ghost,
+        isUnlucky = false;
+
   final Player player;
   final StatePresence statePresence;
   final bool isUnlucky;
@@ -50,5 +55,5 @@ class PresencePlayer extends Equatable
 }
 
 enum StatePresence {
-  initial, confirmed, arrived
+  initial, confirmed, arrived, ghost
 }

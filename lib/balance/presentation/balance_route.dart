@@ -13,8 +13,8 @@ class BalanceRoute extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => BalanceBloc(
-        coach: GetIt.I.get(),
         repository: GetIt.I.get(),
+        teamRepository: GetIt.I.get(),
       ),
       child: const BalanceScreen(),
     );

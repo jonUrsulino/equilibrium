@@ -7,12 +7,12 @@ import 'package:get_it/get_it.dart';
 import 'package:meta/meta.dart';
 import 'package:signals/signals.dart';
 
-part 'sort_players_event.dart';
-part 'sort_players_state.dart';
+part 'raffle_players_event.dart';
+part 'raffle_players_state.dart';
 
-class SortPlayersBloc extends Bloc<SortPlayersEvent, SortPlayersState> {
-  SortPlayersBloc() : super(SortPlayersInitial()) {
-    on<SortPlayersEvent>((event, emit) {
+class RafflePlayersBloc extends Bloc<RafflePlayersEvent, RafflePlayersState> {
+  RafflePlayersBloc() : super(RafflePlayersInitial()) {
+    on<RafflePlayersEvent>((event, emit) {
       // TODO: implement event handler
     });
   }

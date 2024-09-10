@@ -65,8 +65,9 @@ class PresencePlayerRepositoryImpl implements PresencePlayerRepository {
 
   //TODO: Refactor this to be sure about this playerName contains in map.
   @override
-  Computed<PresencePlayer> getComputedPlayerByName(String playerName) {
-    return computed<PresencePlayer>(() => getPresencePlayers()[playerName]!);
+  Computed<PresencePlayer?> getComputedPlayerByName(String playerName) {
+    print('getComputedPlayerByName $playerName');
+    return computed(() => getPresencePlayers()[playerName]);
   }
 
   @override
@@ -84,6 +85,16 @@ class PresencePlayerRepositoryImpl implements PresencePlayerRepository {
     return computed<List<PresencePlayer>>(() {
       return getPresencePlayers().values.where((element) {
         return element.statePresence == StatePresence.arrived;
+      }).toList();
+    });
+  }
+
+  @override
+  Computed<List<PresencePlayer>> getComputedArrivedAndGhostPresencePlayers() {
+    return computed<List<PresencePlayer>>(() {
+      return getPresencePlayers().values.where((element) {
+        return element.statePresence == StatePresence.arrived ||
+            element.statePresence == StatePresence.ghost;
       }).toList();
     });
   }
