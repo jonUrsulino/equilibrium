@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equilibrium/domain/controller_manager.dart';
 import 'package:equilibrium/domain/model/game.dart';
 import 'package:equilibrium/domain/model/team.dart';
+import 'package:equilibrium/domain/repository/presence_player_repository.dart';
 import 'package:equilibrium/domain/repository/team_repository.dart';
 import 'package:equilibrium/domain/settings.dart';
 import 'package:equilibrium/game/presentation/game_screen.dart';
@@ -14,9 +15,11 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
   final ControllerManager controller;
   final TeamRepository teamRepository;
+  final PresencePlayerRepository presencePlayerRepository;
   final Settings settings;
 
   GameBloc({
+    required this.presencePlayerRepository,
     required this.teamRepository,
     required this.controller,
     required this.settings

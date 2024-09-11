@@ -115,7 +115,7 @@ class Coach {
 
         var nextGoodPlayer = sortedPlayersByStars.first;
 
-        team.addPlayer(nextGoodPlayer);
+        team.addPresencePlayer(nextGoodPlayer);
         sortedPlayersByStars.remove(nextGoodPlayer);
       }
     }
@@ -125,7 +125,7 @@ class Coach {
     var promisedListPlayers = presencePlayerRepository.getComputedConfirmedPresencePlayers().value;
 
     promisedListPlayers.shuffle();
-    var shufflePromisesLimited = promisedListPlayers.toList();
+    List<PresencePlayer> shufflePromisesLimited = promisedListPlayers.toList();
     if (promisedListPlayers.length >= promisedNeeded) {
       shufflePromisesLimited =
           promisedListPlayers.getRange(0, promisedNeeded).toList();
@@ -139,7 +139,10 @@ class Coach {
     int indexIncomplete = teams.indexWhere((element) => element.incomplete);
     final Team incompleteTeam = teams[indexIncomplete];
 
-    final Team cloneIncompleteTeam = incompleteTeam.copyWith(players: incompleteTeam.players + shufflePromisesLimited);
+    final Team cloneIncompleteTeam = incompleteTeam.copyWith(
+        presencePlayers: incompleteTeam.presencePlayers + shufflePromisesLimited,
+        players: incompleteTeam.players + shufflePromisesLimited.map((e) => e.player).toList(),
+    );
     teams[indexIncomplete] = cloneIncompleteTeam;
 
     print('team incomplete with not arrived players\n'
@@ -155,18 +158,11 @@ class Coach {
     }
 
     var incompleteTeam = teams.firstWhere((element) => element.incomplete);
-    incompleteTeam.players.addAll(shufflePromisesLimited);
+    incompleteTeam.players.addAll(shufflePromisesLimited.map((e) => e.player).toList());
+    incompleteTeam.presencePlayers.addAll(shufflePromisesLimited);
 
     print('team incomplete not balanced only with not arrived players\n'
         ': ${incompleteTeam.players.toString()}');
-  }
-
-  bool _isTeamFullOfPromisedPlayers(Team team, int maxPromised) {
-    var bool = team.players.toList()
-        .where((element) => element.statePresence == StatePresence.confirmed)
-        .length >= maxPromised;
-    print('isTeamFullOfPromisedPlayers ${team.shirt.name} $bool');
-    return bool;
   }
 
   List<PresencePlayer> _sortByStarsShufflingEquals(
@@ -185,9 +181,9 @@ class Coach {
     for (Team team in teams) {
       print('Time ${team.shirt.name}: Poder: ${team.calculatePower()} '
           '\nQuantidade: ${team.players.length}');
-      for (PresencePlayer arrivingPlayer in team.players) {
+      for (Player player in team.players) {
         print(
-            'Jogador: ${arrivingPlayer.player.stars} - ${arrivingPlayer.player.name}');
+            'Jogador: ${player.stars} - ${player.name}');
       }
       print("---------");
     }

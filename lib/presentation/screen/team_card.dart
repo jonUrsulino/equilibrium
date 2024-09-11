@@ -1,12 +1,14 @@
 
 import 'package:equilibrium/domain/model/team.dart';
+import 'package:equilibrium/domain/repository/presence_player_repository.dart';
 import 'package:equilibrium/member_team/presentation/member_team_widget.dart';
 import 'package:flutter/material.dart';
 
 class TeamCard extends StatelessWidget {
-  const TeamCard(Key? key, this.team): super(key: key);
+  const TeamCard(Key? key, this.team, this.presencePlayerRepository): super(key: key);
 
   final Team team;
+  final PresencePlayerRepository presencePlayerRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -45,18 +47,18 @@ class TeamCard extends StatelessWidget {
                 ?.copyWith(color: Colors.white),
           ),
           const Spacer(),
-          const Icon(
-            Icons.star_border,
-            color: Colors.white,
+          Text('${team.calculatePower()}',
+            style: Theme
+                .of(context)
+                .textTheme
+                .titleMedium
+                ?.copyWith(color: Colors.white),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              '${team.calculatePower()}',
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(color: Colors.white),
+          const Padding(
+            padding: EdgeInsets.all(4.0),
+            child: Icon(
+              Icons.star_border,
+              color: Colors.white,
             ),
           ),
         ],
@@ -72,7 +74,8 @@ class TeamCard extends StatelessWidget {
         physics: const ClampingScrollPhysics(),
         itemCount: team.players.length,
         itemBuilder: (context, index) {
-          var presencePlayer = team.players[index];
+          var teamPresencePlayers = team.actualPresencePlayers(presencePlayerRepository);
+          var presencePlayer = teamPresencePlayers[index];
           return MemberTeamWidget(
             Key(presencePlayer.player.name),
             presencePlayer: presencePlayer,

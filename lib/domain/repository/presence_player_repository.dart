@@ -6,6 +6,7 @@ abstract class PresencePlayerRepository {
   MapSignal<String, PresencePlayer> getPresencePlayers();
 
   PresencePlayer? getPlayerByName(String playerName);
+  List<PresencePlayer> getPresencePlayersByNames(List<String> names);
   Computed<PresencePlayer?> getComputedPlayerByName(String playerName);
   Computed<List<PresencePlayer>> getComputedPresencePlayersOrderedByName();
   Computed<List<PresencePlayer>> getComputedArrivedPresencePlayers();

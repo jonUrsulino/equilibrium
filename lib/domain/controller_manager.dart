@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:equilibrium/domain/manager.dart';
 import 'package:equilibrium/domain/model/presence_player.dart';
 import 'package:equilibrium/domain/model/team.dart';
+import 'package:equilibrium/domain/repository/presence_player_repository.dart';
 import 'package:equilibrium/domain/repository/team_repository.dart';
 import 'package:equilibrium/game/presentation/game_screen.dart';
 import 'package:get_it/get_it.dart';
@@ -17,6 +18,7 @@ class ControllerManager {
 
   final Coach coach = GetIt.I.get();
   final TeamRepository teamRepository = GetIt.I.get();
+  final PresencePlayerRepository presencePlayerRepository = GetIt.I.get();
 
   late var teams = teamRepository.getTeams().value;
   late final nextTeams = teamRepository.getNextTeams().value;
@@ -104,7 +106,7 @@ class ControllerManager {
       print('incomplete? ${item.shirt.name} ${item.incomplete}');
     }
 
-    int index = nextTeams.indexWhere((element) => element.notArrivedPlayers().isNotEmpty);
+    int index = nextTeams.indexWhere((element) => element.notArrivedPlayers(presencePlayerRepository).isNotEmpty);
     print('initial index $index');
 
     if (index < 0) {
@@ -117,7 +119,7 @@ class ControllerManager {
     Team incompleteTeam = nextTeams[index];
     print('not arrived team $incompleteTeam');
 
-    final List<PresencePlayer> notArrivedPlayers = incompleteTeam.notArrivedPlayers();
+    final List<PresencePlayer> notArrivedPlayers = incompleteTeam.notArrivedPlayers(presencePlayerRepository);
     int lengthGhosts = notArrivedPlayers.length;
 
     for (PresencePlayer p in notArrivedPlayers) {
@@ -126,7 +128,7 @@ class ControllerManager {
 
     var random = Random();
 
-    final List<PresencePlayer> playersLoserTeam = loserTeam.players;
+    final List<PresencePlayer> playersLoserTeam = loserTeam.actualPresencePlayers(presencePlayerRepository);
     final List<PresencePlayer> sortedPlayersLoserTeam = List.empty(growable: true);
 
     print('initial sorted ${sortedPlayersLoserTeam.length}');
@@ -146,19 +148,22 @@ class ControllerManager {
       }
     }
 
-    final List<PresencePlayer> arrivedPlayers = incompleteTeam.arrivedPlayers();
+    // TODO presencePlayerRepository.getPresencePlayersByNames();
+    final List<PresencePlayer> arrivedPlayers = incompleteTeam.arrivedPlayers(presencePlayerRepository);
 
     incompleteTeam = incompleteTeam.copyWith(
         shirt: incompleteTeam.shirt,
-        players: arrivedPlayers + sortedPlayersLoserTeam
+        presencePlayers: arrivedPlayers + sortedPlayersLoserTeam,
+        players: arrivedPlayers.map((e) => e.player).toList() + sortedPlayersLoserTeam.map((e) => e.player).toList(),
     );
     print('team incomplete adjusted ${incompleteTeam.shirt.name}');
     for (var i in incompleteTeam.players) {
-      print('player incomplete adjusted ${i.player.name}');
+      print('player incomplete adjusted ${i.name}');
     }
     loserTeam = loserTeam.copyWith(
         shirt: loserTeam.shirt,
-        players: playersLoserTeam + notArrivedPlayers
+        presencePlayers: playersLoserTeam + notArrivedPlayers,
+        players: playersLoserTeam.map((e) => e.player).toList() + notArrivedPlayers.map((e) => e.player).toList(),
     );
     nextTeams[index] = incompleteTeam;
     nextTeams.add(loserTeam);

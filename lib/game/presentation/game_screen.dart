@@ -90,7 +90,7 @@ class GameScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _headerTeam(context, team, sideTeam),
-            _teamMembers(context, team.players, sideTeam),
+            _teamMembers(context, team, sideTeam),
             const SizedBox(
               height: 10,
             ),
@@ -103,19 +103,20 @@ class GameScreen extends StatelessWidget {
     // );
   }
 
-  Widget _teamMembers(BuildContext context, List<PresencePlayer> players, SideTeam sideTeam) {
+  Widget _teamMembers(BuildContext context, Team team, SideTeam sideTeam) {
     return Container(
       margin: const EdgeInsets.all(3),
       child: ListView.builder(
         shrinkWrap: true,
         physics: const ClampingScrollPhysics(),
-        itemCount: players.length,
+        itemCount: team.players.length,
         itemBuilder: (context, index) {
-          var presencePlayer = players[index];
+          var teamPresencePlayers = team.actualPresencePlayers(bloc.presencePlayerRepository);
+          var presencePlayer = teamPresencePlayers[index];
           return MemberTeamWidget(
             Key(presencePlayer.player.name),
             presencePlayer: presencePlayer,
-            position: "${index + 1}. ",
+            position: "${index + 1}",
           );
 
         },
@@ -152,19 +153,18 @@ class GameScreen extends StatelessWidget {
             tooltip: "Perdeu",
           ),
           const Spacer(),
-          const Icon(
-            Icons.star_border,
-            color: Colors.white,
+          Text('${team.calculatePower()}',
+            style: Theme
+                .of(context)
+                .textTheme
+                .titleMedium
+                ?.copyWith(color: Colors.white),
           ),
-          Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Text(
-              '${team.calculatePower()}',
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(color: Colors.white),
+          const Padding(
+            padding: EdgeInsets.all(4.0),
+            child: Icon(
+              Icons.star_border,
+              color: Colors.white,
             ),
           ),
         ],
@@ -194,7 +194,8 @@ class GameScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(8.0),
                       child: TeamCard(
                           Key(team.shirt.name),
-                          team
+                          team,
+                          bloc.presencePlayerRepository,
                       ),
                     );
                   }),

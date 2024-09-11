@@ -12,6 +12,7 @@ class GameRoute extends StatelessWidget {
     return BlocProvider(
       create: (context) =>
           GameBloc(
+              presencePlayerRepository: GetIt.I.get(),
               teamRepository: GetIt.I.get(),
               controller: GetIt.I.get(),
               settings: GetIt.I.get()

@@ -1,4 +1,5 @@
 
+import 'package:equilibrium/domain/model/player.dart';
 import 'package:equilibrium/domain/model/presence_player.dart';
 import 'package:equilibrium/domain/repository/presence_player_repository.dart';
 import 'package:equilibrium/domain/use_case/get_presence_players_mapped_with_names.dart';
@@ -116,5 +117,16 @@ class PresencePlayerRepositoryImpl implements PresencePlayerRepository {
         return element.statePresence == StatePresence.confirmed;
       }).toList();
     });
+  }
+
+  @override
+  List<PresencePlayer> getPresencePlayersByNames(List<String> names) {
+    final List<PresencePlayer> presencePlayers = List.empty(growable: true);
+    for (String playerName in names) {
+      PresencePlayer? presencePlayer = getPlayerByName(playerName);
+      presencePlayer ??= PresencePlayer.ghost(Player.ghost());
+      presencePlayers.add(presencePlayer);
+    }
+    return presencePlayers;
   }
 }

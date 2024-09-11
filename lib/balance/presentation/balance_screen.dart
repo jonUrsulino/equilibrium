@@ -19,7 +19,7 @@ class BalanceScreen extends StatelessWidget {
       for (var team in teams) {
         print('team ${team.shirt.name}');
         for (var player in team.players) {
-          print('team repository player ${player.player.name}');
+          print('team repository player ${player.name}');
         }
       }
 
@@ -68,7 +68,7 @@ class BalanceScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _headerTeam(context, team),
-                  _teamMembers(team),
+                  _teamMembers(bloc, team),
                   const SizedBox(
                     height: 20,
                   ),
@@ -82,7 +82,7 @@ class BalanceScreen extends StatelessWidget {
     );
   }
 
-  Container _teamMembers(Team team) {
+  Container _teamMembers(BalanceBloc bloc, Team team) {
     return Container(
       margin: const EdgeInsets.all(3),
       child: ListView.builder(
@@ -90,7 +90,8 @@ class BalanceScreen extends StatelessWidget {
         physics: const ClampingScrollPhysics(),
         itemCount: team.players.length,
         itemBuilder: (context, index) {
-          var presencePlayer = team.players[index];
+          var teamPresencePlayers = team.actualPresencePlayers(bloc.repository);
+          var presencePlayer = teamPresencePlayers[index];
           return MemberTeamWidget(
             Key(presencePlayer.player.name),
             presencePlayer: presencePlayer,
@@ -121,18 +122,18 @@ class BalanceScreen extends StatelessWidget {
                 ?.copyWith(color: Colors.white),
           ),
           const Spacer(),
-          const Icon(
-            Icons.star_border,
-            color: Colors.white,
+          Text('${team.calculatePower()}',
+            style: Theme
+                .of(context)
+                .textTheme
+                .titleMedium
+                ?.copyWith(color: Colors.white),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              '${team.calculatePower()}',
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(color: Colors.white),
+          const Padding(
+            padding: EdgeInsets.all(4.0),
+            child: Icon(
+              Icons.star_border,
+              color: Colors.white,
             ),
           ),
         ],
