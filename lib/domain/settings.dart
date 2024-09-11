@@ -4,7 +4,7 @@ import 'package:signals/signals_flutter.dart';
 class Settings {
   Settings();
 
-  final maxPlayersByTeam = Signal(3);
+  final maxPlayersByTeam = Signal(7);
 
   void incMaxPlayersByTeam() {
     maxPlayersByTeam.set(maxPlayersByTeam.value + 1);
