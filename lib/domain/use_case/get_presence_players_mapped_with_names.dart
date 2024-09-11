@@ -13,6 +13,6 @@ class GetPresencePlayersMappedWithNames {
   }
 
   void dispose() {
-    useCase.dispose();
+    // useCase.dispose();
   }
 }

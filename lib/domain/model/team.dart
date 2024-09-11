@@ -50,10 +50,6 @@ class Team extends Equatable {
       shirt: shirt ?? this.shirt,
       players: players ?? this.players
     );
-    // if (players != null) {
-    //   team.players.clear();
-    //   team.players.addAll(players!);
-    // }
     return team;
   }
 }

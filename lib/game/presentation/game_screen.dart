@@ -17,8 +17,6 @@ class GameScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("INIT");
-
     return BlocBuilder<GameBloc, GameState>(
       builder: (context, state) {
         print("state $state");
@@ -106,10 +104,6 @@ class GameScreen extends StatelessWidget {
   }
 
   Widget _teamMembers(BuildContext context, List<PresencePlayer> players, SideTeam sideTeam) {
-    // final GameBloc bloc = context.read();
-    // Computed<List<PresencePlayer>> playerBySide = bloc.getPlayerBySide(
-    //     sideTeam);
-
     return Container(
       margin: const EdgeInsets.all(3),
       child: ListView.builder(
@@ -137,7 +131,7 @@ class GameScreen extends StatelessWidget {
       child: Row(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(4.0),
             child: Icon(
               Icons.shield,
               color: team.shirt.color,
@@ -148,12 +142,13 @@ class GameScreen extends StatelessWidget {
             style: Theme
                 .of(context)
                 .textTheme
-                .titleLarge
+                .titleMedium
                 ?.copyWith(color: Colors.white),
           ),
           IconButton(
             onPressed: () => onRemoveTeam(team, sideTeam),
-            icon: const Icon(Icons.change_circle),
+            icon: const Icon(Icons.move_down),
+            color: Colors.white,
             tooltip: "Perdeu",
           ),
           const Spacer(),
@@ -162,7 +157,7 @@ class GameScreen extends StatelessWidget {
             color: Colors.white,
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(4.0),
             child: Text(
               '${team.calculatePower()}',
               style: Theme

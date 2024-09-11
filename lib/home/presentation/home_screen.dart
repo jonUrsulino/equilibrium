@@ -26,7 +26,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void balance(HomeBloc bloc) {
     bloc.coach.balanceTeams();
     bloc.coach.printTeams();
-    // bloc.controllerManager.initManagerGame();
     bloc.fabData.value = bloc.maps[FABActionType.gameStart];
   }
 

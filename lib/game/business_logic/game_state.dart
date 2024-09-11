@@ -13,13 +13,3 @@ final class GameLoad extends GameState {
   final Game game;
   final List<Team> nextTeams;
 }
-
-// final class GameChange extends GameLoad {
-//   GameChange({
-//     required super.game,
-//     required super.nextTeams,
-//     required this.loserSide
-//   });
-//
-//   final SideTeam loserSide;
-// }

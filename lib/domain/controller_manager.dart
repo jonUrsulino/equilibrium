@@ -120,6 +120,10 @@ class ControllerManager {
     final List<PresencePlayer> notArrivedPlayers = incompleteTeam.notArrivedPlayers();
     int lengthGhosts = notArrivedPlayers.length;
 
+    for (PresencePlayer p in notArrivedPlayers) {
+      print("not arrived player: ${p}");
+    }
+
     var random = Random();
 
     final List<PresencePlayer> playersLoserTeam = loserTeam.players;

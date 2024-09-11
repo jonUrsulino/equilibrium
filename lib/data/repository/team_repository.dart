@@ -2,7 +2,6 @@
 import 'package:equilibrium/domain/model/shirt.dart';
 import 'package:equilibrium/domain/model/team.dart';
 import 'package:equilibrium/domain/repository/team_repository.dart';
-import 'package:flutter/foundation.dart';
 import 'package:signals/signals.dart';
 
 class TeamRepositoryImpl extends TeamRepository {

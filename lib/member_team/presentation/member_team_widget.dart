@@ -32,7 +32,12 @@ class _MemberTeamWidgetState extends State<MemberTeamWidget> {
   Widget build(BuildContext context) {
     return Watch((context) {
       PresencePlayer? presencePlayer = widget.presencePlayerSignal.watch(context);
-      presencePlayer ??= PresencePlayer.ghost(Player.ghost());
+
+      if (presencePlayer == null ||
+          (presencePlayer.statePresence != StatePresence.arrived &&
+              presencePlayer.statePresence != StatePresence.confirmed)) {
+        presencePlayer = PresencePlayer.ghost(Player.ghost());
+      }
 
       final Player player = presencePlayer.player;
       print('member widget player: ${player.name}');

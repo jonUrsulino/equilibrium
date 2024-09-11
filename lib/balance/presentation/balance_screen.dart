@@ -1,6 +1,5 @@
 import 'package:equilibrium/balance/business/balance_bloc.dart';
 import 'package:equilibrium/domain/model/team.dart';
-import 'package:equilibrium/member_team/presentation/member_team_component.dart';
 import 'package:equilibrium/member_team/presentation/member_team_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -64,7 +63,7 @@ class BalanceScreen extends StatelessWidget {
           itemBuilder: (context, index) {
             var team = teams[index];
             return Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(4.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -118,7 +117,7 @@ class BalanceScreen extends StatelessWidget {
             team.shirt.name,
             style: Theme.of(context)
                 .textTheme
-                .titleLarge
+                .titleMedium
                 ?.copyWith(color: Colors.white),
           ),
           const Spacer(),
