@@ -115,7 +115,7 @@ class Coach {
 
         var nextGoodPlayer = sortedPlayersByStars.first;
 
-        team.addPresencePlayer(nextGoodPlayer);
+        team.addPlayer(nextGoodPlayer.player);
         sortedPlayersByStars.remove(nextGoodPlayer);
       }
     }
@@ -140,7 +140,6 @@ class Coach {
     final Team incompleteTeam = teams[indexIncomplete];
 
     final Team cloneIncompleteTeam = incompleteTeam.copyWith(
-        presencePlayers: incompleteTeam.presencePlayers + shufflePromisesLimited,
         players: incompleteTeam.players + shufflePromisesLimited.map((e) => e.player).toList(),
     );
     teams[indexIncomplete] = cloneIncompleteTeam;
@@ -159,7 +158,6 @@ class Coach {
 
     var incompleteTeam = teams.firstWhere((element) => element.incomplete);
     incompleteTeam.players.addAll(shufflePromisesLimited.map((e) => e.player).toList());
-    incompleteTeam.presencePlayers.addAll(shufflePromisesLimited);
 
     print('team incomplete not balanced only with not arrived players\n'
         ': ${incompleteTeam.players.toString()}');

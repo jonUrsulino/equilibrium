@@ -6,38 +6,24 @@ import 'package:equilibrium/domain/repository/presence_player_repository.dart';
 
 class Team extends Equatable {
   final Shirt shirt;
-  final List<PresencePlayer> presencePlayers;
   final List<Player> players;
   final bool incomplete;
 
   const Team._({
     required this.shirt,
     required this.players,
-    required this.presencePlayers,
   }) : incomplete = false;
 
   Team.complete({required this.shirt}) :
         incomplete = false,
-        players = List.empty(growable: true),
-        presencePlayers = List.empty(growable: true);
+        players = List.empty(growable: true);
 
   Team.incomplete({required this.shirt}) :
         incomplete = true,
-        players = List.empty(growable: true),
-        presencePlayers = List.empty(growable: true);
-
-  void addPresencePlayer(PresencePlayer presencePlayer) {
-    presencePlayers.add(presencePlayer);
-    addPlayer(presencePlayer.player);
-  }
+        players = List.empty(growable: true);
 
   void addPlayer(Player player) {
     players.add(player);
-  }
-
-  void removePresencePlayer(PresencePlayer presencePlayer) {
-    presencePlayers.remove(presencePlayer);
-    removePlayer(presencePlayer.player);
   }
 
   void removePlayer(Player player) {
@@ -51,13 +37,12 @@ class Team extends Equatable {
   }
 
   @override
-  List<Object> get props => [shirt, players, presencePlayers];
+  List<Object> get props => [shirt, players];
 
-  Team copyWith({Shirt? shirt, List<Player>? players, List<PresencePlayer>? presencePlayers}) {
+  Team copyWith({Shirt? shirt, List<Player>? players}) {
     var team = Team._(
       shirt: shirt ?? this.shirt,
       players: players ?? this.players,
-      presencePlayers: presencePlayers ?? this.presencePlayers
     );
     return team;
   }
