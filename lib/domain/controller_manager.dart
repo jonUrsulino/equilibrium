@@ -21,11 +21,9 @@ class ControllerManager {
   final PresencePlayerRepository presencePlayerRepository = GetIt.I.get();
 
   late var teams = teamRepository.getTeams().value;
-  late final nextTeams = teamRepository.getNextTeams().value;
+  late final nextTeams = teamRepository.getNextTeams();
 
   late ManagerGame managerGame = ManagerGame(teamA: teams[0], teamB: teams[1]);
-  late Team teamA = managerGame.teamA;
-  late Team teamB = managerGame.teamB;
 
   final List<ManagerGame> history = [];
   final gameAction = signal(GameAction.creation);
@@ -34,8 +32,6 @@ class ControllerManager {
     print('initManagerGame');
 
     if (teams.length >= 2) {
-      updateTeams();
-
       gameAction.value = GameAction.readyToPlay;
       // history.add(managerGame!);
     }
@@ -52,43 +48,39 @@ class ControllerManager {
     });
   }
 
-  void updateTeams() {
-    teamA = managerGame.teamA;
-    teamB = managerGame.teamB;
-  }
-
   void startGame() {
     managerGame.startGame();
-    gameAction.value = GameAction.playing;
+    // gameAction.value = GameAction.playing;
   }
 
   void finishGame() {
     managerGame.finishGame();
-    gameAction.value = GameAction.finish;
+    // gameAction.value = GameAction.finish;
   }
 
   void recreateManagerGame(Team loserTeam, SideTeam loserSide) {
     print("recreateManagerGame");
     if (nextTeams.isNotEmpty) {
-      Team nextTeam = nextTeams[0];
 
-      var goToField = dismount(loserTeam, nextTeam);
-      nextTeams.remove(goToField);
+      final nextTeamUpdated = dismountLoserTeamAndPushNextTeam(loserTeam);
+      print("Next team: ${nextTeamUpdated.shirt.name}");
+      for (Player p in nextTeamUpdated.players) {
+        print("Player next team: $p");
+      }
 
-      updateTeams();
-      managerGame.createNewGame(nextTeam, loserSide);
+      managerGame.createNewGame(nextTeamUpdated, loserSide);
 
       List<Team> gameChange;
       switch (loserSide) {
         case SideTeam.teamA:
           gameChange = [
-            nextTeam,
+            nextTeamUpdated,
             managerGame.teamB,
           ];
         case SideTeam.teamB:
           gameChange = [
             managerGame.teamA,
-            nextTeam,
+            nextTeamUpdated,
           ];
       }
       final List<Team> newOrder = gameChange + nextTeams;
@@ -101,21 +93,23 @@ class ControllerManager {
     }
   }
 
-  Team dismount(Team loserTeam, Team nextTeam) {
-    for (Team item in nextTeams) {
-      print('incomplete? ${item.shirt.name} ${item.incomplete}');
-    }
-
+  Team dismountLoserTeamAndPushNextTeam(Team loserTeam) {
     int index = nextTeams.indexWhere((element) => element.notArrivedPlayers(presencePlayerRepository).isNotEmpty);
-    print('initial index $index');
+    print('index team with ghosts $index');
 
-    if (index < 0) {
-      print("all teams are complete with arrived players");
-      var first = nextTeams.first;
-
-      return first;
+    if (_doNotHaveGhosts(index)) {
+      print("all teams are full with arrived players");
+      return _commitChangeQueueTeams(loserTeam);
     }
 
+    loserTeam = _rafflePlayersLoserTeamSendingToLastTeam(index, loserTeam);
+
+    return _commitChangeQueueTeams(loserTeam);
+  }
+
+  bool _doNotHaveGhosts(int index) => index < 0;
+
+  Team _rafflePlayersLoserTeamSendingToLastTeam(int index, Team loserTeam) {
     Team incompleteTeam = nextTeams[index];
     print('not arrived team $incompleteTeam');
 
@@ -140,6 +134,7 @@ class ControllerManager {
     while(sortedPlayersLoserTeam.length < lengthGhosts) {
       print('while ${sortedPlayersLoserTeam.length} < $lengthGhosts');
       var numberRandomized = random.nextInt(playersLoserTeam.length);
+      print('random $numberRandomized');
 
       var luckyPlayer = playersLoserTeam[numberRandomized];
       playersLoserTeam.remove(luckyPlayer);
@@ -170,8 +165,14 @@ class ControllerManager {
         players: playersLoserTeam + notArrivedPlayers,
     );
     nextTeams[index] = incompleteTeam;
+    return loserTeam;
+  }
+
+  Team _commitChangeQueueTeams(Team loserTeam) {
     nextTeams.add(loserTeam);
-    return nextTeam;
+    var first = nextTeams.first;
+    nextTeams.removeAt(0);
+    return first;
   }
 }
 

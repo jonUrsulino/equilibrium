@@ -45,8 +45,8 @@ class TeamRepositoryImpl extends TeamRepository {
   }
 
   @override
-  ListSignal<Team> getNextTeams() {
-    return ListSignal(_teams.value.getRange(2, _teams.value.length).toList());
+  List<Team> getNextTeams() {
+    return _teams.value.getRange(2, _teams.value.length).toList();
   }
 
   @override

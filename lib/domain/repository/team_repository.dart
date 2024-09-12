@@ -14,5 +14,5 @@ abstract class TeamRepository {
   Signal<Team> nextIncompleteTeam();
 
   Signal<Team> getTeamByShirt(Shirt shirt);
-  ListSignal<Team> getNextTeams();
+  List<Team> getNextTeams();
 }
