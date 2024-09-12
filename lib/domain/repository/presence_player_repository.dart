@@ -17,7 +17,7 @@ abstract class PresencePlayerRepository {
 
   // TODO: Could be UseCases.
   void addNewPlayer(PresencePlayer value);
-  void playerArrived(PresencePlayer presencePlayer, bool value);
+  void playerArrived(PresencePlayer presencePlayer);
   void playerConfirmed(PresencePlayer presencePlayer, bool value);
   void playerMissed(PresencePlayer presencePlayer, bool value);
   void playerCanceled(PresencePlayer presencePlayer);

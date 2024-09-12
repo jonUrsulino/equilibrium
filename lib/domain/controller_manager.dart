@@ -21,7 +21,7 @@ class ControllerManager {
   final PresencePlayerRepository presencePlayerRepository = GetIt.I.get();
 
   late var teams = teamRepository.getTeams().value;
-  late final nextTeams = teamRepository.getNextTeams();
+  late List<Team> nextTeams = teamRepository.getNextTeams();
 
   late ManagerGame managerGame = ManagerGame(teamA: teams[0], teamB: teams[1]);
 
@@ -32,6 +32,7 @@ class ControllerManager {
     print('initManagerGame');
 
     if (teams.length >= 2) {
+      nextTeams = teamRepository.getNextTeams();
       gameAction.value = GameAction.readyToPlay;
       // history.add(managerGame!);
     }

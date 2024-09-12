@@ -1,4 +1,5 @@
 
+import 'package:equilibrium/domain/model/presence_player.dart';
 import 'package:equilibrium/domain/model/shirt.dart';
 import 'package:equilibrium/domain/model/team.dart';
 import 'package:signals/signals.dart';
@@ -15,4 +16,6 @@ abstract class TeamRepository {
 
   Signal<Team> getTeamByShirt(Shirt shirt);
   List<Team> getNextTeams();
+
+  void playerArrived(PresencePlayer presencePlayersUpdated);
 }

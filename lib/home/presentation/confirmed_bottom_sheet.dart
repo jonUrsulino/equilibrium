@@ -46,6 +46,6 @@ class ConfirmedBottomSheet extends StatelessWidget {
   }
 
   onChangeArriving(ConfirmedPlayersBloc bloc, PresencePlayer presencePlayer, value) {
-    bloc.repository.playerArrived(presencePlayer, value);
+    bloc.notifyArrivedPlayerUseCase.execute(presencePlayer);
   }
 }

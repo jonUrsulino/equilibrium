@@ -46,7 +46,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   }
 
   void onLoadGame(Emitter<GameState> emit) {
-    print("GameEvent");
+    print("GameEvent load");
     controller.initManagerGame();
     var game = controller.managerGame.game;
     emit(GameLoad(

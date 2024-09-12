@@ -10,6 +10,7 @@ import 'package:equilibrium/domain/settings.dart';
 import 'package:equilibrium/domain/use_case/get_initial_players_sort_by_name.dart';
 import 'package:equilibrium/domain/use_case/get_initial_presence_players_sort_by_starts.dart';
 import 'package:equilibrium/domain/use_case/get_presence_players_mapped_with_names.dart';
+import 'package:equilibrium/domain/use_case/notify_arrived_player.dart';
 import 'package:get_it/get_it.dart';
 
 abstract class DiDomain {
@@ -24,5 +25,10 @@ abstract class DiDomain {
     GetIt.I.registerSingleton(Settings());
     GetIt.I.registerSingleton(Coach());
     GetIt.I.registerSingleton(ControllerManager());
+    GetIt.I.registerSingleton(NotifyArrivedPlayer(
+        GetIt.I.get<PresencePlayerRepository>(),
+        GetIt.I.get<TeamRepository>(),
+        GetIt.I.get<Settings>())
+    );
   }
 }

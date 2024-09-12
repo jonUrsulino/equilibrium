@@ -19,7 +19,7 @@ class PresencePlayerRepositoryImpl implements PresencePlayerRepository {
   }
 
   @override
-  void playerArrived(PresencePlayer presencePlayer, bool value) {
+  void playerArrived(PresencePlayer presencePlayer) {
     print('player arrived ${presencePlayer.player.name}');
 
     var changed = presencePlayer.copyWith(statePresence: StatePresence.arrived);
