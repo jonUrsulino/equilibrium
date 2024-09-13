@@ -25,30 +25,30 @@ class NotifyArrivedPlayer {
       } else {
         var indexTeam = indexOfIncompleteTeam();
         if (exists(indexTeam)) {
-          putArrivedPlayerIntoIncompleteTeam(indexTeam, presencePlayer);
+          putArrivedPlayerIntoIncompleteTeam(indexTeam, presencePlayer.player);
         } else {
-          createNewTeam(presencePlayersUpdated);
+          createNewTeam(presencePlayersUpdated.player);
         }
       }
     }
   }
 
-  void putArrivedPlayerIntoIncompleteTeam(int indexTeam, PresencePlayer presencePlayer) {
+  void putArrivedPlayerIntoIncompleteTeam(int indexTeam, Player player) {
     Team team = teamRepository.getTeams().value[indexTeam];
 
     final List<Player> notArrivedPlayers = team.notArrivedPlayers(repository).map((e) => e.player).toList();
     final List<Player> arrivedPlayers = team.arrivedPlayers(repository).map((e) => e.player).toList();
 
-    notArrivedPlayers.first = presencePlayer.player;
+    notArrivedPlayers.first = player;
     team = team.copyWith(
         players: arrivedPlayers + notArrivedPlayers
     );
     teamRepository.getTeams().value[indexTeam] = team;
   }
 
-  void createNewTeam(PresencePlayer presencePlayersUpdated) {
+  void createNewTeam(Player player) {
     var team = Team.incomplete(shirt: Shirt.undefined(), );
-    team.players.add(presencePlayersUpdated.player);
+    team.players.add(player);
 
     var ghostsLength = settings.maxPlayersByTeam.value - 1;
     for (int i = 0; i < ghostsLength; i++) {

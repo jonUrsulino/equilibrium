@@ -1,8 +1,7 @@
 
 import 'package:equilibrium/domain/model/game.dart';
 import 'package:equilibrium/domain/model/team.dart';
-import 'package:equilibrium/game/presentation/game_screen.dart';
-import 'package:signals/signals.dart';
+import 'package:equilibrium/game/presentation/game_card.dart';
 
 class ManagerGame {
   ManagerGame({required this.teamA, required this.teamB});

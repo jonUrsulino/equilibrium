@@ -7,7 +7,7 @@ import 'package:equilibrium/domain/model/player.dart';
 import 'package:equilibrium/domain/model/team.dart';
 import 'package:equilibrium/domain/repository/presence_player_repository.dart';
 import 'package:equilibrium/domain/repository/team_repository.dart';
-import 'package:equilibrium/game/presentation/game_screen.dart';
+import 'package:equilibrium/game/presentation/game_card.dart';
 import 'package:get_it/get_it.dart';
 import 'package:signals/signals.dart';
 

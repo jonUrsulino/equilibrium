@@ -1,8 +1,7 @@
 import 'package:equilibrium/domain/model/game.dart';
-import 'package:equilibrium/domain/model/presence_player.dart';
 import 'package:equilibrium/domain/model/team.dart';
 import 'package:equilibrium/game/business_logic/game_bloc.dart';
-import 'package:equilibrium/member_team/presentation/member_team_widget.dart';
+import 'package:equilibrium/game/presentation/game_card.dart';
 import 'package:equilibrium/presentation/screen/team_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -61,114 +60,15 @@ class GameScreen extends StatelessWidget {
                 print("Team Card BlocBuilder: ${team.shirt.name}");
               }
 
-              return Card(
-                shape: const RoundedRectangleBorder(),
-                elevation: 8,
-                child: Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: Container(
-                    color: Colors.white10,
-                    child: Row(
-                      children: [
-                        _buildTeam(context, game.teamA, SideTeam.teamA),
-                        _buildTeam(context, game.teamB, SideTeam.teamB)
-                      ],
-                    ),
-                  ),
-                ),
+              return GameCard(
+                game: game,
+                presencePlayerRepository: bloc.presencePlayerRepository,
+                function: (Team team, SideTeam sideTeam) {
+                  bloc.add(ChangeLoseTeamEvent(loserTeam: team, sideTeam: sideTeam));
+                },
               );
           }
         }
-    );
-  }
-
-  Widget _buildTeam(BuildContext context, Team team, SideTeam sideTeam) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _headerTeam(context, team, sideTeam),
-            _teamMembers(context, team, sideTeam),
-            const SizedBox(
-              height: 10,
-            ),
-          ],
-        ),
-      ),
-    );
-    //     }
-    //   },
-    // );
-  }
-
-  Widget _teamMembers(BuildContext context, Team team, SideTeam sideTeam) {
-    return Container(
-      margin: const EdgeInsets.all(3),
-      child: ListView.builder(
-        shrinkWrap: true,
-        physics: const ClampingScrollPhysics(),
-        itemCount: team.players.length,
-        itemBuilder: (context, index) {
-          var teamPresencePlayers = team.actualPresencePlayers(bloc.presencePlayerRepository);
-          var presencePlayer = teamPresencePlayers[index];
-          return MemberTeamWidget(
-            Key(presencePlayer.player.name),
-            presencePlayer: presencePlayer,
-            position: "${index + 1}",
-          );
-
-        },
-      ),
-    );
-  }
-
-  Widget _headerTeam(BuildContext context, Team team, SideTeam sideTeam) {
-    return Container(
-      color: Theme
-          .of(context)
-          .secondaryHeaderColor,
-      child: Row(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Icon(
-              Icons.shield,
-              color: team.shirt.color,
-            ),
-          ),
-          Text(
-            team.shirt.name,
-            style: Theme
-                .of(context)
-                .textTheme
-                .titleMedium
-                ?.copyWith(color: Colors.white),
-          ),
-          IconButton(
-            onPressed: () => onRemoveTeam(team, sideTeam),
-            icon: const Icon(Icons.move_down),
-            color: Colors.white,
-            tooltip: "Perdeu",
-          ),
-          const Spacer(),
-          Text('${team.calculatePower()}',
-            style: Theme
-                .of(context)
-                .textTheme
-                .titleMedium
-                ?.copyWith(color: Colors.white),
-          ),
-          const Padding(
-            padding: EdgeInsets.all(4.0),
-            child: Icon(
-              Icons.star_border,
-              color: Colors.white,
-            ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -193,9 +93,9 @@ class GameScreen extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TeamCard(
-                          Key(team.shirt.name),
-                          team,
-                          bloc.presencePlayerRepository,
+                        Key(team.shirt.name),
+                        team,
+                        bloc.presencePlayerRepository,
                       ),
                     );
                   }),
@@ -206,12 +106,6 @@ class GameScreen extends StatelessWidget {
   }
 
   onRemoveTeam(Team team, SideTeam sideTeam) {
-    print('onRemoveTeam ${team.shirt.name}');
     bloc.add(ChangeLoseTeamEvent(loserTeam: team, sideTeam: sideTeam));
   }
-}
-
-enum SideTeam {
-  teamA,
-  teamB
 }
