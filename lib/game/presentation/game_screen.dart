@@ -21,7 +21,6 @@ class GameScreen extends StatelessWidget {
         print("state $state");
 
         switch (state) {
-
           case GameInitial():
             return const CircularProgressIndicator();
           case GameLoad():
