@@ -88,9 +88,11 @@ class Coach {
 
   void _balanceTeamsByStars(List<PresencePlayer> listPlayers) {
     // listPlayers.addAll(shufflePromisesLimited);
-    List<PresencePlayer> sortedPlayersByStars =
-    _sortByStarsShufflingEquals(listPlayers);
+    List<PresencePlayer> sortedPlayersByStars = _sortByStarsShufflingEquals(listPlayers);
+    print("sorted $sortedPlayersByStars");
+    print("sorted length ${sortedPlayersByStars.length}");
     final maxPlayersByTeam = settings.getMaxPlayersByTeam();
+    print("$listPlayers");
 
     // split listPlayers based on sort of starts
     for (int i = 0; i < listPlayers.length; i++) {
@@ -108,12 +110,14 @@ class Coach {
       });
 
       for (Team team in teams) {
+        print('loop team: ${team.shirt.name}');
         if (team.players.length >= maxPlayersByTeam) {
           print('team full ${team.shirt.name}');
-          break;
+          continue;
         }
 
         var nextGoodPlayer = sortedPlayersByStars.first;
+        print("add player: $nextGoodPlayer");
 
         team.addPlayer(nextGoodPlayer.player);
         sortedPlayersByStars.remove(nextGoodPlayer);
