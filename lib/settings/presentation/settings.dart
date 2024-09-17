@@ -6,50 +6,41 @@ import 'package:signals/signals_flutter.dart';
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key,});
 
-  static const route = 'SettingsScreen';
-
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+
   final Settings settings = GetIt.I.get();
   final TextEditingController maxPlayersController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.abc),
-          onPressed: () {
-        print("OI");
-      }),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Column(
-              children: [
-                buildRowDecInc(context),
-                Row(
-                  children: [
-                    Text(
-                      'Considerar goleiros no balanceamento',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const Spacer(),
-                    Checkbox(
-                      value: settings.isBalancedWithGoalkeeper.watch(context),
-                      onChanged: (value) =>
-                          settings.isBalancedWithGoalkeeper.set(value!),
-                    ),
-                  ],
-                )
-              ],
-            ),
-          ],
-        ),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          Column(
+            children: [
+              buildRowDecInc(context),
+              Row(
+                children: [
+                  Text(
+                    'Considerar goleiros no balanceamento',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const Spacer(),
+                  Checkbox(
+                    value: settings.isBalancedWithGoalkeeper.watch(context),
+                    onChanged: (value) =>
+                        settings.isBalancedWithGoalkeeper.set(value!),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ],
       ),
     );
   }

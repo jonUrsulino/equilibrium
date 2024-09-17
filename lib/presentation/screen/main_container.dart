@@ -6,8 +6,9 @@ import 'package:equilibrium/home/presentation/presence_route.dart';
 import 'package:equilibrium/navigator/app_navigator.dart';
 import 'package:equilibrium/presentation/model/bottom_navigation_type.dart';
 import 'package:equilibrium/presentation/screen/canceling_confirmation_bottom_sheet.dart';
-import 'package:equilibrium/presentation/screen/settings.dart';
+import 'package:equilibrium/settings/presentation/settings.dart';
 import 'package:equilibrium/raffle_players/presentation/raffle_players_widget.dart';
+import 'package:equilibrium/settings/presentation/settings_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -17,14 +18,14 @@ class MainContainer extends StatefulWidget {
   const MainContainer({
     required this.title,
     required this.child,
-    required this.floatingActionButton,
     required this.currentBottomNavigation,
+    this.floatingActionButton,
     super.key,
   });
 
   final Widget child;
   final String title;
-  final FloatingActionButton floatingActionButton;
+  final FloatingActionButton? floatingActionButton;
   final BottomNavigationType currentBottomNavigation;
 
   @override
@@ -150,29 +151,20 @@ class _MainContainerState extends State<MainContainer> {
     switch (type) {
       case BottomNavigationType.home:
         navigator.navigateToScreenAndClearBackStack(name: PresenceRoute.route);
-        // do nothing
-        bloc.fabData.value = bloc.maps[FABActionType.addPlayer];
       case BottomNavigationType.balance:
         navigator.navigateToScreenAndClearBackStack(name: BalanceRoute.route);
-        bloc.fabData.value = bloc.maps[FABActionType.balancePlayers];
       case BottomNavigationType.game:
         navigator.navigateToScreenAndClearBackStack(name: GameRoute.route);
-        // updateFABGameIcon(bloc);
-        bloc.fabData.value = bloc.maps[FABActionType.gameStart];
       case BottomNavigationType.settings:
-        navigator.navigateToScreenAndClearBackStack(name: SettingsScreen.route);
-        bloc.fabData.value = bloc.maps[FABActionType.addPlayer];
+        navigator.navigateToScreenAndClearBackStack(name: SettingsRoute.route);
     }
   }
 
   void _onTapVisibleButtons() {
-    print('visible');
-
     bloc.settings.toggleStarsVisible();
   }
 
   void _onTapSortPlayers(BuildContext context) {
-    print('presence');
     showModalBottomSheet(
       isScrollControlled: true,
       enableDrag: true,
@@ -185,7 +177,6 @@ class _MainContainerState extends State<MainContainer> {
   }
 
   void _onTapCheckPresence(BuildContext context) {
-    print('presence');
     showModalBottomSheet(
       isScrollControlled: true,
       enableDrag: true,
