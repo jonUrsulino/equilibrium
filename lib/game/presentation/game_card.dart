@@ -39,8 +39,6 @@ class GameCard extends StatelessWidget {
                   presencePlayerRepository: presencePlayerRepository,
                   function: function,
               ),
-              // _buildTeam(context, game.teamA, SideTeam.teamA),
-              // _buildTeam(context, game.teamB, SideTeam.teamB)
             ],
           ),
         ),

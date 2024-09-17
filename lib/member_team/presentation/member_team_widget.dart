@@ -13,6 +13,7 @@ class MemberTeamWidget extends StatefulWidget {
 
   final PresencePlayerRepository repository = GetIt.I.get();
   final Settings settings = GetIt.I.get();
+  final bool? starsVisibility;
 
   late final Computed<PresencePlayer?> presencePlayerSignal = repository
       .getComputedPlayerByName(presencePlayer.player.name);
@@ -20,6 +21,7 @@ class MemberTeamWidget extends StatefulWidget {
   MemberTeamWidget(Key? key, {
     required this.presencePlayer,
     required this.position,
+    this.starsVisibility
   }) : super(key: key);
 
   @override
@@ -74,7 +76,7 @@ class _MemberTeamWidgetState extends State<MemberTeamWidget> {
             ),
             const Spacer(),
             Visibility(
-              visible: widget.settings.starsVisible.watch(context),
+              visible: widget.starsVisibility ?? widget.settings.starsVisible.watch(context),
               child: RatingStars(
                 value: playerStars,
                 starSize: 15,

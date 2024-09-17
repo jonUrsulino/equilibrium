@@ -98,6 +98,7 @@ class TeamGameCard extends StatelessWidget {
             Key(presencePlayer.player.name),
             presencePlayer: presencePlayer,
             position: "${index + 1}",
+            starsVisibility: false,
           );
         },
       ),
