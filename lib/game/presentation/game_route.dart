@@ -7,6 +7,8 @@ import 'package:get_it/get_it.dart';
 class GameRoute extends StatelessWidget {
   const GameRoute({super.key});
 
+  static const route = "GameRoute";
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(

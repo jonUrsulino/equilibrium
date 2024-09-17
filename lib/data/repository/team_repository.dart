@@ -3,7 +3,6 @@ import 'package:equilibrium/domain/model/presence_player.dart';
 import 'package:equilibrium/domain/model/shirt.dart';
 import 'package:equilibrium/domain/model/team.dart';
 import 'package:equilibrium/domain/repository/team_repository.dart';
-import 'package:get_it/get_it.dart';
 import 'package:signals/signals.dart';
 
 class TeamRepositoryImpl extends TeamRepository {
@@ -24,6 +23,11 @@ class TeamRepositoryImpl extends TeamRepository {
   @override
   void addNewTeam(Team team) {
     _teams.add(team);
+  }
+
+  @override
+  void removeTeam(Team team) {
+    _teams.remove(team);
   }
 
   @override
@@ -60,6 +64,7 @@ class TeamRepositoryImpl extends TeamRepository {
   Computed<Team> second() {
     return computed(() => _teams[1]);
   }
+
 
   @override
   void playerArrived(PresencePlayer presencePlayersUpdated) {

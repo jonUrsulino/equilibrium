@@ -19,15 +19,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Ajustes'),
-        centerTitle: true,
-        leading: BackButton(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.abc),
           onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-      ),
+        print("OI");
+      }),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(

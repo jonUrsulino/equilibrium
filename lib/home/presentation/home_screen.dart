@@ -4,6 +4,7 @@ import 'package:equilibrium/game/presentation/game_route.dart';
 import 'package:equilibrium/home/business_logic/home_bloc.dart';
 import 'package:equilibrium/home/presentation/presence_route.dart';
 import 'package:equilibrium/navigator/nav_extensions.dart';
+import 'package:equilibrium/presentation/model/bottom_navigation_type.dart';
 import 'package:equilibrium/presentation/screen/canceling_confirmation_bottom_sheet.dart';
 import 'package:equilibrium/game/presentation/game_screen.dart';
 import 'package:equilibrium/presentation/screen/new_player_dialog.dart';
@@ -63,32 +64,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final HomeBloc bloc = context.read();
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            _title(bloc, bloc.bottomNavAction.watch(context).index),
-            style: Theme.of(context).textTheme.headlineLarge,
-          ),
-          actions: [
-            IconButton(
-              onPressed: () => _onTapVisibleButtons(bloc),
-              icon: Icon(bloc.settings.starsVisible.watch(context)
-                  ? Icons.visibility
-                  : Icons.visibility_off),
-            ),
-            IconButton(
-              onPressed: () => _onTapSortPlayers(),
-              icon: const Icon(Icons.published_with_changes),
-            ),
-            IconButton(
-              onPressed: () => _onTapCheckPresence(),
-              icon: const Icon(Icons.check),
-            ),
-            IconButton(
-              onPressed: () => _onTapSettings(),
-              icon: const Icon(Icons.settings),
-            )
-          ],
-        ),
+        appBar: _buildAppBar(bloc, context),
+        extendBody: true,
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         body: Watch((context) {
           switch (bloc.bottomNavAction.value) {
             case BottomNavigationType.home:
@@ -96,34 +74,91 @@ class _HomeScreenState extends State<HomeScreen> {
             case BottomNavigationType.balance:
               return const BalanceRoute();
             case BottomNavigationType.game:
-            default:
               return const GameRoute();
+            case BottomNavigationType.settings:
+            default:
+              return const SettingsScreen();
           }
         }),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          enableFeedback: true,
-          currentIndex: bloc.bottomNavAction.watch(context).index,
-          onTap: (value) {
-            return onTapBottomNavigation(bloc, value);
-          },
-          items: const [
-            BottomNavigationBarItem(
-              label: "Jogadores",
-              icon: Icon(Icons.directions_run),
-            ),
-            BottomNavigationBarItem(
-              label: "Times",
-              icon: Icon(Icons.groups),
-            ),
-            BottomNavigationBarItem(
-              label: "Partida",
-              icon: Icon(Icons.sports_soccer),
-            ),
-          ],
-        ),
-        floatingActionButton: _buildFAB());
+        bottomNavigationBar: _buildBottomAppBar(bloc, context),
+        floatingActionButton: _buildFAB()
+    );
   }
+
+  AppBar _buildAppBar(HomeBloc bloc, BuildContext context) {
+    return AppBar(
+        title: Text(
+          _title(bloc, bloc.bottomNavAction.watch(context).index),
+          style: Theme.of(context).textTheme.headlineLarge,
+        ),
+        actions: [
+          IconButton(
+            onPressed: () => _onTapVisibleButtons(bloc),
+            icon: Icon(bloc.settings.starsVisible.watch(context)
+                ? Icons.visibility
+                : Icons.visibility_off),
+          ),
+          IconButton(
+            onPressed: () => _onTapSortPlayers(),
+            icon: const Icon(Icons.published_with_changes),
+          ),
+          IconButton(
+            onPressed: () => _onTapCheckPresence(),
+            icon: const Icon(Icons.check),
+          ),
+        ],
+      );
+  }
+
+  BottomAppBar _buildBottomAppBar(HomeBloc bloc, BuildContext context) {
+    return BottomAppBar(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      height: 60,
+      color: Colors.cyan.shade400,
+      shape: const CircularNotchedRectangle(),
+      notchMargin: 5,
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          IconButton(
+
+            tooltip: "Jogadores",
+            icon: const Icon(
+              Icons.directions_run,
+              color: Colors.black,
+            ),
+            onPressed: () => onTapBottomNavigation(bloc, BottomNavigationType.home),
+          ),
+          IconButton(
+            tooltip: "Times",
+            icon: const Icon(
+              Icons.groups,
+              color: Colors.black,
+            ),
+            onPressed: () => onTapBottomNavigation(bloc, BottomNavigationType.balance),
+          ),
+          IconButton(
+            tooltip: "Partida",
+            icon: const Icon(
+              Icons.sports_soccer,
+              color: Colors.black,
+            ),
+            onPressed: () => onTapBottomNavigation(bloc, BottomNavigationType.game),
+          ),
+          IconButton(
+            tooltip: "Ajustes",
+            icon: const Icon(
+              Icons.settings,
+              color: Colors.black,
+            ),
+            onPressed: () => onTapBottomNavigation(bloc, BottomNavigationType.settings),
+          ),
+        ],
+      ),
+    );
+  }
+
 
   Widget _buildFAB() {
     return Watch((context) {
@@ -131,25 +166,24 @@ class _HomeScreenState extends State<HomeScreen> {
       var fab = bloc.fabData.value!;
       return FloatingActionButton(
         onPressed: () => onPressed(bloc, fab),
-        tooltip: fab.name,
+        shape: const CircleBorder(),
         child: Icon(fab.icon),
       );
     });
   }
 
-  void onTapBottomNavigation(HomeBloc bloc, int value) {
-    switch (value) {
-      case 0:
-        bloc.bottomNavAction.set(BottomNavigationType.home);
+  void onTapBottomNavigation(HomeBloc bloc, BottomNavigationType type) {
+    bloc.bottomNavAction.set(type);
+
+    switch (type) {
+      case BottomNavigationType.home:
         bloc.fabData.value = bloc.maps[FABActionType.addPlayer];
-      case 1:
-        bloc.bottomNavAction.set(BottomNavigationType.balance);
+      case BottomNavigationType.balance:
         bloc.fabData.value = bloc.maps[FABActionType.balancePlayers];
-      case 2:
-        bloc.bottomNavAction.set(BottomNavigationType.game);
+      case BottomNavigationType.game:
         updateFABGameIcon(bloc);
-      default:
-        bloc.bottomNavAction.set(BottomNavigationType.home);
+      case BottomNavigationType.settings:
+        bloc.fabData.value = bloc.maps[FABActionType.addPlayer];
     }
   }
 
@@ -187,11 +221,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _onTapSettings() {
-    print('settings');
-    context.navigator.navigateToScreen(name: SettingsScreen.route);
-  }
-
   String _title(HomeBloc bloc, int index) {
     switch (index) {
       case 0:
@@ -200,6 +229,8 @@ class _HomeScreenState extends State<HomeScreen> {
         return 'Balanciamento';
       case 2:
         return 'Partida';
+      case 3:
+        return 'Ajustes';
       default:
         return 'Equilibrium';
     }
@@ -226,6 +257,8 @@ class _HomeScreenState extends State<HomeScreen> {
       case BottomNavigationType.game:
         actionManagerGame(bloc);
         updateFABGameIcon(bloc);
+      case BottomNavigationType.settings:
+        // do nothing.
     }
   }
 }

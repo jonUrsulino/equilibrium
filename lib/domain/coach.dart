@@ -110,7 +110,7 @@ class Coach {
       });
 
       for (Team team in teams) {
-        print('loop team: ${team.shirt.name}');
+        print('loop team: ${team.shirt.name} ${team.incomplete}');
         if (team.players.length >= maxPlayersByTeam) {
           print('team full ${team.shirt.name}');
           continue;
@@ -163,6 +163,11 @@ class Coach {
     var incompleteTeam = teams.firstWhere((element) => element.incomplete);
     incompleteTeam.players.addAll(shufflePromisesLimited.map((e) => e.player).toList());
 
+    var ghostsLength = settings.maxPlayersByTeam.value - incompleteTeam.players.length;
+    for (int i = 0; i < ghostsLength; i++) {
+      incompleteTeam.players.add(Player.ghost());
+    }
+
     print('team incomplete not balanced only with not arrived players\n'
         ': ${incompleteTeam.players.toString()}');
   }
@@ -207,7 +212,7 @@ class Coach {
     Team team = Team.incomplete(
       shirt: shirt ?? Shirt.undefined(),
     );
-    print('incomplete team: ${team.shirt.name}');
+    print('incomplete team: ${team.shirt.name} ${team.incomplete}');
     return team;
   }
 

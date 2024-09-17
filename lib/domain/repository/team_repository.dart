@@ -8,6 +8,7 @@ abstract class TeamRepository {
   ListSignal<Team> getTeams();
   void load(List<Team> teams);
   void addNewTeam(Team team);
+  void removeTeam(Team team);
   void changeOrder(List<Team> newOrderTeams);
   Computed<Team> first();
   Computed<Team> second();

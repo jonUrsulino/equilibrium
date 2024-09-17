@@ -1,4 +1,6 @@
 import 'package:equilibrium/balance/business/balance_bloc.dart';
+import 'package:equilibrium/domain/model/presence_player.dart';
+import 'package:equilibrium/domain/model/shirt.dart';
 import 'package:equilibrium/domain/model/team.dart';
 import 'package:equilibrium/member_team/presentation/member_team_widget.dart';
 import 'package:equilibrium/presentation/screen/team_card.dart';
@@ -7,34 +9,29 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:signals/signals_flutter.dart';
 
 class BalanceScreen extends StatelessWidget {
-  const BalanceScreen({super.key});
+  const BalanceScreen({required this.bloc, super.key});
+
+  final BalanceBloc bloc;
 
   @override
   Widget build(BuildContext context) {
-    final BalanceBloc bloc = context.read();
-
-    return Watch((context) {
-      final List<Team> teams = bloc.teamsSignal.watch(context);
-      print('teams empty ${teams.isEmpty}');
-
-      for (var team in teams) {
-        print('team ${team.shirt.name}');
-        for (var player in team.players) {
-          print('team repository player ${player.name}');
+    return BlocBuilder<BalanceBloc, BalanceState>(
+      builder: (context, state) {
+        switch (state) {
+          case BalanceInitialState():
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          case NotBalancedState():
+            return _buildPresence(state.teamPresencePlayers);
+          case BalancedTeamsState():
+            return _buildTeams(state.mapTeamsPresencePlayers);
         }
-      }
-
-      if (teams.isEmpty) {
-        return _buildPresence(context);
-      } else {
-        return _buildTeams(context);
-      }
-    },);
+      },
+    );
   }
 
-  Widget _buildPresence(BuildContext context) {
-    final BalanceBloc bloc = context.read();
-    final arrivedPlayers = bloc.arrivedPlayersSignals.watch(context);
+  Widget _buildPresence(arrivedPlayers) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ListView.builder(
@@ -53,23 +50,22 @@ class BalanceScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTeams(BuildContext context) {
-    final BalanceBloc bloc = context.read();
-    final ListSignal<Team> teams = bloc.teamsSignal.watch(context);
-
+  Widget _buildTeams(Map<Team, List<PresencePlayer>> teamsPresencePlayers) {
     return Container(
       color: Colors.white10,
       child: ListView.builder(
-          itemCount: teams.length,
+          itemCount: teamsPresencePlayers.length,
           itemBuilder: (context, index) {
-            var team = teams[index];
+            var team = teamsPresencePlayers.keys.toList()[index];
+            List<PresencePlayer> presencePlayers = teamsPresencePlayers[team]!;
 
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: TeamCard(
-                  Key(team.shirt.name),
-                  team,
-                  bloc.repository
+                Key(team.shirt.name),
+                team.shirt,
+                presencePlayers,
+                team.calculatePower(),
               ),
             );
           }

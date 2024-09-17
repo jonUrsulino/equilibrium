@@ -1,22 +1,28 @@
 
-import 'package:equilibrium/domain/model/team.dart';
-import 'package:equilibrium/domain/repository/presence_player_repository.dart';
+import 'package:equilibrium/domain/model/presence_player.dart';
+import 'package:equilibrium/domain/model/shirt.dart';
 import 'package:equilibrium/member_team/presentation/member_team_widget.dart';
 import 'package:flutter/material.dart';
 
 class TeamCard extends StatelessWidget {
-  const TeamCard(Key? key, this.team, this.presencePlayerRepository): super(key: key);
+  const TeamCard(
+      Key? key,
+      this.shirt,
+      this.presencePlayers,
+      this.totalStars,
+      ): super(key: key);
 
-  final Team team;
-  final PresencePlayerRepository presencePlayerRepository;
+  final List<PresencePlayer> presencePlayers;
+  final Shirt shirt;
+  final double totalStars;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _headerTeam(context, team),
-        _teamMembers(team),
+        _headerTeam(context),
+        _teamMembers(),
         const SizedBox(
           height: 20,
         ),
@@ -27,7 +33,7 @@ class TeamCard extends StatelessWidget {
     );
   }
 
-  Container _headerTeam(BuildContext context, Team team) {
+  Container _headerTeam(BuildContext context) {
     return Container(
       color: Theme.of(context).secondaryHeaderColor,
       child: Row(
@@ -36,18 +42,18 @@ class TeamCard extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Icon(
               Icons.shield,
-              color: team.shirt.color,
+              color: shirt.color,
             ),
           ),
           Text(
-            team.shirt.name,
+            shirt.name,
             style: Theme.of(context)
                 .textTheme
                 .titleLarge
                 ?.copyWith(color: Colors.white),
           ),
           const Spacer(),
-          Text('${team.calculatePower()}',
+          Text('$totalStars',
             style: Theme
                 .of(context)
                 .textTheme
@@ -66,16 +72,15 @@ class TeamCard extends StatelessWidget {
     );
   }
 
-  Container _teamMembers(Team team) {
+  Container _teamMembers() {
     return Container(
       margin: const EdgeInsets.all(3),
       child: ListView.builder(
         shrinkWrap: true,
         physics: const ClampingScrollPhysics(),
-        itemCount: team.players.length,
+        itemCount: presencePlayers.length,
         itemBuilder: (context, index) {
-          var teamPresencePlayers = team.actualPresencePlayers(presencePlayerRepository);
-          var presencePlayer = teamPresencePlayers[index];
+          var presencePlayer = presencePlayers[index];
           return MemberTeamWidget(
             Key(presencePlayer.player.name),
             presencePlayer: presencePlayer,

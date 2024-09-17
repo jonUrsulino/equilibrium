@@ -12,7 +12,8 @@ class Team extends Equatable {
   const Team._({
     required this.shirt,
     required this.players,
-  }) : incomplete = false;
+    required this.incomplete,
+  });
 
   Team.complete({required this.shirt}) :
         incomplete = false,
@@ -37,12 +38,13 @@ class Team extends Equatable {
   }
 
   @override
-  List<Object> get props => [shirt, players];
+  List<Object> get props => [shirt, players, incomplete];
 
-  Team copyWith({Shirt? shirt, List<Player>? players}) {
+  Team copyWith({Shirt? shirt, List<Player>? players, bool? incomplete}) {
     var team = Team._(
       shirt: shirt ?? this.shirt,
       players: players ?? this.players,
+      incomplete: incomplete ?? this.incomplete
     );
     return team;
   }

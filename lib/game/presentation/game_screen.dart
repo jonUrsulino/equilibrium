@@ -93,8 +93,9 @@ class GameScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(8.0),
                       child: TeamCard(
                         Key(team.shirt.name),
-                        team,
-                        bloc.presencePlayerRepository,
+                        team.shirt,
+                        team.actualPresencePlayers(bloc.presencePlayerRepository),
+                        team.calculatePower(),
                       ),
                     );
                   }),

@@ -1,5 +1,7 @@
+import 'package:equilibrium/balance/presentation/balance_route.dart';
+import 'package:equilibrium/game/presentation/game_route.dart';
 import 'package:equilibrium/home/presentation/home_route.dart';
-import 'package:equilibrium/home/presentation/home_screen.dart';
+import 'package:equilibrium/home/presentation/presence_route.dart';
 import 'package:equilibrium/presentation/screen/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -12,8 +14,18 @@ class Pages {
       routes: [
         GoRoute(
           path: "/",
-          name: HomeRoute.route,
-          builder: (context, state) => const HomeRoute(),
+          name: PresenceRoute.route,
+          builder: (context, state) => const PresenceRoute(),
+        ),
+        GoRoute(
+          path: "/balance",
+          name: BalanceRoute.route,
+          builder: (context, state) => const BalanceRoute(),
+        ),
+        GoRoute(
+          path: "/game",
+          name: GameRoute.route,
+          builder: (context, state) => const GameRoute(),
         ),
         GoRoute(
           path: "/settings",

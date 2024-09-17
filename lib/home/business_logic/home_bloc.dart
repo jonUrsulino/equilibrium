@@ -3,6 +3,7 @@ import 'package:equilibrium/domain/coach.dart';
 import 'package:equilibrium/domain/controller_manager.dart';
 import 'package:equilibrium/domain/repository/presence_player_repository.dart';
 import 'package:equilibrium/domain/settings.dart';
+import 'package:equilibrium/presentation/model/bottom_navigation_type.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals.dart';
 
@@ -31,7 +32,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   //TODO: Refactorar isso para usar state ou sealed class ou named constructor.
   final Map<FABActionType, FABData> maps = {
-    FABActionType.addPlayer: const FABData(BottomNavigationType.home, "Adicionar jogador", Icons.add, ),
+    FABActionType.addPlayer: const FABData(BottomNavigationType.home, "Adicionar jogador", Icons.add_circle_outlined, ),
     FABActionType.balancePlayers: const FABData(BottomNavigationType.balance, "Balanciar times", Icons.balance,),
     FABActionType.gameCreation: const FABData(BottomNavigationType.game, "Criar partida", Icons.create,),
     FABActionType.gameStart: const FABData(BottomNavigationType.game, "Iniciar partida", Icons.not_started,),
@@ -76,8 +77,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     return super.close();
   }
 }
-
-enum BottomNavigationType { home, balance, game }
 
 class FABData {
   const FABData(this.type, this.name, this.icon);
