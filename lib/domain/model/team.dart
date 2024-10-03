@@ -37,6 +37,10 @@ class Team extends Equatable {
     });
   }
 
+  double calculatePowerByPlayers() {
+    return calculatePower() / players.length;
+  }
+
   @override
   List<Object> get props => [shirt, players, incomplete];
 
