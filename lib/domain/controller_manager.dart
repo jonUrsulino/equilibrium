@@ -210,8 +210,7 @@ class ControllerManager {
     return rearrangeTeamWith(loserTeam, playersLoserTeam, notArrivedPlayers);
   }
 
-  Team _balancePlayersLoserTeamSendingToLastTeam(int index, Team loserTeam,
-      Team winnerTeam) {
+  Team _balancePlayersLoserTeamSendingToLastTeam(int index, Team loserTeam, Team winnerTeam) {
     print("_balancePlayersLoserTeamSendingToLastTeam");
     // referenceWinner with StarsByPlayer
     var referenceWinner = winnerTeam.calculatePowerByPlayers();
@@ -256,24 +255,11 @@ class ControllerManager {
       var nextTeamStrength = nextTeam.calculatePowerByPlayers();
 
       // compare with referenceWinner
-      Player luckyPlayer;
-      // if equal with tolerance then get middle strength
-      var diffStrength = nextTeamStrength - referenceWinner;
-      print("winner: $referenceWinner nextTeam: $nextTeamStrength diff: $diffStrength");
-
-      if (diffStrength >= -0.05 && diffStrength <= 0.05) {
-        print("strength equal: $diffStrength");
-        final int middle = playersLoserTeamSortedByStars.length ~/ 2;
-        luckyPlayer = playersLoserTeamSortedByStars[middle];
-
-      } else if (nextTeamStrength > referenceWinner) {
-        print("nextTeamStrength is stronger"); //then get weak player
-        luckyPlayer = playersLoserTeamSortedByStars.last;
-
-      } else {
-        print("nextTeamStrength is weaker"); //then get strong player
-        luckyPlayer = playersLoserTeamSortedByStars.first;
-      }
+      Player luckyPlayer = selectLuckyPlayerBalancingWithSpotsFromLoseTeam(
+          playersLoserTeamSortedByStars,
+          nextTeamStrength,
+          referenceWinner
+      );
       playersLoserTeamSortedByStars.remove(luckyPlayer);
 
       nextTeam.players.add(luckyPlayer);
@@ -290,6 +276,120 @@ class ControllerManager {
     return rearrangeTeamWith(
         loserTeam, playersLoserTeamSortedByStars, notArrivedPlayers);
   }
+
+  Player selectLuckyPlayerBalancingWithSpotsFromLoseTeam(
+      List<Player> playersLoserTeamSortedByStars,
+      double nextTeamStrength,
+      double referenceWinner,
+      ) {
+    final strongTier = Spots.tier1();
+    final middleTier = Spots.tier2();
+    final weakTier = Spots.tier3();
+
+    for (var player in playersLoserTeamSortedByStars) {
+      if (player.stars >= 4 && player.stars <= 5) {
+        strongTier.players.add(player);
+      } else if (player.stars >= 2.5 && player.stars <= 3.99) {
+        middleTier.players.add(player);
+      } else {
+        weakTier.players.add(player);
+      }
+    }
+
+    printSpots(strongTier, middleTier, weakTier);
+    print("--Shuffle in tiers--");
+    final random = Random();
+    strongTier.players.shuffle(random);
+    middleTier.players.shuffle(random);
+    weakTier.players.shuffle(random);
+
+    final listSorted = strongTier.players + middleTier.players + weakTier.players;
+
+    printSpots(strongTier, middleTier, weakTier);
+
+    // if equal with tolerance then get middle strength
+    var diffStrength = nextTeamStrength - referenceWinner;
+    print("winner: $referenceWinner nextTeam: $nextTeamStrength diff: $diffStrength");
+
+    Player luckyPlayer;
+    if (diffStrength >= -0.05 && diffStrength <= 0.05) {
+      print("equal strength"); //then
+      luckyPlayer = getMiddlePlayerFromList(listSorted);
+
+    } else if (nextTeamStrength > referenceWinner) {
+      print("nextTeamStrength is stronger"); //then get weak player
+      luckyPlayer = listSorted.last;
+
+    } else {
+      print("nextTeamStrength is weaker"); //then get strong player
+      luckyPlayer = listSorted.first;
+    }
+    return luckyPlayer;
+  }
+
+  void printSpots(Spots tier1, Spots tier2, Spots tier3) {
+    for (var player in tier1.players) {
+      print("Tier 1: $player");
+    }
+    for (var player in tier2.players) {
+      print("Tier 2: $player");
+    }
+    for (var player in tier3.players) {
+      print("Tier 3: $player");
+    }
+  }
+
+  Player raffleInSpotTierPlayers(Spots tier, Random random) {
+    var length = tier.players.length;
+    var numberRandom = random.nextInt(length);
+
+    Player luckyPlayer = tier.players[numberRandom];
+    print("length $length $numberRandom $luckyPlayer");
+    return luckyPlayer;
+  }
+
+  Player selectLuckyPlayerBalancingWithFirstLastMiddleFromLoseTeam(
+      List<Player> playersLoserTeamSortedByStars,
+      double nextTeamStrength,
+      double referenceWinner
+      ) {
+    // if equal with tolerance then get middle strength
+    var diffStrength = nextTeamStrength - referenceWinner;
+    print("winner: $referenceWinner nextTeam: $nextTeamStrength diff: $diffStrength");
+
+    Player luckyPlayer;
+    if (diffStrength >= -0.05 && diffStrength <= 0.05) {
+      print("strength equal: $diffStrength");
+      luckyPlayer = getMiddlePlayerFromList(playersLoserTeamSortedByStars);
+
+    } else if (nextTeamStrength > referenceWinner) {
+      print("nextTeamStrength is stronger"); //then get weak player
+      luckyPlayer = playersLoserTeamSortedByStars.last;
+
+    } else {
+      print("nextTeamStrength is weaker"); //then get strong player
+      luckyPlayer = playersLoserTeamSortedByStars.first;
+    }
+    return luckyPlayer;
+  }
+
+  Player getMiddlePlayerFromList(List<Player> playersLoserTeamSortedByStars) {
+    final int middle = playersLoserTeamSortedByStars.length ~/ 2;
+    return playersLoserTeamSortedByStars[middle];
+  }
+}
+
+class Spots {
+  Spots.tier1() : spotType = SpotType.tier1;
+  Spots.tier2() : spotType = SpotType.tier2;
+  Spots.tier3() : spotType = SpotType.tier3;
+
+  final SpotType spotType;
+  final List<Player> players = List.empty(growable: true);
+}
+
+enum SpotType{
+  tier1, tier2, tier3
 }
 
 enum GameAction {
