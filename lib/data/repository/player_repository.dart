@@ -10,6 +10,7 @@ class PlayerRepositoryImpl implements PlayerRepository {
     Player.normal("Tiago Valadão", 5),
     Player.normal("Jocivaldo", 5),
     Player.normal("Jonathan", 5),
+    Player.normal("Victor", 5),
     Player.normal("Kennedy", 4.5),
     Player.normal("Isaias", 4.5),
     Player.normal("Caio", 4.5),
