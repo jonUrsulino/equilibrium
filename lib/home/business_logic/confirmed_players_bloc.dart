@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:equilibrium/domain/model/presence_player.dart';
 import 'package:equilibrium/domain/repository/presence_player_repository.dart';
 import 'package:equilibrium/domain/use_case/notify_arrived_player.dart';
 import 'package:get_it/get_it.dart';
@@ -10,7 +11,8 @@ part 'confirmed_players_state.dart';
 class ConfirmedPlayersBloc extends Bloc<ConfirmedPlayersEvent, ConfirmedPlayersState> {
   final PresencePlayerRepository repository;
 
-  late final confirmedPlayersSignals = repository.getComputedConfirmedPresencePlayers();
+  // late final confirmedPlayersSignals = repository.getComputedConfirmedPresencePlayers();
+  late final confirmedPlayersStream = repository.getStreamPresencePlayersWhere(StatePresence.confirmed);
   final NotifyArrivedPlayer notifyArrivedPlayerUseCase = GetIt.I.get();
 
   ConfirmedPlayersBloc({
@@ -23,7 +25,7 @@ class ConfirmedPlayersBloc extends Bloc<ConfirmedPlayersEvent, ConfirmedPlayersS
 
   @override
   Future<void> close() {
-    confirmedPlayersSignals.dispose();
+    // confirmedPlayersSignals.dispose();
     return super.close();
   }
 }

@@ -15,8 +15,10 @@ class MemberTeamWidget extends StatefulWidget {
   final Settings settings = GetIt.I.get();
   final bool? starsVisibility;
 
-  late final Computed<PresencePlayer?> presencePlayerSignal = repository
-      .getComputedPlayerByName(presencePlayer.player.name);
+  // late final Computed<PresencePlayer?> presencePlayerSignal = repository
+  //     .getComputedPlayerByName(presencePlayer.player.name);
+  late final Stream<PresencePlayer?> presencePlayerStream = repository
+      .getStreamPlayerById(presencePlayer.id);
 
   MemberTeamWidget(Key? key, {
     required this.presencePlayer,
@@ -32,59 +34,62 @@ class _MemberTeamWidgetState extends State<MemberTeamWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Watch((context) {
-      PresencePlayer? presencePlayer = widget.presencePlayerSignal.watch(context);
+    return StreamBuilder<PresencePlayer?>(
+        stream: widget.presencePlayerStream,
+        builder: (context, snapshot) {
+          PresencePlayer? presencePlayer = snapshot.requireData;
 
-      if (presencePlayer == null ||
-          (presencePlayer.statePresence != StatePresence.arrived &&
-              presencePlayer.statePresence != StatePresence.confirmed)) {
-        presencePlayer = PresencePlayer.ghost(Player.ghost());
-      }
+          if (presencePlayer == null ||
+              (presencePlayer.statePresence != StatePresence.arrived &&
+                  presencePlayer.statePresence != StatePresence.confirmed)) {
+            presencePlayer = PresencePlayer.ghost(Player.ghost());
+          }
 
-      final Player player = presencePlayer.player;
-      print('member widget player: ${player.name}');
-      final bool hasNotArrived = presencePlayer.statePresence == StatePresence.confirmed;
-      final String playerName = player.name;
-      final double playerStars = player.stars;
-      final bool isGoalkeeper = player.isGoalkeeper;
+          final Player player = presencePlayer.player;
+          print('member widget player: ${player.name}');
+          final bool hasNotArrived = presencePlayer.statePresence == StatePresence.confirmed;
+          final String playerName = player.name;
+          final double playerStars = player.stars;
+          final bool isGoalkeeper = player.isGoalkeeper;
 
-      return Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Text("${widget.position}. ",
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(color: Colors.black87),
+          return Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text("${widget.position}. ",
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(color: Colors.black87),
+                ),
+                Text(
+                  playerName,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium
+                      ?.copyWith(color: Colors.black87),
+                ),
+                Visibility(
+                  visible: isGoalkeeper,
+                  child: const Icon(Icons.sports_handball),
+                ),
+                Visibility(
+                  visible: hasNotArrived,
+                  child: const Icon(Icons.call_missed),
+                ),
+                const Spacer(),
+                Visibility(
+                  visible: widget.starsVisibility ?? widget.settings.starsVisible.watch(context),
+                  child: RatingStars(
+                    value: playerStars,
+                    starSize: 15,
+                  ),
+                ),
+              ],
             ),
-            Text(
-              playerName,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(color: Colors.black87),
-            ),
-            Visibility(
-              visible: isGoalkeeper,
-              child: const Icon(Icons.sports_handball),
-            ),
-            Visibility(
-              visible: hasNotArrived,
-              child: const Icon(Icons.call_missed),
-            ),
-            const Spacer(),
-            Visibility(
-              visible: widget.starsVisibility ?? widget.settings.starsVisible.watch(context),
-              child: RatingStars(
-                value: playerStars,
-                starSize: 15,
-              ),
-            ),
-          ],
-        ),
-      );
-    });
+          );
+        }
+    );
   }
 }

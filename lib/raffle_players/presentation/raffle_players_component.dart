@@ -1,4 +1,5 @@
 import 'package:equilibrium/domain/model/player.dart';
+import 'package:equilibrium/domain/model/presence_player.dart';
 import 'package:equilibrium/presentation/screen/player_tile.dart';
 import 'package:equilibrium/raffle_players/business_logic/raffle_players_bloc.dart';
 import 'package:flutter/material.dart';
@@ -16,68 +17,77 @@ class RafflePlayersComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final arrived = bloc.arrivedPlayersSignal.watch(context);
-    final marked = bloc.markedPlayers.watch(context);
 
     return SingleChildScrollView(
       physics: const ScrollPhysics(),
       child: Container(
         color: bloc.isSorted.watch(context) ? Colors.green : Colors.white,
-        child: Column(
-          children: [
-            Text(
-              'Sortear jogadores:',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            buildRowDecInc(context),
-            buildRowButtons(context),
-            Row(
+        child: StreamBuilder<List<PresencePlayer>>(
+          stream: bloc.arrivedPlayersStream,
+          builder: (context, snapshot) {
+
+            if (!snapshot.hasData) {
+              return Container();
+            }
+            final arrived = snapshot.requireData;
+
+            return Column(
               children: [
-                Expanded(
-                  child: ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: arrived.length,
-                    itemBuilder: (context, index) {
-                      var player = arrived[index];
-                      return PlayerTile(
-                        player: player.player,
-                        arrived: false,
-                        onChangeArriving: (value) => onMarkPlayer(
-                          player.player,
-                          value,
-                        ),
-                        showStars: false,
-                      );
-                    },
-                  ),
+                Text(
+                  'Sortear jogadores:',
+                  style: Theme.of(context).textTheme.headlineSmall,
                 ),
-                Expanded(
-                  child: Watch((context) {
-                    final list = bloc.isSorted.value ? bloc.sortedPlayers.value : bloc.markedPlayers.value;
-                    return ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: list.length,
-                      itemBuilder: (context, index) {
-                        var player = list[index];
-                        return PlayerTile(
-                          player: player,
-                          arrived: true,
-                          onChangeArriving: (value) =>
-                              onMarkPlayer(
-                                player,
-                                value,
-                              ),
-                          showStars: false,
+                buildRowDecInc(context),
+                buildRowButtons(context),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: arrived.length,
+                        itemBuilder: (context, index) {
+                          var player = arrived[index];
+                          return PlayerTile(
+                            player: player.player,
+                            arrived: false,
+                            onChangeArriving: (value) => onMarkPlayer(
+                              player.player,
+                              value,
+                            ),
+                            showStars: false,
+                          );
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      child: Watch((context) {
+                        final list = bloc.isSorted.value ? bloc.sortedPlayers.value : bloc.markedPlayers.value;
+                        return ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: list.length,
+                          itemBuilder: (context, index) {
+                            var player = list[index];
+                            return PlayerTile(
+                              player: player,
+                              arrived: true,
+                              onChangeArriving: (value) =>
+                                  onMarkPlayer(
+                                    player,
+                                    value,
+                                  ),
+                              showStars: false,
+                            );
+                          },
                         );
-                      },
-                    );
-                  }),
-                ),
+                      }),
+                    ),
+                  ],
+                )
               ],
-            )
-          ],
+            );
+          }
         ),
       ),
     );

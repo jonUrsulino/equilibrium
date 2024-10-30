@@ -26,8 +26,12 @@ class PresenceRoute extends StatelessWidget {
             }
           },
           builder: (context, state) {
+            if (state is! PresenceLengthState) {
+              return Container();
+            }
+
             final PresenceBloc bloc = context.read();
-            int arrivedPlayersLength = bloc.arrivedPlayersSignals.watch(context).length;
+            var arrivedPlayersLength = state.lengthArrivedPlayers;
 
             return MainContainer(
                 title: _buildTitle(arrivedPlayersLength),

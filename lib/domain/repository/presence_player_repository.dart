@@ -3,16 +3,39 @@ import 'package:equilibrium/domain/model/presence_player.dart';
 import 'package:signals/signals.dart';
 
 abstract class PresencePlayerRepository {
-  MapSignal<String, PresencePlayer> getPresencePlayers();
+  // @Deprecated("Need to be replaced")
+  // MapSignal<String, PresencePlayer> getPresencePlayers();
+  Stream<List<PresencePlayer>> getPresencePlayersStream();
+  Stream<PresencePlayer> getPresencePlayerStream();
+  List<PresencePlayer> getPresencePlayersForPlayerRepositorySortedByName();
+  Map<String, PresencePlayer> getPresencePlayersMappedWithNames();
 
   PresencePlayer? getPlayerByName(String playerName);
   List<PresencePlayer> getPresencePlayersByNames(List<String> names);
-  Computed<PresencePlayer?> getComputedPlayerByName(String playerName);
-  Computed<List<PresencePlayer>> getComputedPresencePlayersOrderedByName();
-  Computed<List<PresencePlayer>> getComputedArrivedPresencePlayers();
-  Computed<List<PresencePlayer>> getComputedArrivedAndGhostPresencePlayers();
-  Computed<List<PresencePlayer>> getComputedArrivedPresencePlayersWithoutGoalkeepers();
-  Computed<List<PresencePlayer>> getComputedConfirmedPresencePlayers();
+
+  // @Deprecated("Need to be replaced by getStreamPlayerById()")
+  // Computed<PresencePlayer?> getComputedPlayerByName(String playerName);
+  Stream<PresencePlayer?> getStreamPlayerById(String id);
+
+  // @Deprecated("Need to be replaced by getStreamPresencePlayersWhere")
+  // Computed<List<PresencePlayer>> getComputedPresencePlayersOrderedByName();
+  // @Deprecated("Need to be replaced by getStreamPresencePlayersWhere")
+  // Computed<List<PresencePlayer>> getComputedArrivedPresencePlayers();
+  // @Deprecated("Need to be replaced by getStreamPresencePlayersWhere")
+  // Computed<List<PresencePlayer>> getComputedArrivedPresencePlayersWithoutGoalkeepers();
+  Future<List<PresencePlayer>> getStreamPresencePlayersFiltered({
+    required StatePresence wherePresence,
+    required bool withGoalkeeper,
+  });
+  Future<List<PresencePlayer>> getFuturePresencePlayersFiltered({
+    required StatePresence wherePresence,
+    required bool withGoalkeeper,
+  });
+  // @Deprecated("Need to be replaced by getStreamPresencePlayersWhere")
+  // Computed<List<PresencePlayer>> getComputedConfirmedPresencePlayers();
+  Stream<List<PresencePlayer>> getStreamPresencePlayersWhere(StatePresence statePresence);
+  Future<List<PresencePlayer>> getFuturePresencePlayersWhere(StatePresence statePresence);
+  Stream<int> getStreamLengthPresencePlayersWhere(StatePresence statePresence);
 
 
   // TODO: Could be UseCases.

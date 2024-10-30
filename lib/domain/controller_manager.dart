@@ -103,21 +103,30 @@ class ControllerManager {
       return _commitChangeQueueTeams(loserTeam);
     }
 
-    loserTeam = _rafflePlayersLoserTeamSendingToLastTeam(index, loserTeam);
+    if (coach.settings.enabledBalanceTeamsOnChangeGame.value) {
+      loserTeam = _balancePlayersLoserTeamSendingToLastTeam(index, loserTeam);
+    } else {
+      loserTeam = _rafflePlayersLoserTeamSendingToLastTeam(index, loserTeam);
+    }
+
 
     return _commitChangeQueueTeams(loserTeam);
   }
 
   bool _doNotHaveGhosts(int index) => index < 0;
 
+  Team _commitChangeQueueTeams(Team loserTeam) {
+    nextTeams.add(loserTeam);
+    var first = nextTeams.first;
+    nextTeams.removeAt(0);
+    return first;
+  }
+
   Team _rafflePlayersLoserTeamSendingToLastTeam(int index, Team loserTeam) {
     Team incompleteTeam = nextTeams[index];
     print('not arrived team $incompleteTeam');
 
-    final List<Player> notArrivedPlayers = incompleteTeam
-        .notArrivedPlayers(presencePlayerRepository)
-        .map((e) => e.player)
-        .toList();
+    List<Player> notArrivedPlayers = getNotArrivedPlayers(incompleteTeam);
 
     int lengthGhosts = notArrivedPlayers.length;
 
@@ -148,32 +157,44 @@ class ControllerManager {
       }
     }
 
+    nextTeams[index] = rearrangeIncompleteTeamWithSelectedPlayersBalanceOrRaffled(incompleteTeam, sortedPlayersLoserTeam);
+    return rearrangeLoserTeamWithNotArrivedPlayers(loserTeam, playersLoserTeam, notArrivedPlayers);
+  }
+
+  List<Player> getNotArrivedPlayers(Team incompleteTeam) {
+    final List<Player> notArrivedPlayers = incompleteTeam
+        .notArrivedPlayers(presencePlayerRepository)
+        .map((e) => e.player)
+        .toList();
+    return notArrivedPlayers;
+  }
+
+  Team rearrangeLoserTeamWithNotArrivedPlayers(Team loserTeam, List<Player> playersLoserTeam, List<Player> notArrivedPlayers) {
+    loserTeam = loserTeam.copyWith(
+        shirt: loserTeam.shirt,
+        players: playersLoserTeam + notArrivedPlayers,
+    );
+    return loserTeam;
+  }
+
+  Team rearrangeIncompleteTeamWithSelectedPlayersBalanceOrRaffled(Team incompleteTeam, List<Player> sortedPlayersLoserTeam) {
     final List<Player> arrivedPlayers = incompleteTeam
         .arrivedPlayers(presencePlayerRepository)
         .map((e) => e.player)
         .toList();
 
-    incompleteTeam = incompleteTeam.copyWith(
-        shirt: incompleteTeam.shirt,
-        players: arrivedPlayers + sortedPlayersLoserTeam,
-    );
+    incompleteTeam = rearrangeLoserTeamWithNotArrivedPlayers(incompleteTeam, arrivedPlayers, sortedPlayersLoserTeam);
     print('team incomplete adjusted ${incompleteTeam.shirt.name}');
     for (var i in incompleteTeam.players) {
       print('player incomplete adjusted ${i.name}');
     }
-    loserTeam = loserTeam.copyWith(
-        shirt: loserTeam.shirt,
-        players: playersLoserTeam + notArrivedPlayers,
-    );
-    nextTeams[index] = incompleteTeam;
-    return loserTeam;
+    return incompleteTeam;
   }
 
-  Team _commitChangeQueueTeams(Team loserTeam) {
-    nextTeams.add(loserTeam);
-    var first = nextTeams.first;
-    nextTeams.removeAt(0);
-    return first;
+  Team _balancePlayersLoserTeamSendingToLastTeam(int index, Team loserTeam) {
+    print("_balancePlayersLoserTeamSendingToLastTeam");
+    //TODO Implement it.
+    return loserTeam;
   }
 }
 

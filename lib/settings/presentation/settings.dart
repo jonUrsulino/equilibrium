@@ -24,24 +24,46 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Column(
             children: [
               buildRowDecInc(context),
-              Row(
-                children: [
-                  Text(
-                    'Considerar goleiros no balanceamento',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const Spacer(),
-                  Checkbox(
-                    value: settings.isBalancedWithGoalkeeper.watch(context),
-                    onChanged: (value) =>
-                        settings.isBalancedWithGoalkeeper.set(value!),
-                  ),
-                ],
-              )
+              buildRowGoalkeeper(context),
+              buildRowRaffleOnChangeTeams(context),
             ],
           ),
         ],
       ),
+    );
+  }
+
+  Row buildRowRaffleOnChangeTeams(BuildContext context) {
+    return Row(
+      children: [
+        Text(
+          'Sorteia próximo time com balanceamento',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const Spacer(),
+        Checkbox(
+          value: settings.enabledBalanceTeamsOnChangeGame.watch(context),
+          onChanged: (value) =>
+              settings.enabledBalanceTeamsOnChangeGame.set(value!),
+        ),
+      ],
+    );
+  }
+
+  Row buildRowGoalkeeper(BuildContext context) {
+    return Row(
+      children: [
+        Text(
+          'Considerar goleiros no balanceamento',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const Spacer(),
+        Checkbox(
+          value: settings.isBalancedWithGoalkeeper.watch(context),
+          onChanged: (value) =>
+              settings.isBalancedWithGoalkeeper.set(value!),
+        ),
+      ],
     );
   }
 

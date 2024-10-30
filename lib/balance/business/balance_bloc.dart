@@ -30,7 +30,8 @@ class BalanceBloc extends Bloc<BalanceEvent, BalanceState> {
     });
   }
 
-  late final arrivedPlayersSignals = repository.getComputedArrivedPresencePlayers();
+  // late final arrivedPlayersSignals = repository.getComputedArrivedPresencePlayers();
+  late final arrivedPlayersStream = repository.getStreamPresencePlayersWhere(StatePresence.arrived);
   late final teamsSignal = computed(() => teamRepository.getTeams());
 
   void _handleLoadTeams(BalanceLoadEvent event, Emitter<BalanceState> emit) {
@@ -45,12 +46,14 @@ class BalanceBloc extends Bloc<BalanceEvent, BalanceState> {
     }
 
     if (teams.isEmpty) {
-      emit.call(NotBalancedState(arrivedPlayersSignals.value));
+      emit.forEach(arrivedPlayersStream, onData: (player) => NotBalancedState(player));
+      // emit.call(NotBalancedState(arrivedPlayersSignals.value));
     } else {
       final Map<Team, List<PresencePlayer>> mapTeamsPresencePlayers = {
         for (Team e in teams) e : e.actualPresencePlayers(repository)
       };
-      emit.call(BalancedTeamsState(mapTeamsPresencePlayers));
+      emit.forEach(arrivedPlayersStream, onData: (p) => BalancedTeamsState(mapTeamsPresencePlayers));
+      // emit.call(BalancedTeamsState(mapTeamsPresencePlayers));
     }
   }
 
@@ -67,7 +70,7 @@ class BalanceBloc extends Bloc<BalanceEvent, BalanceState> {
 
   @override
   Future<void> close() {
-    arrivedPlayersSignals.dispose();
+    // arrivedPlayersSignals.dispose();
     teamsSignal.dispose();
     return super.close();
   }

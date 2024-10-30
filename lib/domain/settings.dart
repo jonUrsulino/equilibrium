@@ -22,6 +22,12 @@ class Settings {
     return isBalancedWithGoalkeeper.value;
   }
 
+  final enabledBalanceTeamsOnChangeGame = Signal(true);
+
+  bool isEnabledBalanceTeamsOnChangeGame() {
+    return enabledBalanceTeamsOnChangeGame.value;
+  }
+
   final starsVisible = Signal(true);
 
   void toggleStarsVisible() {

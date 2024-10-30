@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:equilibrium/domain/model/player.dart';
+import 'package:equilibrium/domain/model/presence_player.dart';
 import 'package:equilibrium/domain/repository/presence_player_repository.dart';
 import 'package:get_it/get_it.dart';
 import 'package:meta/meta.dart';
@@ -19,7 +20,8 @@ class RafflePlayersBloc extends Bloc<RafflePlayersEvent, RafflePlayersState> {
 
   final PresencePlayerRepository repository = GetIt.I.get();
 
-  late final arrivedPlayersSignal = repository.getComputedArrivedPresencePlayers();
+  // late final arrivedPlayersSignal = repository.getComputedArrivedPresencePlayers();
+  late final arrivedPlayersStream = repository.getStreamPresencePlayersWhere(StatePresence.arrived);
 
   final ListSignal<Player> markedPlayers = ListSignal([]);
 
