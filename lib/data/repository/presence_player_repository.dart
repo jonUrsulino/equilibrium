@@ -31,11 +31,9 @@ class PresencePlayerRepositoryImpl implements PresencePlayerRepository {
 
   @override
   Stream<PresencePlayer> getPresencePlayerStream() async* {
-    var streamAll = localDataSource.getStreamAll();
-    await for (var list in streamAll) {
-      for (var player in list) {
-        yield player;
-      }
+    List<PresencePlayer> list = localDataSource.getList();
+    for (PresencePlayer item in list) {
+      yield item;
     }
   }
 
@@ -129,7 +127,7 @@ class PresencePlayerRepositoryImpl implements PresencePlayerRepository {
 
     List<PresencePlayer> players = List.empty(growable: true);
     await for (PresencePlayer presencePlayer in presencePlayersStream) {
-      print("await for presencePlayer ${presencePlayer.player.name}");
+      // print("await for presencePlayer ${presencePlayer.player.name}");
       players.add(presencePlayer);
     }
 

@@ -49,11 +49,14 @@ class BalanceBloc extends Bloc<BalanceEvent, BalanceState> {
       emit.forEach(arrivedPlayersStream, onData: (player) => NotBalancedState(player));
       // emit.call(NotBalancedState(arrivedPlayersSignals.value));
     } else {
+      arrivedPlayersStream.forEach(print);
+
       final Map<Team, List<PresencePlayer>> mapTeamsPresencePlayers = {
         for (Team e in teams) e : e.actualPresencePlayers(repository)
       };
       emit.forEach(arrivedPlayersStream, onData: (p) => BalancedTeamsState(mapTeamsPresencePlayers));
       // emit.call(BalancedTeamsState(mapTeamsPresencePlayers));
+
     }
   }
 

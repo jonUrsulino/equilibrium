@@ -7,6 +7,7 @@ class StorePresencePlayerDataSource implements PresencePlayerDataSource {
 
   @override
   void load(List<PresencePlayer> presencePlayersSortedByName) {
+    print("SAVE all players again");
     for (var presencePlayer in presencePlayersSortedByName) {
       PresencePlayer.store.save(presencePlayer);
     }
@@ -29,16 +30,20 @@ class StorePresencePlayerDataSource implements PresencePlayerDataSource {
 
   @override
   List<PresencePlayer> getList() {
-    return PresencePlayer.store.list();
+    var list = PresencePlayer.store.list();
+    print("GET LIST all players");
+    return list;
   }
 
   @override
   Stream<PresencePlayer?> listen(String id) {
+    print("listen id $id");
     return PresencePlayer.store.listen(id);
   }
 
   @override
   Stream<List<PresencePlayer>> getStreamAll() {
+    print("GET LIST all players by stream");
     return PresencePlayer.store.listenAll();
   }
 

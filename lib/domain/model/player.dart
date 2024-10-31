@@ -1,8 +1,6 @@
 import 'dart:math';
 
-import 'package:equatable/equatable.dart';
 import 'package:equilibrium/domain/path_persistence.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:simple_persistence/simple_persistence.dart';
 
 class Player extends Storable implements Comparable<Player> {

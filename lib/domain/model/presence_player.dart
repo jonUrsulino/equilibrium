@@ -1,10 +1,8 @@
 import 'dart:core';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:equilibrium/domain/model/player.dart';
 import 'package:equilibrium/domain/path_persistence.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:simple_persistence/simple_persistence.dart';
 
 class PresencePlayer extends Storable

@@ -8,6 +8,7 @@ import 'package:equilibrium/domain/model/team.dart';
 import 'package:equilibrium/domain/repository/presence_player_repository.dart';
 import 'package:equilibrium/domain/repository/team_repository.dart';
 import 'package:equilibrium/domain/settings.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
 import 'package:signals/signals.dart';
 
@@ -68,14 +69,15 @@ class Coach {
   Future<List<PresencePlayer>> getArrivedPlayersFiltered(bool balanceGoalkeeper) async {
     print("getArrivedPlayersFiltered");
     // List<PresencePlayer> arrivingPlayers = presencePlayerRepository.getComputedArrivedPresencePlayers().value;
-    Future<List<PresencePlayer>> futureArrivedPresencePlayers;
+    List<PresencePlayer> futureArrivedPresencePlayers;
     if (balanceGoalkeeper) {
-      print("balanceGoalkeeper getFuturePresencePlayersWhere");
-      futureArrivedPresencePlayers = presencePlayerRepository.getFuturePresencePlayersWhere(
+      futureArrivedPresencePlayers = await presencePlayerRepository.getFuturePresencePlayersWhere(
           StatePresence.arrived
       );
+      print("balanceGoalkeeper getFuturePresencePlayersWhere ${futureArrivedPresencePlayers.length}");
+
     } else {
-      futureArrivedPresencePlayers = presencePlayerRepository.getFuturePresencePlayersFiltered(
+      futureArrivedPresencePlayers = await presencePlayerRepository.getFuturePresencePlayersFiltered(
           wherePresence: StatePresence.arrived,
           withGoalkeeper: false
       );
@@ -96,7 +98,7 @@ class Coach {
     // }
     // print("getArrivedPlayersFiltered arrivingPlayers: $arrivingPlayers");
 
-    return futureArrivedPresencePlayers;
+    return futureArrivedPresencePlayers.toList();
   }
 
   void _createConfirmedIncompleteTeam(List<Shirt> remainingShirts, int maxPlayersByTeam) async {
