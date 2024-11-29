@@ -23,9 +23,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
 
   void balance(HomeBloc bloc) {
-    bloc.coach.balanceTeams();
-    bloc.coach.printTeams();
-    bloc.fabData.value = bloc.maps[FABActionType.gameStart];
+    print("home balance");
+    // bloc.coach.balanceTeams();
+    // bloc.coach.printTeams();
+    // bloc.fabData.value = bloc.maps[FABActionType.gameStart];
   }
 
   void actionManagerGame(HomeBloc bloc) {
@@ -222,7 +223,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String _title(HomeBloc bloc, int index) {
     switch (index) {
       case 0:
-        return 'Presentes: ${bloc.arrivedPlayersSignals.watch(context).length}';
+        return 'Presentes:';
       case 1:
         return 'Balanciamento';
       case 2:

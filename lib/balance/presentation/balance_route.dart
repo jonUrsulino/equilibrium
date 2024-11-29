@@ -1,5 +1,6 @@
 import 'package:equilibrium/balance/business/balance_bloc.dart';
 import 'package:equilibrium/balance/presentation/balance_screen.dart';
+import 'package:equilibrium/domain/model/presence_player.dart';
 import 'package:equilibrium/presentation/model/bottom_navigation_type.dart';
 import 'package:equilibrium/presentation/screen/main_container.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,12 +21,12 @@ class BalanceRoute extends StatelessWidget {
         teamRepository: GetIt.I.get(),
         coach: GetIt.I.get(),
       )..add(BalanceLoadEvent()),
-      child: Builder(
-        builder: (context) {
+      child: BlocBuilder<BalanceBloc, BalanceState>(
+        builder: (context, state) {
           final BalanceBloc bloc = context.read();
           return MainContainer(
             title: 'Balance',
-            floatingActionButton: _buildFAB(bloc),
+            floatingActionButton: _buildFAB(bloc, state),
             currentBottomNavigation: BottomNavigationType.balance,
             child: BalanceScreen(
               bloc: bloc,
@@ -36,12 +37,23 @@ class BalanceRoute extends StatelessWidget {
     );
   }
 
-  _buildFAB(BalanceBloc bloc) =>
+  _buildFAB(BalanceBloc bloc, BalanceState state) =>
       FloatingActionButton(
         shape: const CircleBorder(),
         onPressed: () {
-          bloc.add(BalanceTeamsEvent());
+          _sendToBalanceArrivedPlayers(bloc, state);
         },
         child: const Icon(Icons.balance),
       );
+
+  void _sendToBalanceArrivedPlayers(BalanceBloc bloc, BalanceState state) {
+    switch (state) {
+      case NotBalancedState():
+        bloc.add(BalanceTeamsEvent(state.teamPresencePlayers));
+      case BalancedTeamsState():
+        bloc.add(BalanceTeamsEvent(state.players));
+      case BalanceInitialState():
+        print("Do nothing when BalanceInitialState");
+    }
+  }
 }

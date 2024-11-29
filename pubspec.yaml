@@ -43,6 +43,8 @@ dependencies:
   flutter_rating_stars: ^1.1.0
   bloc: ^8.1.4
   flutter_bloc: ^8.1.6
+  simple_persistence: ^0.3.4
+  objectbox: ^4.0.2
 
 dev_dependencies:
   flutter_test:

@@ -1,9 +1,10 @@
 import 'dart:math';
 
-import 'package:equatable/equatable.dart';
+import 'package:equilibrium/domain/path_persistence.dart';
+import 'package:simple_persistence/simple_persistence.dart';
 
-class Player extends Equatable implements Comparable<Player> {
-  const Player(this.name, this.stars, this.isGoalkeeper);
+class Player extends Storable implements Comparable<Player> {
+  Player(this.name, this.stars, this.isGoalkeeper);
 
   factory Player.normal(String name, double stars) {
     return Player(
@@ -22,7 +23,7 @@ class Player extends Equatable implements Comparable<Player> {
   }
 
   factory Player.ghost() {
-    return const Player(
+    return Player(
       "Vaga aberta",
       3,
       false,
@@ -33,15 +34,17 @@ class Player extends Equatable implements Comparable<Player> {
   final double stars;
   final bool isGoalkeeper;
 
-  @override
-  List<Object?> get props => [name, stars, isGoalkeeper];
+  Player.fromMap(Map<String, dynamic> map) :
+        name = map['name'],
+        stars = map['stars'],
+        isGoalkeeper = map['isGoalkeeper'];
 
   Player copyWith(String? name, double? stars, bool? isGoalkeeper) {
     return Player(
       name ?? this.name,
       stars ?? this.stars,
       isGoalkeeper ?? this.isGoalkeeper,
-    );
+    )..id = id;
   }
 
   @override
@@ -50,5 +53,21 @@ class Player extends Equatable implements Comparable<Player> {
       return Random().nextInt(3) - 1;
     }
     return compareTo(other);
+  }
+
+  @override
+  Map get data => {
+    'name': name,
+    'stars': stars,
+    'isGoalkeeper': isGoalkeeper,
+  };
+
+  static final store = JsonFileStore<Player>(
+      path: PathPersistence.pathPlayers,
+  );
+
+  @override
+  String toString() {
+    return name;
   }
 }

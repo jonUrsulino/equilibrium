@@ -14,31 +14,45 @@ class CancelingConfirmationBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final confirmedPlayers = repository.getComputedConfirmedPresencePlayers().watch(context);
-    return Column(
-      children: [
-        Text(
-          'Marque quem cancelou: ${confirmedPlayers.length}',
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
-        Expanded(
-          child: ListView.builder(
-            physics: const ClampingScrollPhysics(),
-            itemCount: confirmedPlayers.length,
-            itemBuilder: (context, index) {
-              return PlayerTile(
-                player: confirmedPlayers[index].player,
-                arrived: false,
-                onChangeArriving: (value) => onChangeCanceled(
-                  confirmedPlayers[index],
-                  value,
-                ),
-                showStars: false,
-              );
-            },
-          ),
-        )
-      ],
+    // final confirmedPlayers = repository.getComputedConfirmedPresencePlayers().watch(context);
+    final streamConfirmedPlayers = repository.getStreamPresencePlayersWhere(StatePresence.confirmed);
+
+    return StreamBuilder<List<PresencePlayer>>(
+      stream: streamConfirmedPlayers,
+      builder: (context, snapshot) {
+
+        if (!snapshot.hasData) {
+          return Container();
+        }
+
+        final List<PresencePlayer> confirmedPlayers = snapshot.requireData;
+
+        return Column(
+          children: [
+            Text(
+              'Marque quem cancelou: ${confirmedPlayers.length}',
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            Expanded(
+              child: ListView.builder(
+                physics: const ClampingScrollPhysics(),
+                itemCount: confirmedPlayers.length,
+                itemBuilder: (context, index) {
+                  return PlayerTile(
+                    player: confirmedPlayers[index].player,
+                    arrived: false,
+                    onChangeArriving: (value) => onChangeCanceled(
+                      confirmedPlayers[index],
+                      value,
+                    ),
+                    showStars: false,
+                  );
+                },
+              ),
+            )
+          ],
+        );
+      }
     );
   }
 

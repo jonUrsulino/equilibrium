@@ -1,45 +1,37 @@
 import 'dart:core';
 import 'dart:math';
 
-import 'package:equatable/equatable.dart';
 import 'package:equilibrium/domain/model/player.dart';
+import 'package:equilibrium/domain/path_persistence.dart';
+import 'package:simple_persistence/simple_persistence.dart';
 
-class PresencePlayer extends Equatable
+class PresencePlayer extends Storable
     implements Comparable<PresencePlayer> {
-  const PresencePlayer._({
+  PresencePlayer._({
     required this.player,
     required this.statePresence,
-    required this.isUnlucky,
   });
 
-  const PresencePlayer.initial(
+  PresencePlayer.initial(
     this.player,
-  )   : statePresence = StatePresence.initial,
-        isUnlucky = false;
+  )   : statePresence = StatePresence.initial;
 
-  const PresencePlayer.ghost(
+  PresencePlayer.ghost(
       this.player
-      )   : statePresence = StatePresence.ghost,
-        isUnlucky = false;
+      )   : statePresence = StatePresence.ghost;
 
   final Player player;
   final StatePresence statePresence;
-  final bool isUnlucky;
-
-  @override
-  List<Object?> get props => [player, statePresence, isUnlucky];
 
   PresencePlayer copyWith({
     Player? player,
     StatePresence? statePresence,
     bool? hasArrived,
-    bool? isUnlucky,
   }) {
     return PresencePlayer._(
       player: player ?? this.player,
       statePresence: statePresence ?? this.statePresence,
-      isUnlucky: isUnlucky ?? this.isUnlucky,
-    );
+    )..id = id;
   }
 
   @override
@@ -52,8 +44,34 @@ class PresencePlayer extends Equatable
     }
     return 0;
   }
+
+  @override
+  Map get data => {
+    'player': player,
+    'statePresence': statePresence.index //TODO refactor it.
+  };
+
+  PresencePlayer.fromMap(Map<String, dynamic> map) :
+        player = map['player'],
+        statePresence = StatePresence.fromId(map['statePresence'],);
+
+  static final store = JsonFileStore<PresencePlayer>(
+    path: PathPersistence.pathPresencePlayer,
+  );
+
+  @override
+  String toString() {
+    return "(${player.id}) ${player.name}";
+  }
 }
 
 enum StatePresence {
-  initial, confirmed, arrived, ghost
+  initial,
+  confirmed,
+  arrived,
+  ghost;
+
+  static StatePresence fromId(int index) {
+    return StatePresence.values[index];
+  }
 }

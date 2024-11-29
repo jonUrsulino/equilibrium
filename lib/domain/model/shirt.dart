@@ -34,4 +34,9 @@ class Shirt {
   static const _blue = Pair("Azul", Colors.blue);
   static const _white = Pair("Branco", Colors.white70);
   static const _undefined = Pair("Indefinido", Colors.brown);
+
+  @override
+  String toString() {
+    return name;
+  }
 }

@@ -116,9 +116,9 @@ class ControllerManager {
       return _commitChangeQueueTeams(loserTeam);
     }
 
-    if (coach.settings.isEnabledBalanceInChangeOfTeams()) {
-      loserTeam = _balancePlayersLoserTeamSendingToLastTeam(
-          index, loserTeam, winnerTeam);
+
+    if (coach.settings.enabledBalanceTeamsOnChangeGame.value) {
+      loserTeam = _balancePlayersLoserTeamSendingToLastTeam(index, loserTeam);
     } else {
       loserTeam = _rafflePlayersLoserTeamSendingToLastTeam(index, loserTeam);
     }
@@ -135,14 +135,6 @@ class ControllerManager {
     return first;
   }
 
-  List<Player> getNotArrivedPlayers(Team incompleteTeam) {
-    final List<Player> notArrivedPlayers = incompleteTeam
-        .notArrivedPlayers(presencePlayerRepository)
-        .map((e) => e.player)
-        .toList();
-    return notArrivedPlayers;
-  }
-
   Team rearrangeTeamWith(Team loserTeam, List<Player> playersLoserTeam,
       List<Player> notArrivedPlayers) {
     loserTeam = loserTeam.copyWith(
@@ -150,23 +142,6 @@ class ControllerManager {
       players: playersLoserTeam + notArrivedPlayers,
     );
     return loserTeam;
-  }
-
-  Team rearrangeIncompleteTeamWithSelectedPlayersBalanceOrRaffled(
-      Team incompleteTeam, List<Player> sortedPlayersLoserTeam) {
-    final List<Player> arrivedPlayers = incompleteTeam
-        .arrivedPlayers(presencePlayerRepository)
-        .map((e) => e.player)
-        .toList();
-
-    incompleteTeam = rearrangeTeamWith(
-        incompleteTeam, arrivedPlayers, sortedPlayersLoserTeam);
-
-    print('team incomplete adjusted ${incompleteTeam.shirt.name}');
-    for (var i in incompleteTeam.players) {
-      print('player incomplete adjusted ${i.name}');
-    }
-    return incompleteTeam;
   }
 
   Team _rafflePlayersLoserTeamSendingToLastTeam(int index, Team loserTeam) {
@@ -204,127 +179,44 @@ class ControllerManager {
       }
     }
 
-    nextTeams[index] =
-        rearrangeIncompleteTeamWithSelectedPlayersBalanceOrRaffled(
-            incompleteTeam, sortedPlayersLoserTeam);
-    return rearrangeTeamWith(loserTeam, playersLoserTeam, notArrivedPlayers);
+    nextTeams[index] = rearrangeIncompleteTeamWithSelectedPlayersBalanceOrRaffled(incompleteTeam, sortedPlayersLoserTeam);
+    return rearrangeLoserTeamWithNotArrivedPlayers(loserTeam, playersLoserTeam, notArrivedPlayers);
   }
 
-  Team _balancePlayersLoserTeamSendingToLastTeam(int index, Team loserTeam, Team winnerTeam) {
-    print("_balancePlayersLoserTeamSendingToLastTeam");
-    // referenceWinner with StarsByPlayer
-    var referenceWinner = winnerTeam.calculatePowerByPlayers();
+  List<Player> getNotArrivedPlayers(Team incompleteTeam) {
+    final List<Player> notArrivedPlayers = incompleteTeam
+        .notArrivedPlayers(presencePlayerRepository)
+        .map((e) => e.player)
+        .toList();
+    return notArrivedPlayers;
+  }
 
-    Team incompleteTeam = nextTeams[index];
-    print('not arrived team $incompleteTeam');
+  Team rearrangeLoserTeamWithNotArrivedPlayers(Team loserTeam, List<Player> playersLoserTeam, List<Player> notArrivedPlayers) {
+    loserTeam = loserTeam.copyWith(
+        shirt: loserTeam.shirt,
+        players: playersLoserTeam + notArrivedPlayers,
+    );
+    return loserTeam;
+  }
 
+  Team rearrangeIncompleteTeamWithSelectedPlayersBalanceOrRaffled(Team incompleteTeam, List<Player> sortedPlayersLoserTeam) {
     final List<Player> arrivedPlayers = incompleteTeam
         .arrivedPlayers(presencePlayerRepository)
         .map((e) => e.player)
         .toList();
 
-    List<Player> notArrivedPlayers = getNotArrivedPlayers(incompleteTeam);
-
-    int lengthGhosts = notArrivedPlayers.length;
-
-    for (Player p in notArrivedPlayers) {
-      print("not arrived player: $p");
+    incompleteTeam = rearrangeLoserTeamWithNotArrivedPlayers(incompleteTeam, arrivedPlayers, sortedPlayersLoserTeam);
+    print('team incomplete adjusted ${incompleteTeam.shirt.name}');
+    for (var i in incompleteTeam.players) {
+      print('player incomplete adjusted ${i.name}');
     }
-
-    final List<Player> playersLoserTeamSortedByStars = loserTeam.players
-      ..sort((a, b) => b.stars.compareTo(a.stars));
-
-    for (Player p in playersLoserTeamSortedByStars) {
-      print("loser player: $p");
-    }
-
-    final List<Player> newNextTeam = arrivedPlayers.toList();
-    incompleteTeam.players.clear();
-    final Team nextTeam = incompleteTeam;
-    nextTeam.players.addAll(newNextTeam);
-
-    print('initial new next team to complete: ${newNextTeam.length}');
-    print('initial ghosts $lengthGhosts');
-
-    // for loop to complete new team
-    final maxPlayersByTeamSettings = coach.settings.getMaxPlayersByTeam();
-    while (nextTeam.players.length < maxPlayersByTeamSettings) {
-      print('while ${nextTeam.players.length} < $maxPlayersByTeamSettings');
-
-      // calc current starsByPlayer
-      var nextTeamStrength = nextTeam.calculatePowerByPlayers();
-
-      // compare with referenceWinner
-      Player luckyPlayer = selectLuckyPlayerBalancingWithSpotsFromLoseTeam(
-          playersLoserTeamSortedByStars,
-          nextTeamStrength,
-          referenceWinner
-      );
-      playersLoserTeamSortedByStars.remove(luckyPlayer);
-
-      nextTeam.players.add(luckyPlayer);
-      print('Lucky: ${luckyPlayer.name}');
-
-      if (playersLoserTeamSortedByStars.isEmpty) {
-        break;
-      }
-    }
-
-    // remove this player of loserTeam
-    // add this to nextTeam
-    nextTeams[index] = nextTeam;
-    return rearrangeTeamWith(
-        loserTeam, playersLoserTeamSortedByStars, notArrivedPlayers);
+    return incompleteTeam;
   }
 
-  Player selectLuckyPlayerBalancingWithSpotsFromLoseTeam(
-      List<Player> playersLoserTeamSortedByStars,
-      double nextTeamStrength,
-      double referenceWinner,
-      ) {
-    final strongTier = Spots.tier1();
-    final middleTier = Spots.tier2();
-    final weakTier = Spots.tier3();
-
-    for (var player in playersLoserTeamSortedByStars) {
-      if (player.stars >= 4 && player.stars <= 5) {
-        strongTier.players.add(player);
-      } else if (player.stars >= 2.5 && player.stars <= 3.99) {
-        middleTier.players.add(player);
-      } else {
-        weakTier.players.add(player);
-      }
-    }
-
-    printSpots(strongTier, middleTier, weakTier);
-    print("--Shuffle in tiers--");
-    final random = Random();
-    strongTier.players.shuffle(random);
-    middleTier.players.shuffle(random);
-    weakTier.players.shuffle(random);
-
-    final listSorted = strongTier.players + middleTier.players + weakTier.players;
-
-    printSpots(strongTier, middleTier, weakTier);
-
-    // if equal with tolerance then get middle strength
-    var diffStrength = nextTeamStrength - referenceWinner;
-    print("winner: $referenceWinner nextTeam: $nextTeamStrength diff: $diffStrength");
-
-    Player luckyPlayer;
-    if (diffStrength >= -0.05 && diffStrength <= 0.05) {
-      print("equal strength"); //then
-      luckyPlayer = getMiddlePlayerFromList(listSorted);
-
-    } else if (nextTeamStrength > referenceWinner) {
-      print("nextTeamStrength is stronger"); //then get weak player
-      luckyPlayer = listSorted.last;
-
-    } else {
-      print("nextTeamStrength is weaker"); //then get strong player
-      luckyPlayer = listSorted.first;
-    }
-    return luckyPlayer;
+  Team _balancePlayersLoserTeamSendingToLastTeam(int index, Team loserTeam) {
+    print("_balancePlayersLoserTeamSendingToLastTeam");
+    //TODO Implement it.
+    return loserTeam;
   }
 
   void printSpots(Spots tier1, Spots tier2, Spots tier3) {

@@ -24,7 +24,8 @@ class Settings {
 
   final enabledBalanceTeamsOnChangeGame = Signal(true);
 
-  bool isEnabledBalanceInChangeOfTeams() {
+
+  bool isEnabledBalanceTeamsOnChangeGame() {
     return enabledBalanceTeamsOnChangeGame.value;
   }
 

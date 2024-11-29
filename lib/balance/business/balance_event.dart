@@ -4,4 +4,8 @@ part of 'balance_bloc.dart';
 sealed class BalanceEvent {}
 
 final class BalanceLoadEvent extends BalanceEvent {}
-final class BalanceTeamsEvent extends BalanceEvent {}
+final class BalanceTeamsEvent extends BalanceEvent {
+  BalanceTeamsEvent(this.single);
+
+  List<PresencePlayer> single;
+}

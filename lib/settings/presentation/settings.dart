@@ -24,8 +24,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Column(
             children: [
               buildRowDecInc(context),
-              buildRowBalanceWithGoalkeeper(context),
-              buildRowBalanceInChangeOfTeams(context),
+              buildRowGoalkeeper(context),
+              buildRowRaffleOnChangeTeams(context),
             ],
           ),
         ],
@@ -33,11 +33,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Row buildRowBalanceInChangeOfTeams(BuildContext context) {
+  Row buildRowRaffleOnChangeTeams(BuildContext context) {
     return Row(
       children: [
         Text(
-          'Sorteio de próximo time com balanceamento',
+          'Sorteia próximo time com balanceamento',
           style: Theme.of(context).textTheme.titleMedium,
         ),
         const Spacer(),
@@ -50,7 +50,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Row buildRowBalanceWithGoalkeeper(BuildContext context) {
+  Row buildRowGoalkeeper(BuildContext context) {
     return Row(
       children: [
         Text(

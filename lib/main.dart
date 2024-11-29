@@ -1,15 +1,21 @@
+import 'package:equilibrium/data/data_source/model/player_store.dart';
 import 'package:equilibrium/domain/di/di.dart';
+import 'package:equilibrium/domain/model/player.dart';
+import 'package:equilibrium/domain/model/presence_player.dart';
 import 'package:equilibrium/home/business_logic/home_bloc.dart';
 import 'package:equilibrium/navigator/di/di_nav.dart';
 import 'package:equilibrium/presentation/pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:simple_persistence/simple_persistence.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   DI.initializeNavigatorDependencies();
   DiDomain.initializeDomainDependencies();
+  PersistenceManager.I.register(Player.fromMap);
+  PersistenceManager.I.register(PresencePlayer.fromMap);
 
   runApp(MultiBlocProvider(
       providers: [

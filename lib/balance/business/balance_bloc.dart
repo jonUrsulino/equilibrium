@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
+import 'package:equilibrium/balance/business/ArrivedPlayersCreator.dart';
 import 'package:equilibrium/domain/coach.dart';
 import 'package:equilibrium/domain/model/presence_player.dart';
 import 'package:equilibrium/domain/model/team.dart';
@@ -30,7 +33,13 @@ class BalanceBloc extends Bloc<BalanceEvent, BalanceState> {
     });
   }
 
-  late final arrivedPlayersSignals = repository.getComputedArrivedPresencePlayers();
+  // late final arrivedPlayersCreator = ArrivedPlayersCreator(
+  //     repository.getStreamPresencePlayersWhere(StatePresence.arrived).asBroadcastStream()
+  // );
+  // late final arrivedPlayersSignals = repository.getComputedArrivedPresencePlayers();
+  late final arrivedPlayersStream = repository.getStreamPresencePlayersWhere(StatePresence.arrived).asBroadcastStream();
+
+  late final streamController = StreamController();
   late final teamsSignal = computed(() => teamRepository.getTeams());
 
   void _handleLoadTeams(BalanceLoadEvent event, Emitter<BalanceState> emit) {
@@ -45,29 +54,35 @@ class BalanceBloc extends Bloc<BalanceEvent, BalanceState> {
     }
 
     if (teams.isEmpty) {
-      emit.call(NotBalancedState(arrivedPlayersSignals.value));
+      emit.forEach(arrivedPlayersStream, onData: (player) => NotBalancedState(player));
+      // emit.call(NotBalancedState(arrivedPlayersSignals.value));
     } else {
+      arrivedPlayersStream.forEach(print);
+
       final Map<Team, List<PresencePlayer>> mapTeamsPresencePlayers = {
         for (Team e in teams) e : e.actualPresencePlayers(repository)
       };
-      emit.call(BalancedTeamsState(mapTeamsPresencePlayers));
+      emit.forEach(arrivedPlayersStream, onData: (p) => BalancedTeamsState(mapTeamsPresencePlayers));
+      // emit.call(BalancedTeamsState(mapTeamsPresencePlayers));
+
     }
   }
 
   void _handleBalanceTeams(BalanceTeamsEvent event, Emitter<BalanceState> emit) {
-    coach.balanceTeams();
+    coach.balanceTeams(event.single);
     coach.printTeams();
 
     final List<Team> teams = teamsSignal.value;
     final Map<Team, List<PresencePlayer>> mapTeamsPresencePlayers = {
       for (Team e in teams) e : e.actualPresencePlayers(repository)
     };
+    print("Aqui");
     emit.call(BalancedTeamsState(mapTeamsPresencePlayers));
   }
 
   @override
   Future<void> close() {
-    arrivedPlayersSignals.dispose();
+    // arrivedPlayersSignals.dispose();
     teamsSignal.dispose();
     return super.close();
   }

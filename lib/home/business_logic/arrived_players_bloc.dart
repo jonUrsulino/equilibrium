@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:equilibrium/domain/model/presence_player.dart';
 import 'package:equilibrium/domain/repository/presence_player_repository.dart';
 import 'package:meta/meta.dart';
 
@@ -9,7 +10,7 @@ class ArrivedPlayersBloc extends Bloc<ArrivedPlayersEvent, ArrivedPlayersState> 
 
   final PresencePlayerRepository repository;
 
-  late final arrivedPlayersSignals = repository.getComputedArrivedPresencePlayers();
+  late final arrivedPlayersStream = repository.getStreamPresencePlayersWhere(StatePresence.arrived);
 
   ArrivedPlayersBloc({
     required this.repository,
@@ -21,7 +22,6 @@ class ArrivedPlayersBloc extends Bloc<ArrivedPlayersEvent, ArrivedPlayersState> 
 
   @override
   Future<void> close() {
-    arrivedPlayersSignals.dispose();
     return super.close();
   }
 }

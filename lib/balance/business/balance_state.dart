@@ -15,4 +15,12 @@ final class BalancedTeamsState extends BalanceState {
   BalancedTeamsState(this.mapTeamsPresencePlayers);
 
   final Map<Team, List<PresencePlayer>> mapTeamsPresencePlayers;
+
+  List<PresencePlayer> get players {
+    List<PresencePlayer> list = List.empty(growable: true);
+    for (var item in mapTeamsPresencePlayers.values) {
+      list.addAll(item);
+    }
+    return list;
+  }
 }
