@@ -5,13 +5,13 @@ import 'package:equilibrium/domain/model/player.dart';
 import 'package:equilibrium/domain/repository/player_repository.dart';
 
 class PlayerRepositoryImpl implements PlayerRepository {
-  PlayerRepositoryImpl(this.dataSource);
+  PlayerRepositoryImpl(this._dataSource);
 
-  final PlayerDataSource dataSource;
+  final PlayerDataSource _dataSource;
 
   @override
   List<Player> getPlayers() {
     print("getPlayers");
-    return dataSource.getPlayersStored();
+    return _dataSource.getPlayersStored();
   }
 }

@@ -11,16 +11,8 @@ abstract class PresencePlayerRepository {
   PresencePlayer? getPlayerByName(String playerName);
   List<PresencePlayer> getPresencePlayersByNames(List<String> names);
 
-  // @Deprecated("Need to be replaced by getStreamPlayerById()")
-  // Computed<PresencePlayer?> getComputedPlayerByName(String playerName);
   Stream<PresencePlayer?> getStreamPlayerById(String id);
 
-  // @Deprecated("Need to be replaced by getStreamPresencePlayersWhere")
-  // Computed<List<PresencePlayer>> getComputedPresencePlayersOrderedByName();
-  // @Deprecated("Need to be replaced by getStreamPresencePlayersWhere")
-  // Computed<List<PresencePlayer>> getComputedArrivedPresencePlayers();
-  // @Deprecated("Need to be replaced by getStreamPresencePlayersWhere")
-  // Computed<List<PresencePlayer>> getComputedArrivedPresencePlayersWithoutGoalkeepers();
   Future<List<PresencePlayer>> getStreamPresencePlayersFiltered({
     required StatePresence wherePresence,
     required bool withGoalkeeper,
@@ -29,12 +21,10 @@ abstract class PresencePlayerRepository {
     required StatePresence wherePresence,
     required bool withGoalkeeper,
   });
-  // @Deprecated("Need to be replaced by getStreamPresencePlayersWhere")
-  // Computed<List<PresencePlayer>> getComputedConfirmedPresencePlayers();
+
   Stream<List<PresencePlayer>> getStreamPresencePlayersWhere(StatePresence statePresence);
   Future<List<PresencePlayer>> getFuturePresencePlayersWhere(StatePresence statePresence);
   Stream<int> getStreamLengthPresencePlayersWhere(StatePresence statePresence);
-
 
   // TODO: Could be UseCases.
   void addNewPlayer(PresencePlayer value);

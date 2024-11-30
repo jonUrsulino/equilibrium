@@ -4,15 +4,17 @@ import 'package:equilibrium/domain/model/presence_player.dart';
 import 'package:equilibrium/domain/model/shirt.dart';
 import 'package:equilibrium/domain/model/team.dart';
 import 'package:equilibrium/domain/repository/presence_player_repository.dart';
+import 'package:equilibrium/domain/repository/shirt_repository.dart';
 import 'package:equilibrium/domain/repository/team_repository.dart';
 import 'package:equilibrium/domain/settings.dart';
 
 class NotifyArrivedPlayer {
-  NotifyArrivedPlayer(this.repository, this.teamRepository, this.settings);
+  NotifyArrivedPlayer(this.repository, this.teamRepository, this.settings, this.shirtRepository);
 
   final PresencePlayerRepository repository;
   final TeamRepository teamRepository;
   final Settings settings;
+  final ShirtRepository shirtRepository;
 
   void execute(PresencePlayer presencePlayer) {
     var presencePlayersUpdated = presencePlayer.copyWith(statePresence: StatePresence.arrived);
@@ -47,7 +49,8 @@ class NotifyArrivedPlayer {
   }
 
   void createNewTeam(Player player) {
-    var team = Team.incomplete(shirt: Shirt.undefined(), );
+    final Shirt shirt = shirtRepository.getNextShirt();
+    var team = Team.incomplete(shirt: shirt, );
     team.players.add(player);
 
     var ghostsLength = settings.maxPlayersByTeam.value - 1;

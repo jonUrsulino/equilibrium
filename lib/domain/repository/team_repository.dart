@@ -19,4 +19,6 @@ abstract class TeamRepository {
   List<Team> getNextTeams();
 
   void playerArrived(PresencePlayer presencePlayersUpdated);
+
+  void resetAll();
 }

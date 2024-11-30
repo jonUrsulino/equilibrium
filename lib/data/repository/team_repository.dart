@@ -70,4 +70,9 @@ class TeamRepositoryImpl extends TeamRepository {
   void playerArrived(PresencePlayer presencePlayersUpdated) {
     // do nothing.
   }
+
+  @override
+  void resetAll() {
+    _teams.clear();
+  }
 }

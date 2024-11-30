@@ -80,35 +80,11 @@ class PresencePlayerRepositoryImpl implements PresencePlayerRepository {
     return null;
   }
 
-  // @override
-  // Computed<PresencePlayer?> getComputedPlayerByName(String playerName) {
-  //   return computed(() => getPresencePlayers()[playerName]);
-  // }
-
   @override
   Stream<PresencePlayer?> getStreamPlayerById(String id) {
     print("getStreamPlayerById $id");
     return localDataSource.listen(id);
   }
-
-  // @override
-  // Computed<List<PresencePlayer>> getComputedPresencePlayersOrderedByName() {
-  //   return computed<List<PresencePlayer>>(() => getPresencePlayers().values
-  //       .where((element) {
-  //         return element.statePresence == StatePresence.initial;
-  //       })
-  //       .toList()..sort((a, b) => a.player.name.compareTo(b.player.name),
-  //   ));
-  // }
-
-  // @override
-  // Computed<List<PresencePlayer>> getComputedArrivedPresencePlayers() {
-  //   return computed<List<PresencePlayer>>(() {
-  //     return getPresencePlayers().values.where((element) {
-  //       return element.statePresence == StatePresence.arrived;
-  //     }).toList();
-  //   });
-  // }
 
   @override
   Stream<List<PresencePlayer>> getStreamPresencePlayersWhere(StatePresence statePresence) async* {
@@ -144,15 +120,6 @@ class PresencePlayerRepositoryImpl implements PresencePlayerRepository {
     }
   }
 
-  // @override
-  // Computed<List<PresencePlayer>> getComputedArrivedPresencePlayersWithoutGoalkeepers() {
-  //   return computed<List<PresencePlayer>>(() {
-  //     return getComputedArrivedPresencePlayers().get().where((element) {
-  //       return !element.player.isGoalkeeper;
-  //     }).toList();
-  //   });
-  // }
-
   @override
   Future<List<PresencePlayer>> getStreamPresencePlayersFiltered({
     required StatePresence wherePresence,
@@ -178,25 +145,7 @@ class PresencePlayerRepositoryImpl implements PresencePlayerRepository {
     );
 
     return streamPresencePlayersFiltered;
-
-    // await for (List<PresencePlayer> presencePlayers in getPresencePlayersStream()) {
-    //   return presencePlayers
-    //       .where((element) => element.statePresence == wherePresence)
-    //       .where((element) => element.player.isGoalkeeper == withGoalkeeper)
-    //       .toList();
-    // }
   }
-
-  // @override
-  // Computed<List<PresencePlayer>> getComputedConfirmedPresencePlayers() {
-  //   return computed<List<PresencePlayer>>(() {
-  //     return getPresencePlayers()
-  //         .values
-  //         .where((element) {
-  //       return element.statePresence == StatePresence.confirmed;
-  //     }).toList();
-  //   });
-  // }
 
   @override
   List<PresencePlayer> getPresencePlayersByNames(List<String> names) {

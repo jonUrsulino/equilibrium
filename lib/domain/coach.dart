@@ -6,20 +6,12 @@ import 'package:equilibrium/domain/model/presence_player.dart';
 import 'package:equilibrium/domain/model/shirt.dart';
 import 'package:equilibrium/domain/model/team.dart';
 import 'package:equilibrium/domain/repository/presence_player_repository.dart';
+import 'package:equilibrium/domain/repository/shirt_repository.dart';
 import 'package:equilibrium/domain/repository/team_repository.dart';
 import 'package:equilibrium/domain/settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
 import 'package:signals/signals.dart';
-
-//TODO: put it in the settings to edit colors and names of teams.
-final List<Shirt> availableShirts = [
-  Shirt.black(),
-  Shirt.orange(),
-  Shirt.blue(),
-  Shirt.green(),
-  Shirt.white(),
-];
 
 class Coach {
   Coach();
@@ -27,11 +19,14 @@ class Coach {
   final PresencePlayerRepository presencePlayerRepository = GetIt.I.get();
   final Settings settings = GetIt.I.get<Settings>();
   final TeamRepository teamRepository = GetIt.I.get();
+  final ShirtRepository shirtRepository = GetIt.I.get();
 
   final List<Team> teams = [];
 
   void balanceTeams(List<PresencePlayer> arrivingPlayers) {
     print("balanceTeams");
+    shirtRepository.resetAvailable();
+    teamRepository.resetAll();
     teams.clear();
     final maxPlayersByTeam = settings.getMaxPlayersByTeam();
 
@@ -50,15 +45,15 @@ class Coach {
     print("amount complete teams: $amountCompleteTeams");
     print("balance with goalkeeper: $balanceGoalkeeper");
 
-    List<Shirt> remainingShirts = _defineShirtsToCompleteTeams(amountCompleteTeams);
+    _defineShirtsToCompleteTeams(amountCompleteTeams);
 
     if (amountRemainingPlayers <= 0) {
       print("1. Caiu aqui $amountRemainingPlayers");
       _balanceTeamsByStars(arrivingPlayers.toList());
-      _createConfirmedIncompleteTeam(remainingShirts, maxPlayersByTeam);
+      _createConfirmedIncompleteTeam(maxPlayersByTeam);
     } else {
       print("2. Caiu aqui $amountRemainingPlayers");
-      teams.add(_defineIncompleteTeam(remainingShirts.firstOrNull));
+      teams.add(_defineIncompleteTeam());
       _createIncompleteTeamToBalanceWithConfirmedPlayers(maxConfirmedPlayers);
       _balanceTeamsByStars(arrivingPlayers.toList());
     }
@@ -110,31 +105,24 @@ class Coach {
     return futureArrivedPresencePlayers.toList();
   }
 
-  void _createConfirmedIncompleteTeam(List<Shirt> remainingShirts, int maxPlayersByTeam) async {
+  void _createConfirmedIncompleteTeam(int maxPlayersByTeam) async {
     var stream = presencePlayerRepository.getStreamPresencePlayersWhere(StatePresence.confirmed);
 
     await for (List<PresencePlayer> promisedListPlayers in stream) {
       if (promisedListPlayers.isNotEmpty) {
-        teams.add(_defineIncompleteTeam(remainingShirts.firstOrNull));
+        teams.add(_defineIncompleteTeam());
         _createPromisedTeamNotBalanced(promisedListPlayers, maxPlayersByTeam);
       }
     }
   }
 
-  List<Shirt> _defineShirtsToCompleteTeams(int amountCompleteTeams) {
-    List<Shirt> remainingShirts = [];
-    remainingShirts.addAll(availableShirts);
-
+  void _defineShirtsToCompleteTeams(int amountCompleteTeams) {
     // create teams
     for (int i = 0; i < amountCompleteTeams; i++) {
-      Shirt? shirt = remainingShirts.firstOrNull;
-      remainingShirts.remove(shirt);
+      final Shirt shirt = shirtRepository.getNextShirt();
 
-      teams.add(Team.complete(
-        shirt: shirt ?? Shirt.undefined(),
-      ));
+      teams.add(Team.complete(shirt: shirt));
     }
-    return remainingShirts;
   }
 
   void _balanceTeamsByStars(List<PresencePlayer> listPlayers) {
@@ -262,11 +250,9 @@ class Coach {
     print('MAIOR ${list.toString()} ${Random().nextInt(3) - 1}');
   }
 
-  Team _defineIncompleteTeam(
-      Shirt? shirt,
-      ) {
+  Team _defineIncompleteTeam() {
     Team team = Team.incomplete(
-      shirt: shirt ?? Shirt.undefined(),
+      shirt: shirtRepository.getNextShirt(),
     );
     print('incomplete team: ${team.shirt.name} ${team.incomplete}');
     return team;
